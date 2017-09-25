@@ -186,6 +186,7 @@ void get_filelist()
         printf("Empty Filelist!\n");
         return;
     }
+    printf("%d\n",i);
     printf("get:%s,%s\n",files[i]->filename,files[i]->peerid); 
     printf("-----------------------\n");  
     for(i = 0; i < MAXFILENUM; i++)
