@@ -16,7 +16,7 @@
 #define MAXLINE 4096  
 #define NUM_C 3
 
-int setup_server();
+int setup_server(void);
 
 int socket_fd;
 struct sockaddr_un     servaddr; 
