@@ -13,6 +13,14 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+typedef struct
+{
+    char *filename;
+	char peerid[16];
+	
+} pfile;
+
+
 void fthread(void);
 int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
@@ -22,12 +30,6 @@ void get_filelist(pfile *file);
 #define MAXLINE 512
 #define MAXFILENUM 99
 
-typedef struct
-{
-    char *filename;
-	char peerid[16];
-	
-} pfile;
 
 
 int socket_fd;
@@ -116,7 +118,7 @@ void fthread(void)                               //wait for registry client
            else
                printf("Register Success!");
 
-           get_filelist(*file);
+           get_filelist(*file[]);
            break;
 
         case 2:
@@ -175,10 +177,10 @@ int check_file(const char *peerid, const char *filename)
     return 0;
 }
 
-void get_filelist(pfile *file)
+void get_filelist(pfile *file[])
 {
     int i;
-    if(*file =NULL)
+    if(*file[] =NULL)
     {
         printf("Empty Filelist!\n");
         return -1;
@@ -187,5 +189,4 @@ void get_filelist(pfile *file)
 	{
 		printf("%s,%s",files[i]->filename,files[i]->peerid);
 	}
-    return 0;
 }
