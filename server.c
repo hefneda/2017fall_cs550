@@ -52,8 +52,8 @@ int main(int argc, char** argv)
     //create threads
     pthread_t thread[NUM_C *3];
 
-    for(i = 0; i < NUMCLIENTS*2; i++)
-        pthread_create(&thread[i],NULL,ddd,NULL);
+    for(i = 0; i < NUM_C*2; i++)
+        pthread_create(&thread[i],NULL,&ddd,NULL);
 
 
     close(socket_fd);  
