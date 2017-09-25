@@ -19,6 +19,7 @@
 #define MAXLINE 512  
 
 void c_client(void);
+int lookup(int c_client_fd, char *filename);
 
 char HOST[16];
 
