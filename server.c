@@ -13,10 +13,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-void ddd(void)
-{
-    printf("ddd");
-}
+void *ddd(void *i);
 
 #define NUM_C 3
 
@@ -56,9 +53,14 @@ int main(int argc, char** argv)
     pthread_t thread[NUM_C *3];
 
     for(i = 0; i < NUM_C*2; i++)
-        pthread_create(&thread[i],NULL,(void *) ddd,NULL);
+        pthread_create(&thread[i],NULL,ddd,NULL);
 
 
     close(socket_fd);  
 }  
 
+void *ddd(void *i)
+{
+    printf("ddd");
+    return NULL;
+}
