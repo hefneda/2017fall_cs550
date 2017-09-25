@@ -207,11 +207,14 @@ int search_file(char *filename, pfile *found_files )
 		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0)
         {
             flag++;
-            found_files[j] = malloc(sizeof(pfile));
-            strcpy(found_files[j]->peerid,files[i]->peerid);
-            found_files[j]->filename = malloc(sizeof(*filename)); 
-            strcpy(found_files[j]->filename,files[i]->filename);
-            j++;
+            if(files[i] == NULL)
+            {
+                found_files[j] = malloc(sizeof(pfile));
+                strcpy(found_files[j].peerid,files[i]->peerid);
+                found_files[j].filename = malloc(sizeof(*filename)); 
+                strcpy(found_files[j].filename,files[i]->filename);
+                j++;
+            }
         }
 	}
     return flag;
