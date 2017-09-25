@@ -67,26 +67,13 @@ int main(int argc, char** argv)
 
 void thread(void)                               //wait for registry client
 {
-     printf("ddd\n");
+
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
     socklen_t len = sizeof(c_address);
     char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAX];
-
-    while(1)
-    {  
-        if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
-        {  
-            printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
-            continue;  
-        }  
-
-        printf("Registry Client Connected\n");
-        if(recv(c_fd,(void *)cmdstr,2,0) == 0)
-            break;
-        printf("RCEIVED:%s",cmdstr);
-        break;
-    }
+    printf("ddd\n");
+    
     close(c_fd);
 }
