@@ -14,7 +14,8 @@
 #include <pthread.h>
 #define DEFAULT_PORT 8000  
 #define MAXLINE 4096  
-#define NUM_C 3;  
+#define NUM_C 3
+
 int setup_server();
 
 int socket_fd;
@@ -41,8 +42,10 @@ int setup_sever()
     //初始化  
     memset(&servaddr, 0, sizeof(servaddr));  
     servaddr.sun_family = AF_UNIX;  
-    servaddr.sun_addr.s_addr = htonl(INADDR_ANY);//IP地址设置成INADDR_ANY,让系统自动获取本机的IP地址。  
-    servaddr.sun_port = htons(DEFAULT_PORT);//设置的端口为DEFAULT_PORT  
+    strcpy(servaddr.sun_path, "SERV");
+	unlink(servaddr.sun_path);
+    //servaddr.sun_addr.s_addr = htonl(INADDR_ANY);//IP地址设置成INADDR_ANY,让系统自动获取本机的IP地址。  
+    //servaddr.sun_port = htons(DEFAULT_PORT);//设置的端口为DEFAULT_PORT  
 
     //将本地地址绑定到所创建的套接字上  
     if( bind(socket_fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){  
