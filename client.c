@@ -90,7 +90,7 @@ void c_client()
             printf("Input the filename to register: ");  
             fgets(filename, MAXLINE, stdin);  
 
-            if((edn=strchr(filename,'\n')) != NULL)
+            if((end=strchr(filename,'\n')) != NULL)
 			    *end = '\0';
 
             send(c_client_fd,(void *)filename,MAXLINE,0);
