@@ -25,7 +25,7 @@ void fthread(void);
 int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
 void print_registry(void);
-int search_file(char *filename, pfile *found_files );
+int search_file(char *filename );
 
 #define NUM_C 3
 #define MAXLINE 512
@@ -200,23 +200,12 @@ void print_registry()
 
 int search_file(char *filename, pfile *found_files )
 {
-    int i;
-    int j=0;
-    int flag=0;
+   int i;
 	for(i = 0; i < MAXFILENUM; i++)
 	{
 		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0)
-        {
-            flag++;
-            if(found_files[j] == NULL)
-            {
-                found_files[j] = malloc(sizeof(pfile));
-                strcpy(found_files[j].peerid,files[i]->peerid);
-                found_files[j].filename = malloc(sizeof(*filename)); 
-                strcpy(found_files[j].filename,files[i]->filename);
-                j++;
-            }
-        }
+			return 1;
 	}
-    return flag;
+	return 0;
+
 }
