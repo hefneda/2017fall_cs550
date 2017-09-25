@@ -14,14 +14,24 @@
 #include <pthread.h>
 
 void fthread(void);
+int registry(const char *peerid, const char *filename);
+int check_file(const char *peerid, const char *filename);
 
 #define NUM_C 3
 #define MAXLINE 2048
+#define MAXFILENUM 99
+
+typedef struct
+{
+    char *filename;
+	char peerid[HOST];
+	
+} pfile;
 
 
 int socket_fd;
-
 struct sockaddr_un     servaddr; 
+pfile *files[MAXFILES] = {NULL};                //filelist in central server
 
 int main(int argc, char** argv)  
 {  
@@ -73,16 +83,18 @@ void fthread(void)                               //wait for registry client
     char filename[MAXLINE];
     char peerid[16];
 
-    printf("Begin Accept! \n");
+    printf("Begin Accept! \n");             //accept clients
+    if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
+    {  
+        printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
+        continue;  
+    }  
+
+    printf("Client Connected, Waiting for Receive Function No. \n");
+
     while(1)
     {  
-        if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
-        {  
-            printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
-            continue;  
-        }  
 
-        printf("Client Connected, Waiting for Receive Function No. \n");
         if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;
 
@@ -92,17 +104,22 @@ void fthread(void)                               //wait for registry client
         case 1:                                          //For registry
             if(send(c_fd, "1", 8,0) == -1)    //send confirm msg to client
                 perror("send error");
-            printf("Request for Registry Rceived, Begin to Receive Filename and peerid");
+            printf("Request for Registry Rceived, Begin to Receive Filename and peerid\n");
             recv(c_fd,(void *)filename,MAXLINE,0);
             recv(c_fd,(void *)peerid,16,0);
 
-            printf("Registry with filename: \"%s\"; Peerid:%s\n",filename,peerid);
-            //Register the file 
-           //registry(peerid,filename);
-            break;
-        case 2:
-            printf("Request for Download Received");
+            printf("Registry with filename: %s; Peerid:%s \n",filename,peerid);
 
+            //Register the file 
+           if(registry(peerid,filename)!=0)
+               perror("register error");
+           else
+               printf("Register Success!");
+           break;
+
+        case 2:
+            printf("Request for Download Received\n");
+                
             break;
 
         }
@@ -116,4 +133,41 @@ void fthread(void)                               //wait for registry client
         break;
     }
     close(c_fd);
+}
+
+//register file
+int registry(const char *peerid, const char *filename)
+{
+    int i;
+    if(check_file(peerid,filename)==1)    ///check if the filename with the peerid has already been registrated
+    {
+        printf("File already registered\n");
+        return -1;
+    }
+
+    for(i = 0; i < MAXFILENUM; i++)
+    {
+        if(files[i] == NULL)
+        {
+            files[i] = malloc(sizeof(pfile));
+            strcpy(files[i]->peerid,peerid);
+            files[i]->filename = malloc(sizeof(*filename)); 
+            strcpy(files[i]->filename,filename);
+            return 0;
+        }
+    }
+    printf("No more files!\n");
+    return -1;
+}
+
+//check if the filename with the peerid has already been registrated
+int check_file(const char *peerid, const char *filename)
+{
+    int i;
+	for(i = 0; i < MAXFILENUM; i++)
+	{
+		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0 && strcmp(files[i]->peerid,peerid) == 0)
+			return 1;
+	}
+    return 0;
 }
