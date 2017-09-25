@@ -25,6 +25,7 @@ void fthread(void);
 int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
 void print_registry(void);
+int search_file(char *filename, pfile *found_files );
 
 #define NUM_C 3
 #define MAXLINE 512
@@ -130,7 +131,7 @@ void fthread(void)                               //wait for registry client
             printf("Request for Download Received\n");
             recv(c_fd,(void *)filename,MAXLINE,0);              //receive filename
             
-            if(search_file(filename,found_files)!=0)                   //filename found
+            if(search_file(filename)!=0)                   //filename found
             {
                 printf("We found it");
             }
