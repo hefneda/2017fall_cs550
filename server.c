@@ -24,14 +24,14 @@ int check_file(const char *peerid, const char *filename);
 typedef struct
 {
     char *filename;
-	char peerid[HOST];
+	char peerid[16];
 	
 } pfile;
 
 
 int socket_fd;
 struct sockaddr_un     servaddr; 
-pfile *files[MAXFILES] = {NULL};                //filelist in central server
+pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
 
 int main(int argc, char** argv)  
 {  
@@ -87,7 +87,6 @@ void fthread(void)                               //wait for registry client
     if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
     {  
         printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
-        continue;  
     }  
 
     printf("Client Connected, Waiting for Receive Function No. \n");
