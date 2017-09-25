@@ -26,6 +26,7 @@ int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
 void print_registry(void);
 int search_file(char *filename );
+void sendidlist(int c_fd,char* filename);
 
 #define NUM_C 3
 #define MAXLINE 512
@@ -133,11 +134,16 @@ void fthread(void)                               //wait for registry client
             
             if(search_file(filename)!=0)                   //filename found
             {
-                printf("We found it");
+                printf("We found it\n");
+                //send back confimation
+                send(c_fd, "1", 8,0);             
+                //send back the peerids with this filename
+                sendidlist(c_fd,filename);
             }
             else                                                                     //filename not found
             {
-                printf("We can not find it");
+                printf("We can not find it\n");
+                send(c_fd, "2", 8,0);
             }
             
             break;
@@ -208,4 +214,9 @@ int search_file(char *filename )
 	}
 	return 0;
 
+}
+
+void sendidlist(int c_fd,char* filename)
+{
+    int i;
 }

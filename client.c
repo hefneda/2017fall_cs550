@@ -102,22 +102,13 @@ void c_client()
   //----------------------------------------------------Download
         if(cmdno == 2)
         {
-            printf("Input the filename to download: ");  
-            fgets(filename, MAXLINE, stdin);  
-
-            if((end=strchr(filename,'\n')) != NULL)
-			    *end = '\0';
-            //send filename to download
-            send(c_client_fd,(void *)filename,MAXLINE,0);
-            //wait to see if cental server can find this file
-            recv(c_client_fd, buf, MAXLINE,0);
-            if(atoi(buf)==1)
+            if(lookup(c_client_fd, filename)==1)
             {
-                printf("File found by server\n");  
+                printf("I ");  
             }
             else
             {
-                printf("Fail to find file\n");  
+                printf("In ");  
             }
         }
        
@@ -126,4 +117,30 @@ void c_client()
     }
     
     close(c_client_fd);  
+}
+int lookup(int c_client_fd, char *filename)
+{
+    int    n,rec_len;  
+    char    buf[MAXLINE]; 
+    char *end;
+
+    printf("Input the filename to download: ");  
+    fgets(filename, MAXLINE, stdin);  
+
+    if((end=strchr(filename,'\n')) != NULL)
+        *end = '\0';
+    //send filename to download
+    send(c_client_fd,(void *)filename,MAXLINE,0);
+    //wait to see if cental server can find this file
+    recv(c_client_fd, buf, MAXLINE,0);
+    if(atoi(buf)==1)
+    {
+        printf("File found by server\n");  
+        return 1;
+    }
+    else
+    {
+        printf("Fail to find file\n");  
+        return 0;
+    }
 }
