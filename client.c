@@ -46,7 +46,7 @@ void c_client()
     char    buf[MAXLINE]; 
     int cmdno=0;
     char    filename[MAXLINE], peerid[MAXLINE]; 
-    char *buf;
+    char *end;
 
     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
@@ -90,8 +90,8 @@ void c_client()
             printf("Input the filename to register: ");  
             fgets(filename, MAXLINE, stdin);  
 
-            if((buf=strchr(filename,'\n')) != NULL)
-			    *buf = '\0';
+            if((edn=strchr(filename,'\n')) != NULL)
+			    *end = '\0';
 
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
