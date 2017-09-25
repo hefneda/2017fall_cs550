@@ -179,12 +179,13 @@ int check_file(const char *peerid, const char *filename)
 
 void get_filelist()
 {
-    printf("Imin\n");
     int i;
     if(files[0] =NULL)
     {
         printf("Empty Filelist!\n");
+        return;
     }
+    printf("Imin\n");
     for(i = 0; i < MAXFILENUM; i++)
 	{
         if(files[i] != NULL)
