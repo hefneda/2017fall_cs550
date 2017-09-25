@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-void thread(void);
+void fthread(void);
 
 #define NUM_C 3
 #define MAX 128
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 
     memset(&servaddr, 0, sizeof(servaddr));  
     servaddr.sun_family = AF_UNIX;  
-    strcpy(servaddr.sun_path, "SERV");
+    //strcpy(servaddr.sun_path, "SERV");
     unlink(servaddr.sun_path);
 
   
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     //create threads
 
     for(i = 0; i < 1; i++)
-        flag=pthread_create(&thread[i],NULL,(void *)thread,NULL);
+        flag=pthread_create(&thread[i],NULL,(void *)fthread,NULL);
     for(i = 0; i < 1; i++)
 		pthread_join(thread[i],NULL);
 
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
     return 0;
 }  
 
-void thread(void)                               //wait for registry client
+void fthread(void)                               //wait for registry client
 {
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
