@@ -118,20 +118,7 @@ void fthread(void)                               //wait for registry client
            registry(peerid,filename);
 
            printf("Register Success!\n");
-           printf("-----------------------\n");  
-           for(i = 0; i < MAXFILENUM; i++)
-           {
-               if(files[i] != NULL)
-               {
-                   printf("%s,%s\n",files[i]->filename,files[i]->peerid);       
-               }
-               else
-               {
-                   printf("-----------------------\n");  
-                   break;
-               }
-           }
-           //get_filelist();
+           get_filelist();
            break;
 
         case 2:
