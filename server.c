@@ -16,6 +16,7 @@
 void ddd(void);
 
 #define NUM_C 3
+#define MAX 128
 
 
 int socket_fd;
@@ -56,7 +57,7 @@ int main(int argc, char** argv)
 
 
     for(i = 0; i < NUM_C*2; i++)
-        flag=pthread_create(&thread[i],NULL,(void *)ddd,NULL);
+        flag=pthread_create(&thread[i],NULL,(void *)thread,NULL);
     for(i = 0; i < NUM_C*2; i++)
 	{
 		pthread_join(thread[i],NULL);
@@ -66,10 +67,28 @@ int main(int argc, char** argv)
     return 0;
 }  
 
-void ddd(void)
+void thread(void)                               //wait for registry client
 {
+    struct sockaddr_un c_address;       //registry client address
+    int c_fd;                                           //registry client fd
+    socklen_t len = sizeof(c_address);
+    char cmdstr[1];                               //1:registry 2:Search File
+    char filename[MAX];
 
-    printf("ddd");
-    pthread_exit(0);
+    while(1)
+    {  
+        if( (connect_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
+        {  
+            printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
+            continue;  
+        }  
+
+        printf("Registry Client Connected\n");
+        if(recv(c_fd,(void *)cmdstr,1,0) == 0)
+            break;
+        printf("RCEIVED:%s",cmdstr);
+        break;
+    }
+    close(c_fd);
     return NULL;
 }
