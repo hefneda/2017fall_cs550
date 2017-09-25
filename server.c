@@ -56,12 +56,11 @@ int main(int argc, char** argv)
     //create threads
 
 
-    for(i = 0; i < NUM_C*2; i++)
+    for(i = 0; i < 1; i++)
         flag=pthread_create(&thread[i],NULL,(void *)thread,NULL);
-    for(i = 0; i < NUM_C*2; i++)
-	{
+    for(i = 0; i < 1; i++)
 		pthread_join(thread[i],NULL);
-	}
+
     printf("%d\n",flag);  
     close(socket_fd);  
     return 0;
@@ -72,9 +71,9 @@ void thread(void)                               //wait for registry client
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
     socklen_t len = sizeof(c_address);
-    char cmdstr[1];                               //1:registry 2:Search File
+    char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAX];
-
+    printf("ddd\n");
     while(1)
     {  
         if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
@@ -84,7 +83,7 @@ void thread(void)                               //wait for registry client
         }  
 
         printf("Registry Client Connected\n");
-        if(recv(c_fd,(void *)cmdstr,1,0) == 0)
+        if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;
         printf("RCEIVED:%s",cmdstr);
         break;
