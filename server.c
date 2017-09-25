@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include<process.h>
+
 typedef struct
 {
     char *filename;
