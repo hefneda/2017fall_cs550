@@ -25,7 +25,7 @@ void fthread(void);
 int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
 void print_registry(void);
-int search_file(char *filename );
+int search(char *filename );
 void sendidlist(int c_fd,char* filename);
 
 #define NUM_C 3
@@ -132,7 +132,7 @@ void fthread(void)                               //wait for registry client
             printf("Request for Download Received\n");
             recv(c_fd,(void *)filename,MAXLINE,0);              //receive filename
             
-            if(search_file(filename)!=0)                   //filename found
+            if(search(filename)!=0)                   //filename found
             {
                 printf("We found it\n");
                 //send back confimation
@@ -204,7 +204,7 @@ void print_registry()
 	}
 }
 
-int search_file(char *filename )
+int search(char *filename )
 {
    int i;
 	for(i = 0; i < MAXFILENUM; i++)
@@ -219,4 +219,18 @@ int search_file(char *filename )
 void sendidlist(int c_fd,char* filename)
 {
     int i;
+    int count = 0;
+    char str[16];
+    for(i = 0; i < MAXFILES; i++)
+	{
+		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0)
+		{
+			count++;
+		}
+	}
+    printf("Found %d clients with file\n",count);
+    //transmit int to string to send
+    itoa(count,str,10);
+    send(c_fd, str, MAXLINE,0);
+    
 }

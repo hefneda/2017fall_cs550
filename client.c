@@ -48,6 +48,7 @@ void c_client()
     int cmdno=0;
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
+    int coun=0;
 
     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
@@ -103,9 +104,12 @@ void c_client()
   //----------------------------------------------------Download
         if(cmdno == 2)
         {
-            if(lookup(c_client_fd, filename)==1)
+            if(lookup(c_client_fd, filename)==1)           //found
             {
-                printf("I ");  
+                printf("Ready to receive list\n");
+                recv(sfd,buf,MAXLINE,0);                     //receive num of clients with files
+                count==atoi(buf);
+                printf("%d files have/has this file\n");
             }
             else
             {
