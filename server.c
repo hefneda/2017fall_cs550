@@ -92,10 +92,11 @@ void fthread(void)                               //wait for registry client
         printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
     }  
 
-    printf("Client Connected, Waiting for Receive Function No. \n");
+    printf("Client Connected, Wait client cmd \n");
 
     while(1)
     {  
+        printf("Wait another client cmd \n");
 
         if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;

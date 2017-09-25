@@ -66,6 +66,7 @@ void c_client()
 
     while(1)
     {
+        //sendline=NULL;
         printf("Input the function No. : 1.Registry 2. Download File \n");  
         fgets(sendline, 4096, stdin);  
         printf("Imhere1\n");  
