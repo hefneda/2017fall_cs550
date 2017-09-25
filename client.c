@@ -110,7 +110,7 @@ void c_client()
             //send filename to download
             send(c_client_fd,(void *)filename,MAXLINE,0);
             //wait to see if cental server can find this file
-            recv(c_client_fd, buf, MAXLINE,0));
+            recv(c_client_fd, buf, MAXLINE,0);
             if(atoi(buf)==1)
             {
                 printf("File found by server\n");  
@@ -119,6 +119,7 @@ void c_client()
             {
                 printf("Fail to find file\n");  
             }
+        }
        
         if(cmdno == 3)
             break;
