@@ -232,6 +232,7 @@ void sendidlist(int c_fd,char* filename)
     //transmit int to string to send
     //itoa(count,str,10);
     snprintf(str,16,"%d",count);
+    printf("------%s\n",str);
     send(c_fd, str, MAXLINE,0);
     
 }

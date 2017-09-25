@@ -108,6 +108,7 @@ void c_client()
             {
                 printf("Ready to receive list\n");
                 recv(c_client_fd,buf,MAXLINE,0);                     //receive num of clients with files
+                printf("------%s\n",buf);
                 count=atoi(buf);
                 printf("%d files have/has this file\n",count);
             }
