@@ -22,11 +22,6 @@ void c_client(void);
 
 int main(int argc, char** argv)  
 {  
-    int    n,rec_len;  
-    char    recvline[4096], sendline[4096];  
-    char    buf[MAXLINE];  
-
-
 
     if( argc != 2){  
         printf("usage: ./client <ipaddress>\n");  
@@ -34,7 +29,7 @@ int main(int argc, char** argv)
     }  
 
 
-    close(client_fd);  
+    
     exit(0);  
 }  
 
@@ -42,18 +37,21 @@ void c_client()
 {
     int    c_client_fd;
     struct sockaddr_un    c_clientaddr;  
+    char    recvline[4096], sendline[4096];  
+    int    n,rec_len;  
+    char    buf[MAXLINE];  
 
-     if( (client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
         exit(0);  
     }  
 
 
     memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
-    c_clientaddr.sin_family = AF_UNIX;  
+    c_clientaddr.sun_family = AF_UNIX;  
     strcpy(c_clientaddr.sun_path, "c_client");
 
-    if( connect(client_fd, (struct sockaddr*)&cc_clientaddr, sizeof(c_clientaddr)) < 0){  
+    if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }  
@@ -61,15 +59,16 @@ void c_client()
 
     printf("send msg to server: \n");  
     fgets(sendline, 4096, stdin);  
-    if( send(client_fd, sendline, strlen(sendline), 0) < 0)  
+    if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
     {  
         printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
         exit(0);  
     }  
-    if((rec_len = recv(client_fd, buf, MAXLINE,0)) == -1) {  
+    if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
         perror("recv error");  
         exit(1);  
     }  
     buf[rec_len]  = '\0';  
     printf("Received : %s ",buf);  
+    close(c_client_fd);  
 }
