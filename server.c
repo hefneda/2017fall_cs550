@@ -77,7 +77,7 @@ void thread(void)                               //wait for registry client
 
     while(1)
     {  
-        if( (connect_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
+        if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
         {  
             printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
             continue;  
@@ -90,5 +90,4 @@ void thread(void)                               //wait for registry client
         break;
     }
     close(c_fd);
-    return NULL;
 }
