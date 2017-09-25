@@ -138,6 +138,7 @@ void fthread(void)                               //wait for registry client
                 //send back confimation
                 send(c_fd, "1", 8,0);             
                 //send back the peerids with this filename
+                printf("------%d\n",c_fd);
                 sendidlist(c_fd,filename);
             }
             else                                                                     //filename not found
@@ -232,7 +233,7 @@ void sendidlist(int c_fd,char* filename)
     //transmit int to string to send
     //itoa(count,str,10);
     snprintf(str,16,"%d",count);
-    printf("------%s\n",str);
+    printf("------%d\n",c_fd);
     send(c_fd, "1", 2,0);
     
 }
