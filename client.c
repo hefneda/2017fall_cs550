@@ -48,7 +48,7 @@ void c_client()
     int cmdno=0;
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
-    int coun=0;
+    int count=0;
 
     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  

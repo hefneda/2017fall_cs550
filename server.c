@@ -230,7 +230,8 @@ void sendidlist(int c_fd,char* filename)
 	}
     printf("Found %d clients with file\n",count);
     //transmit int to string to send
-    itoa(count,str,10);
+    //itoa(count,str,10);
+    snprintf(str,16,"%d",count);
     send(c_fd, str, MAXLINE,0);
     
 }
