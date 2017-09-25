@@ -233,6 +233,6 @@ void sendidlist(int c_fd,char* filename)
     //itoa(count,str,10);
     snprintf(str,16,"%d",count);
     printf("------%s\n",str);
-    send(c_fd, (void*)str, MAXLINE,0);
+    send(c_fd, "1", 2,0);
     
 }
