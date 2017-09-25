@@ -87,7 +87,7 @@ void c_client()
         printf("Received : %d\n ",cmdno);
 
 
-        //Register
+//----------------------------------------------------Register
         if(cmdno == 1)
         {
             printf("Input the filename to register: ");  
@@ -99,6 +99,27 @@ void c_client()
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
         }
+  //----------------------------------------------------Download
+        if(cmdno == 2)
+        {
+            printf("Input the filename to download: ");  
+            fgets(filename, MAXLINE, stdin);  
+
+            if((end=strchr(filename,'\n')) != NULL)
+			    *end = '\0';
+            //send filename to download
+            send(c_client_fd,(void *)filename,MAXLINE,0);
+            //wait to see if cental server can find this file
+            recv(c_client_fd, buf, MAXLINE,0));
+            if(atoi(buf)==1)
+            {
+                printf("File found by server\n");  
+            }
+            else
+            {
+                printf("Fail to find file\n");  
+            }
+       
         if(cmdno == 3)
             break;
     }
