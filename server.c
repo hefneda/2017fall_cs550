@@ -24,7 +24,7 @@ typedef struct
 void fthread(void);
 int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
-void get_filelist();
+void get_filelist(void);
 
 #define NUM_C 3
 #define MAXLINE 512
