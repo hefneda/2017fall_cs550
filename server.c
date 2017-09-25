@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     for(i = 0; i < NUM_C*2; i++)
         pthread_create(&thread[i],NULL,ddd,NULL);
 
-
+    printf("===========\n");  
     close(socket_fd);  
 }  
 
