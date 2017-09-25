@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     }  
 
 
-    
+
     exit(0);  
 }  
 
@@ -41,16 +41,17 @@ void c_client()
     int    n,rec_len;  
     char    buf[MAXLINE];  
 
-     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+    if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
         exit(0);  
     }  
-
+    printf("Success Create Socket \n");  
 
     memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
     c_clientaddr.sun_family = AF_UNIX;  
-    strcpy(c_clientaddr.sun_path, "c_client");
+    //strcpy(c_clientaddr.sun_path, "c_client");
 
+    printf("Begin connect \n");  
     if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
