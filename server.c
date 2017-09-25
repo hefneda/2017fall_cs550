@@ -191,7 +191,7 @@ int check_file(const char *peerid, const char *filename)
 
 void get_filelist()
 {
-    int i=vi;
+    int i=0;
     if(files[0] =NULL)
     {
         printf("Empty Filelist!\n");
