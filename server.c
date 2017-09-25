@@ -153,7 +153,9 @@ int registry(const char *peerid, const char *filename)
             strcpy(files[i]->peerid,peerid);
             files[i]->filename = malloc(sizeof(*filename)); 
             strcpy(files[i]->filename,filename);
+            printf("1111111111343431\n");
             return 0;
+            
         }
     }
     printf("No more files!\n");
