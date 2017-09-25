@@ -18,7 +18,7 @@ int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
 
 #define NUM_C 3
-#define MAXLINE 2048
+#define MAXLINE 512
 #define MAXFILENUM 99
 
 typedef struct
@@ -114,6 +114,7 @@ void fthread(void)                               //wait for registry client
                perror("register error");
            else
                printf("Register Success!");
+           printf("11111111111111111111111\n");
            break;
 
         case 2:
