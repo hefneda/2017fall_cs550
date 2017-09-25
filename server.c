@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-void ddd(void);
+void thread(void);
 
 #define NUM_C 3
 #define MAX 128
@@ -67,13 +67,26 @@ int main(int argc, char** argv)
 
 void thread(void)                               //wait for registry client
 {
-
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
     socklen_t len = sizeof(c_address);
     char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAX];
-    printf("ddd\n");
-    
+
+    printf("Begin Accept! \n");
+    while(1)
+    {  
+        if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
+        {  
+            printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
+            continue;  
+        }  
+
+        printf("Registry Client Connected, Waiting for Receive\n");
+        if(recv(c_fd,(void *)cmdstr,2,0) == 0)
+            break;
+        printf("RCEIVED:%s",cmdstr);
+        break;
+    }
     close(c_fd);
 }
