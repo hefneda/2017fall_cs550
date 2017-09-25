@@ -68,18 +68,20 @@ void c_client()
     {
         printf("Input the function No. : 1.Registry 2. Download File \n");  
         fgets(sendline, 4096, stdin);  
-
+        printf("Imhere1\n");  
         //send cmd to central server and receive back
         if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
         {  
             printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
             exit(0);  
         }  
+        printf("Imhere2\n");  
         //receive confirm msg from central server
         if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
             perror("recv error");  
             exit(1);  
         }  
+        printf("Imhere3\n");  
         cmdno=atoi(buf);
         printf("Received : %d\n ",cmdno);
 

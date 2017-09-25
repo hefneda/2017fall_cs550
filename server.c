@@ -121,7 +121,7 @@ void fthread(void)                               //wait for registry client
                printf("The PID of this process is %d\n",getpid());
            }
            printf("%s,%s\n",files[0]->filename,files[0]->peerid);
-           printf("The PID of this process is %d\n",getpid());
+
            //get_filelist();
            break;
 
