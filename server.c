@@ -92,10 +92,10 @@ void fthread(void)                               //wait for registry client
             if(send(c_fd, "1", 8,0) == -1)    //send confirm msg to client
                 perror("send error");
             printf("Request for Registry Rceived, Begin to Receive Filename and peerid");
-            //recv(c_fd,(void *)filename,MAX,0);
-            //recv(c_fd,(void *)peerid,16,0);
+            recv(c_fd,(void *)filename,MAX,0);
+            recv(c_fd,(void *)peerid,16,0);
 
-            //printf("Registry with filename: \"%s\"; Peerid:%d\n",filename,peerid);
+            printf("Registry with filename: \"%s\"; Peerid:%d\n",filename,peerid);
             //Register the file 
            //registry(peerid,filename);
             break;

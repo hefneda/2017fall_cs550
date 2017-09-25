@@ -16,9 +16,11 @@
 #include <sys/times.h>
 #include <sys/time.h>
 #include <time.h>
-#define MAXLINE 4096  
+#define MAXLINE 2048  
 
 void c_client(void);
+
+char HOST[16];
 
 int main(int argc, char** argv)  
 {  
@@ -27,6 +29,8 @@ int main(int argc, char** argv)
         printf("usage: ./client <ipaddress>\n");  
         exit(0);  
     }  
+
+    strcpy(host,argv[1]);
     c_client();                                                               //Handle this client as a client to receive file
 
 
@@ -37,10 +41,11 @@ void c_client()
 {
     int    c_client_fd;
     struct sockaddr_un    c_clientaddr;  
-    char    recvline[4096], sendline[4096];  
+    char    recvline[MAXLINE, sendline[MAXLINE];  
     int    n,rec_len;  
     char    buf[MAXLINE]; 
     int cmdno=0;
+    char    filename[MAXLINE], peerid[MAXLINE]; 
 
     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
@@ -74,6 +79,17 @@ void c_client()
         exit(1);  
     }  
     cmdno=atoi(buf);
+    
+    //Register
+    if(cmdno == 1)
+    {
+        printf("Input the filename to register ");  
+        fgets(filename, MAXLINE, stdin);  
+        
+        send(sfd,(void *)filename,MAXLINE,0);
+        send(sfd,HOST,16,0);
+    }
+
     printf("Received : %d ",cmdno);
 
 
