@@ -27,7 +27,6 @@ int main(int argc, char** argv)
 {  
    //setup server by using sockets
     int i;
-    int flag=666;
     pthread_t thread[NUM_C *3];
     
     if( (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
@@ -53,14 +52,13 @@ int main(int argc, char** argv)
     }  
     printf("======waiting for client's request======\n");  
     
-    //create threads
+    //create threads to handle multiple tasks
 
-    for(i = 0; i < 1; i++)
-        flag=pthread_create(&thread[i],NULL,(void *)fthread,NULL);
-    for(i = 0; i < 1; i++)
+    for(i = 0; i < NUM_C * 2; i++)
+        pthread_create(&thread[i],NULL,(void *)fthread,NULL);
+    for(i = 0; i < NUM_C * 2; i++)
 		pthread_join(thread[i],NULL);
 
-    printf("%d\n",flag);  
     close(socket_fd);  
     return 0;
 }  
@@ -86,6 +84,13 @@ void fthread(void)                               //wait for registry client
         if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;
         printf("RCEIVED:%s",cmdstr);
+        //Send back  
+        if(!fork()){ 
+            if(send(connect_fd, "Message Received\n", 26,0) == -1)  
+                perror("send error");  
+            close(connect_fd);  
+            exit(0);  
+        }  
         break;
     }
     close(c_fd);

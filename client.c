@@ -58,7 +58,7 @@ void c_client()
     }  
 
 
-    printf("send msg to server: \n");  
+    printf("Input the function No. : 1.Registry 2. Download File \n");  
     fgets(sendline, 4096, stdin);  
     if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
     {  
