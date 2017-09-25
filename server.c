@@ -85,7 +85,7 @@ void fthread(void)                               //wait for registry client
     char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAXLINE];
     char peerid[16];
-    int i;
+    pfile *found_files[MAXFILENUM] = {NULL}; 
 
     printf("Begin Accept! \n");             //accept clients
     if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
@@ -105,7 +105,8 @@ void fthread(void)                               //wait for registry client
         int cmdno= atoi(cmdstr);
         switch(cmdno)
         {
-        case 1:                                                                    //For registry
+//-------------------------------------------------------------For registry
+        case 1:                                                                    
             if(send(c_fd, "1", 8,0) == -1)                              //send confirm msg to client
                 perror("send error");
             printf("Request for Registry Rceived, Begin to Receive Filename and peerid\n");
@@ -122,20 +123,26 @@ void fthread(void)                               //wait for registry client
            //print filelist
           print_registry();
            break;
-
+//-------------------------------------------------------------For searchfile
         case 2:
+            if(send(c_fd, "2", 8,0) == -1)                              //send confirm msg to client
+                perror("send error");
             printf("Request for Download Received\n");
-                
+            recv(c_fd,(void *)filename,MAXLINE,0);              //receive filename
+            
+            if(search_file(filename,found_files)!=0)                   //filename found
+            {
+                printf("We found it");
+            }
+            else                                                                     //filename not found
+            {
+                printf("We can not find it");
+            }
+            
             break;
 
         }
 
-        ////Send back  
-        //if(!fork())
-        //{ 
-        //    if(send(c_fd, "1", 26,0) == -1)  
-        //        perror("send error");    
-        //}  
     }
     close(c_fd);
 }
@@ -188,4 +195,24 @@ void print_registry()
 			printf("File %d : %s | Client : %s\n",i,files[i]->filename,files[i]->peerid);
 		}
 	}
+}
+
+int search_file(char *filename, pfile *found_files )
+{
+    int i;
+    int j=0;
+    int flag=0;
+	for(i = 0; i < MAXFILENUM; i++)
+	{
+		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0)
+        {
+            flag++;
+            found_files[j] = malloc(sizeof(pfile));
+            strcpy(found_files[j]->peerid,files[i]->peerid);
+            found_files[j]->filename = malloc(sizeof(*filename)); 
+            strcpy(found_files[j]->filename,files[i]->filename);
+            j++;
+        }
+	}
+    return flag;
 }
