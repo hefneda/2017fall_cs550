@@ -57,7 +57,10 @@ int main(int argc, char** argv)
 
     for(i = 0; i < NUM_C*2; i++)
         flag=pthread_create(&thread[i],NULL,(void *)ddd,NULL);
-
+    for(i = 0; i < NUM_C*2; i++)
+	{
+		pthread_join(thread[i],NULL);
+	}
     printf("%d\n",flag);  
     close(socket_fd);  
     return 0;
