@@ -139,7 +139,6 @@ void fthread(void)                               //wait for registry client
         //    if(send(c_fd, "1", 26,0) == -1)  
         //        perror("send error");    
         //}  
-        break;
     }
     close(c_fd);
 }
