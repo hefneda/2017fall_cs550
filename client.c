@@ -16,7 +16,7 @@
 #include <sys/times.h>
 #include <sys/time.h>
 #include <time.h>
-#define MAXLINE 2048  
+#define MAXLINE 512  
 
 void c_client(void);
 
@@ -63,35 +63,36 @@ void c_client()
         exit(0);  
     }  
 
-
-    printf("Input the function No. : 1.Registry 2. Download File \n");  
-    fgets(sendline, 4096, stdin);  
-
-    //send cmd to central server and receive back
-    if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
-    {  
-        printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
-        exit(0);  
-    }  
-    //receive confirm msg from central server
-    if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
-        perror("recv error");  
-        exit(1);  
-    }  
-    cmdno=atoi(buf);
-    
-    //Register
-    if(cmdno == 1)
+    while(1)
     {
-        printf("Input the filename to register ");  
-        fgets(filename, MAXLINE, stdin);  
-        
-        send(c_client_fd,(void *)filename,MAXLINE,0);
-        send(c_client_fd,HOST,16,0);
+        printf("Input the function No. : 1.Registry 2. Download File \n");  
+        fgets(sendline, 4096, stdin);  
+
+        //send cmd to central server and receive back
+        if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+        {  
+            printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+            exit(0);  
+        }  
+        //receive confirm msg from central server
+        if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+            perror("recv error");  
+            exit(1);  
+        }  
+        cmdno=atoi(buf);
+        printf("Received : %d ",cmdno);
+        //Register
+        if(cmdno == 1)
+        {
+            printf("Input the filename to register: ");  
+            fgets(filename, MAXLINE, stdin);  
+
+            send(c_client_fd,(void *)filename,MAXLINE,0);
+            send(c_client_fd,HOST,16,0);
+        }
+        if(cmdno == 3)
+            break;
     }
-
-    printf("Received : %d ",cmdno);
-
-
+    
     close(c_client_fd);  
 }
