@@ -85,11 +85,10 @@ void fthread(void)                               //wait for registry client
             break;
         printf("RCEIVED:%s",cmdstr);
         //Send back  
-        if(!fork()){ 
+        if(!fork())
+        { 
             if(send(c_fd, "Message Received\n", 26,0) == -1)  
-                perror("send error");  
-            close(connect_fd);  
-            exit(0);  
+                perror("send error");    
         }  
         break;
     }
