@@ -27,7 +27,7 @@ int main(int argc, char** argv)
         printf("usage: ./client <ipaddress>\n");  
         exit(0);  
     }  
-
+    c_client();                                                               //Handle this client as a client to receive file
 
 
     exit(0);  
