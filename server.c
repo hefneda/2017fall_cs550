@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pthread.h>
-
+#include<process.h>
 typedef struct
 {
     char *filename;
@@ -116,8 +116,12 @@ void fthread(void)                               //wait for registry client
            if(registry(peerid,filename)!=0)
                perror("register error");
            else
+           {
                printf("Register Success!\n");
-           printf("%s,--3%s--2",files[0]->filename,files[0]->peerid);
+               printf("The PID of this process is %d/n",getpid());
+           }
+           printf("%s,%s\n",files[0]->filename,files[0]->peerid);
+           printf("The PID of this process is %d/n",getpid());
            //get_filelist();
            break;
 
