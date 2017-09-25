@@ -179,6 +179,7 @@ int check_file(const char *peerid, const char *filename)
 
 void get_filelist()
 {
+    printf("Imin\n");
     int i;
     if(files[0] =NULL)
     {
