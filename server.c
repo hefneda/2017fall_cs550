@@ -114,16 +114,14 @@ void fthread(void)                               //wait for registry client
             printf("Registry with filename: %s; Peerid:%s \n",filename,peerid);
 
             //Register the file 
-           if(registry(peerid,filename)!=0)
-               perror("register error");
+           registry(peerid,filename)
            else
            {
                printf("Register Success!\n");
                printf("The PID of this process is %d\n",getpid());
            }
-           printf("%s,%s\n",files[0]->filename,files[0]->peerid);
-
-           //get_filelist();
+          
+           get_filelist();
            break;
 
         case 2:
@@ -189,16 +187,18 @@ void get_filelist()
         printf("Empty Filelist!\n");
         return;
     }
-    
+
+    printf("-----------------------\n");  
     for(i = 0; i < MAXFILENUM; i++)
 	{
         if(files[i] != NULL)
         {
-		    printf("Imin\n");  
-            printf("%s,%s",files[i]->filename,files[i]->peerid);
-                  
+            printf("%s,%s",files[i]->filename,files[i]->peerid);       
         }
         else
+        {
+            printf("-----------------------\n");  
             break;
+        }
 	}
 }
