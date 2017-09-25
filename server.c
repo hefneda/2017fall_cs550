@@ -24,7 +24,7 @@ typedef struct
 void fthread(void);
 int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
-void get_filelist(void);
+void print_registry(void);
 
 #define NUM_C 3
 #define MAXLINE 512
@@ -118,7 +118,9 @@ void fthread(void)                               //wait for registry client
            registry(peerid,filename);
 
            printf("Register Success!\n");
-           get_filelist();
+
+           //print filelist
+          print_registry();
            break;
 
         case 2:
@@ -176,27 +178,14 @@ int check_file(const char *peerid, const char *filename)
     return 0;
 }
 
-void get_filelist()
+void print_registry()
 {
-    int i=0;
-    if(files[0] =NULL)
-    {
-        printf("Empty Filelist!\n");
-        return;
-    }
-    printf("%d\n",i);
-    printf("get:%s,%s\n",files[i]->filename,files[i]->peerid); 
-    printf("-----------------------\n");  
-    for(i = 0; i < MAXFILENUM; i++)
+	int i;
+	for(i = 0; i < MAXFILENUM; i++)
 	{
-        if(files[i] != NULL)
-        {
-            printf("%s,%s\n",files[i]->filename,files[i]->peerid);       
-        }
-        else
-        {
-            printf("-----------------------\n");  
-            break;
-        }
+		if(files[i] != NULL)
+		{
+			printf("File %d : %s | Client : %s\n",i,files[i]->filename,files[i]->peerid);
+		}
 	}
 }
