@@ -19,13 +19,14 @@ void *ddd(void *i);
 
 
 int socket_fd;
+
 struct sockaddr_un     servaddr; 
 
 int main(int argc, char** argv)  
 {  
    //setup server by using sockets
     int i;
-
+    int flag=666;
     if( (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
         printf("create socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
@@ -53,14 +54,17 @@ int main(int argc, char** argv)
     pthread_t thread[NUM_C *3];
 
     for(i = 0; i < NUM_C*2; i++)
-        pthread_create(&thread[i],NULL,ddd,NULL);
+        flag=pthread_create(&thread[i],NULL,ddd,NULL);
 
-    printf("===========\n");  
+    printf("%d\n",flag);  
     close(socket_fd);  
+    return 0;
 }  
 
 void *ddd(void *i)
 {
+
     printf("ddd");
+    pthread_exit(0);
     return NULL;
 }
