@@ -55,7 +55,6 @@ int main(int argc, char** argv)
     
     //create threads
 
-
     for(i = 0; i < 1; i++)
         flag=pthread_create(&thread[i],NULL,(void *)thread,NULL);
     for(i = 0; i < 1; i++)
@@ -68,12 +67,13 @@ int main(int argc, char** argv)
 
 void thread(void)                               //wait for registry client
 {
+     printf("ddd\n");
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
     socklen_t len = sizeof(c_address);
     char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAX];
-    printf("ddd\n");
+
     while(1)
     {  
         if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
