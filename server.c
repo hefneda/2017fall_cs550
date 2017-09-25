@@ -188,8 +188,13 @@ void get_filelist()
     
     for(i = 0; i < MAXFILENUM; i++)
 	{
-        printf("Imin\n");
         if(files[i] != NULL)
-		    printf("%s,%s",files[i]->filename,files[i]->peerid);
+        {
+		    printf("Imin\n");  
+            printf("%s,%s",files[i]->filename,files[i]->peerid);
+                  
+        }
+        else
+            break;
 	}
 }
