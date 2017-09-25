@@ -86,8 +86,8 @@ void c_client()
         printf("Input the filename to register ");  
         fgets(filename, MAXLINE, stdin);  
         
-        send(sfd,(void *)filename,MAXLINE,0);
-        send(sfd,HOST,16,0);
+        send(c_client_fd,(void *)filename,MAXLINE,0);
+        send(c_client_fd,HOST,16,0);
     }
 
     printf("Received : %d ",cmdno);
