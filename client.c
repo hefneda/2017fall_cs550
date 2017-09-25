@@ -39,7 +39,8 @@ void c_client()
     struct sockaddr_un    c_clientaddr;  
     char    recvline[4096], sendline[4096];  
     int    n,rec_len;  
-    char    buf[MAXLINE];  
+    char    buf[MAXLINE]; 
+    int cmdno=0;
 
     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
@@ -60,16 +61,21 @@ void c_client()
 
     printf("Input the function No. : 1.Registry 2. Download File \n");  
     fgets(sendline, 4096, stdin);  
+
+    //send cmd to central server and receive back
     if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
     {  
         printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
         exit(0);  
     }  
+    //receive confirm msg from central server
     if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
         perror("recv error");  
         exit(1);  
     }  
-    buf[rec_len]  = '\0';  
-    printf("Received : %s ",buf);  
+    cmdno=atoi(buf);
+    printf("Received : %d ",cmdno);
+
+
     close(c_client_fd);  
 }
