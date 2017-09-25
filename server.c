@@ -114,12 +114,11 @@ void fthread(void)                               //wait for registry client
             printf("Registry with filename: %s; Peerid:%s \n",filename,peerid);
 
             //Register the file 
-           registry(peerid,filename)
-           else
-           {
-               printf("Register Success!\n");
-               printf("The PID of this process is %d\n",getpid());
-           }
+           registry(peerid,filename);
+
+           printf("Register Success!\n");
+           printf("The PID of this process is %d\n",getpid());
+
           
            get_filelist();
            break;
