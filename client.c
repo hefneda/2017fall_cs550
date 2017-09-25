@@ -80,7 +80,9 @@ void c_client()
             exit(1);  
         }  
         cmdno=atoi(buf);
-        printf("Received : %d ",cmdno);
+        printf("Received : %d\n ",cmdno);
+
+
         //Register
         if(cmdno == 1)
         {

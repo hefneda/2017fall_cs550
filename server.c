@@ -116,7 +116,7 @@ void fthread(void)                               //wait for registry client
            if(registry(peerid,filename)!=0)
                perror("register error");
            else
-               printf("Register Success!");
+               printf("Register Success!\n");
 
            get_filelist();
            break;
