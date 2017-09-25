@@ -30,7 +30,7 @@ int main(int argc, char** argv)
         exit(0);  
     }  
 
-    strcpy(host,argv[1]);
+    strcpy(HOST,argv[1]);
     c_client();                                                               //Handle this client as a client to receive file
 
 
@@ -41,7 +41,7 @@ void c_client()
 {
     int    c_client_fd;
     struct sockaddr_un    c_clientaddr;  
-    char    recvline[MAXLINE, sendline[MAXLINE];  
+    char    recvline[MAXLINE], sendline[MAXLINE];  
     int    n,rec_len;  
     char    buf[MAXLINE]; 
     int cmdno=0;

@@ -16,7 +16,7 @@
 void fthread(void);
 
 #define NUM_C 3
-#define MAX 128
+#define MAXLINE 2048
 
 
 int socket_fd;
@@ -70,7 +70,8 @@ void fthread(void)                               //wait for registry client
     int cmdno=0;
     socklen_t len = sizeof(c_address);
     char cmdstr[2];                               //1:registry 2:Search File
-    char filename[MAX];
+    char filename[MAXLINE];
+    char peerid[16];
 
     printf("Begin Accept! \n");
     while(1)
@@ -92,7 +93,7 @@ void fthread(void)                               //wait for registry client
             if(send(c_fd, "1", 8,0) == -1)    //send confirm msg to client
                 perror("send error");
             printf("Request for Registry Rceived, Begin to Receive Filename and peerid");
-            recv(c_fd,(void *)filename,MAX,0);
+            recv(c_fd,(void *)filename,MAXLINE,0);
             recv(c_fd,(void *)peerid,16,0);
 
             printf("Registry with filename: \"%s\"; Peerid:%d\n",filename,peerid);
