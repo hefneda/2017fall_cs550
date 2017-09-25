@@ -221,7 +221,7 @@ void sendidlist(int c_fd,char* filename)
     int i;
     int count = 0;
     char str[16];
-    for(i = 0; i < MAXFILES; i++)
+    for(i = 0; i < MAXFILENUM; i++)
 	{
 		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0)
 		{

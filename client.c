@@ -107,9 +107,9 @@ void c_client()
             if(lookup(c_client_fd, filename)==1)           //found
             {
                 printf("Ready to receive list\n");
-                recv(sfd,buf,MAXLINE,0);                     //receive num of clients with files
-                count==atoi(buf);
-                printf("%d files have/has this file\n");
+                recv(c_client_fd,buf,MAXLINE,0);                     //receive num of clients with files
+                count=atoi(buf);
+                printf("%d files have/has this file\n",count);
             }
             else
             {
