@@ -198,7 +198,7 @@ void print_registry()
 	}
 }
 
-int search_file(char *filename, pfile *found_files )
+int search_file(char *filename )
 {
    int i;
 	for(i = 0; i < MAXFILENUM; i++)
