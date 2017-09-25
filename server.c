@@ -85,6 +85,7 @@ void fthread(void)                               //wait for registry client
     char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAXLINE];
     char peerid[16];
+    int i;
 
     printf("Begin Accept! \n");             //accept clients
     if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
@@ -104,8 +105,8 @@ void fthread(void)                               //wait for registry client
         int cmdno= atoi(cmdstr);
         switch(cmdno)
         {
-        case 1:                                          //For registry
-            if(send(c_fd, "1", 8,0) == -1)    //send confirm msg to client
+        case 1:                                                                    //For registry
+            if(send(c_fd, "1", 8,0) == -1)                              //send confirm msg to client
                 perror("send error");
             printf("Request for Registry Rceived, Begin to Receive Filename and peerid\n");
             recv(c_fd,(void *)filename,MAXLINE,0);
@@ -117,10 +118,20 @@ void fthread(void)                               //wait for registry client
            registry(peerid,filename);
 
            printf("Register Success!\n");
-           printf("The PID of this process is %d\n",getpid());
-
-          
-           get_filelist();
+           printf("-----------------------\n");  
+           for(i = 0; i < MAXFILENUM; i++)
+           {
+               if(files[i] != NULL)
+               {
+                   printf("%s,%s\n",files[i]->filename,files[i]->peerid);       
+               }
+               else
+               {
+                   printf("-----------------------\n");  
+                   break;
+               }
+           }
+           //get_filelist();
            break;
 
         case 2:
@@ -180,7 +191,7 @@ int check_file(const char *peerid, const char *filename)
 
 void get_filelist()
 {
-    int i=0;
+    int i=vi;
     if(files[0] =NULL)
     {
         printf("Empty Filelist!\n");
