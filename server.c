@@ -16,6 +16,7 @@
 void fthread(void);
 int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
+void get_filelist(pfile *file);
 
 #define NUM_C 3
 #define MAXLINE 512
@@ -114,7 +115,8 @@ void fthread(void)                               //wait for registry client
                perror("register error");
            else
                printf("Register Success!");
-           printf("11111111111111111111111\n");
+
+           get_filelist(*file);
            break;
 
         case 2:
@@ -169,6 +171,21 @@ int check_file(const char *peerid, const char *filename)
 	{
 		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0 && strcmp(files[i]->peerid,peerid) == 0)
 			return 1;
+	}
+    return 0;
+}
+
+void get_filelist(pfile *file)
+{
+    int i;
+    if(*file =NULL)
+    {
+        printf("Empty Filelist!\n");
+        return -1;
+    }
+    for(i = 0; i < MAXFILENUM; i++)
+	{
+		printf("%s,%s",files[i]->filename,files[i]->peerid);
 	}
     return 0;
 }
