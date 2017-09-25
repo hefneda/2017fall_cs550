@@ -180,10 +180,9 @@ int check_file(const char *peerid, const char *filename)
 void get_filelist()
 {
     int i;
-    if(*files[] =NULL)
+    if(*files =NULL)
     {
         printf("Empty Filelist!\n");
-        return -1;
     }
     for(i = 0; i < MAXFILENUM; i++)
 	{
