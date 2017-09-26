@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
     exit(0);  
 }  
-void creat_th(void)
+void create_th(void)
 {
     //Create the n threads
 	pthread_t threads[NUM_C+1];                           //num of clients and indexing server
