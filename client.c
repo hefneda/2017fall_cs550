@@ -72,7 +72,7 @@ void create_th(void)
  //           pthread_create(&threads[i],NULL,(void *)th_func_s,NULL);//default threads as to send file
 
 	//}
-    for(i = 0; i < NUM_C;; i++)
+    for(i = 0; i < NUM_C; i++)
 	{
 		num[i] = i;
 		//Create threads, and send their index in num using p
