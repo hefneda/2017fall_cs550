@@ -253,21 +253,12 @@ void c_client()
   //----------------------------------------------------Download
         if(cmdno == 2)
         {
-            if(lookup(c_client_fd, filename)==1)           //found
-            {
-                //printf("Ready to receive list\n");
-                //    //receive num of clients with files
-                //printf("Receiving numbers of lists\n");
-                //recv(c_client_fd, buf, MAXLINE,0);
-                //printf("------%s\n",buf);
-                //count=atoi(buf);
-                //printf("%d files have/has this file\n",count);
+                printf("Input the filename to download: ");  
+                fgets(filename, MAXLINE, stdin);  
+                if((end=strchr(filename,'\n')) != NULL)
+                    *end = '\0';
+                lookup(c_client_fd,filename);   //find file and download
 
-            }
-            else
-            {
-                printf("In ");  
-            }
         }
        
         if(cmdno == 3)
@@ -278,19 +269,15 @@ void c_client()
 }
 int lookup(int c_client_fd, char *filename)
 {
-    int    n,rec_len;  
+    int    n,rec_len,peernum;  
     char    buf[MAXLINE]; 
     char *end;
     char    str[MAXLINE];
     char peerlist[NUM_C][16];
+    char peerid[16];
     int count=0;
     int i=0;
 
-    printf("Input the filename to download: ");  
-    fgets(filename, MAXLINE, stdin);  
-
-    if((end=strchr(filename,'\n')) != NULL)
-        *end = '\0';
     //send filename to download
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
@@ -300,18 +287,28 @@ int lookup(int c_client_fd, char *filename)
     {
         printf("File found by server\n");  
 
-        recv(c_client_fd, str, MAXLINE,0);
+        recv(c_client_fd, str, MAXLINE,0);// receive how many peers have file
         count = atoi(str);
         printf("%d clients have file, ready to receive peerid list\n",count);
-        //receive peerid list__________---------------------------------------------------------------
+        //receive peerid list
        for(i = 0; i < count; i++)
 		{
-            printf("client%d \n",i);
 			recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
 			printf("%d: %s\n",i,peerlist[i]);
 		}
 
-        return 1;
+        // get which peer to download
+       printf("Choose which peer to download:");
+       fgets(str,MAXLINE,stdin);
+       peernum = atoi(str);
+       if(peernum < 0 || peernum > count)
+           printf("Invalid input, try again\n");
+       strcpy(peerid,peerlist[peernum]);
+       printf("you select peer: %s\n",peerid);
+
+       //begin download
+       download(filename,peerid);
+       return 1;
     }
     else
     {
