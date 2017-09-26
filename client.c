@@ -18,10 +18,23 @@
 #include <time.h>
 #define MAXLINE 512  
 
+void th_func_c(void);
+void th_func_s(void);
 void c_client(void);
 int lookup(int c_client_fd, char *filename);
+void build_serversock(void);                                
+void create_th(void);  
+void c_server(void);
+
+
+#define NUM_C 3
+#define MAXLINE 512
+#define MAXFILENUM 99
 
 char HOST[16];
+struct sockaddr_un csaddr;
+int cs_fd;
+
 
 int main(int argc, char** argv)  
 {  
@@ -32,11 +45,80 @@ int main(int argc, char** argv)
     }  
 
     strcpy(HOST,argv[1]);
-    c_client();                                                               //Handle this client as a client to receive file
+    build_serversock();                                                //use 1 thread to build a client as a server
+    create_th();
+    //c_client();                                                               //Handle this client as a client to receive file
 
 
     exit(0);  
 }  
+void creat_th()
+{
+    //Create the n threads
+	pthread_t threads[NUM_C+1];                           //num of clients and indexing server
+	int i;
+
+	for(i = 0; i < NUM_C+1; i++)
+	{
+		//Create threads, and send their index in num using p
+        if(i==0)
+		    pthread_create(&threads[i],NULL,(void *)th_func_c,NULL);//just 1 thread to receive file or registry
+        else
+            pthread_create(&threads[i],NULL,(void *)th_func_s,NULL);//default threads as to send file
+
+	}
+	/* Terminate all threads */
+	for(i = 0; i < NUM_C+1; i++)
+	{
+		pthread_join(threads[i],NULL);
+	}
+}
+void th_func_c(void)
+{
+			//run this client as a client to receive and lookup file and registry
+			c_client();
+
+}
+void th_func_s(void)
+{
+
+			//run this client as a server to send files
+			//c_server();
+
+}
+//------run the client as a server to send files to other clients
+void build_serversock(void)
+{
+    //Create client server
+	cs_fd = socket(AF_UNIX,SOCK_STREAM,0);
+	if(cs_fd < 0)
+	{
+		perror("Socket");
+		exit(0);
+	}
+
+	//Set socket structure vars
+	memset(&csaddr,0,sizeof(csaddr));
+	csaddr.sun_family = AF_UNIX;
+	strcpy(csaddr.sun_path,hostname);
+	unlink(csaddr.sun_path);
+
+	int err;
+	err = bind(cs_fd,(struct sockaddr*)&csaddr,sizeof(csaddr));	
+	if(err < 0)
+	{
+		perror("Bind");
+		exit(0);
+	}
+	//Socket over localhost
+	//Listen for connections, maximum of 1 client (1 per thread)
+	err = listen(cs_fd,NUMCLIENTS-1);
+	if(err < 0)
+	{
+		perror("Listen");
+		exit(0);
+	}
+}
 
 void c_client()
 {
