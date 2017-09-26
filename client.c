@@ -303,7 +303,7 @@ int lookup(int c_client_fd, char *filename)
             perror("recv error");  
             exit(1);  
             }
-        printf("ASC:%d\n",str);  
+        printf("ASC:%d\n",atoi(str));  
         printf("------%s\n",str);
         return 1;
     }
