@@ -216,7 +216,7 @@ int search(char *filename )
 
 }
 
-void sendidlist(int c_fd,char* filename)
+void sendidlist(int c_fd, char* filename)
 {
     int i;
     int count = 0;
@@ -231,7 +231,7 @@ void sendidlist(int c_fd,char* filename)
     printf("Found %d clients with file\n",count);
     //transmit int to string to send
     //itoa(count,str,10);
-    snprintf(str,16,"%d",count);
+    snprintf(str,sizeof(str),"%d",count);
     printf("------%s\n",str);
     send(c_fd, str, 16,0);
     printf("numbers of peers sent/n");
