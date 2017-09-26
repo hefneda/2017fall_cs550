@@ -239,10 +239,17 @@ void sendidlist(int c_fd, char* filename)
     snprintf(str,sizeof(str),"%d",count);
     printf("Found %s clients with file\n",str);
 
-    printf("whererere\n",c_fd);
     send(c_fd, str, MAXLINE,0);
-    printf("whererere1\n",c_fd);
+
     printf("numbers of peers sent\n");
-    
+    for(i = 0; i < MAXFILENUM; i++)
+	{
+		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0)		
+		{
+			//Send clients who has file to request client
+			printf("Sending client for list: %s\n",files[i]->peerid);
+			send(cfd,(files[i]->peerid),16,0);
+		}
+	}
 }
 

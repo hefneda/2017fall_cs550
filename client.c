@@ -282,6 +282,9 @@ int lookup(int c_client_fd, char *filename)
     char    buf[MAXLINE]; 
     char *end;
     char    str[MAXLINE];
+    char peerlist[NUM_C][HOST];
+    int count=0;
+    int i=0
 
     printf("Input the filename to download: ");  
     fgets(filename, MAXLINE, stdin);  
@@ -298,8 +301,16 @@ int lookup(int c_client_fd, char *filename)
         printf("File found by server\n");  
 
         recv(c_client_fd, str, MAXLINE,0);
+        count = atoi(str);
+        printf("%d clients have file, ready to receive peerid list\n",count);
+        //receive peerid list__________---------------------------------------------------------------
+       for(i = 0; i < count; i++)
+		{
+            printf("client%d \n",i);
+			recv(sfd,(void *)&peerlist[i][0],16,0);	
+			printf("%d: %s\n",i,peerlist[i]);
+		}
 
-        printf("%s clients have file\n",str);
         return 1;
     }
     else
