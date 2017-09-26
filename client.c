@@ -27,11 +27,12 @@ int lookup(int c_client_fd, char *filename);
 void build_serversock(void);                                
 void create_th(void);  
 void c_server(void);
-
+void download(char *filename,char *peerid);
 
 #define NUM_C 3
 #define MAXLINE 512
 #define MAXFILENUM 99
+#define MAXFILESIZE 512
 #define BUFF_SIZE (10*1024)
 
 char HOST[16];
@@ -135,7 +136,7 @@ void c_server(void)
     //Loop
     while(1)
     {
-        printf("Client server wait for Client client connect\n");
+        printf("Client as file server wait for Client as download client connect\n");
         cc_fd = accept(cs_fd,(struct sockaddr*)&ccaddr,&len);    //cc_fd is the fd of receive client
         if(cc_fd < 0)
         {
@@ -258,7 +259,6 @@ void c_client()
                 if((end=strchr(filename,'\n')) != NULL)
                     *end = '\0';
                 lookup(c_client_fd,filename);   //find file and download
-
         }
        
         if(cmdno == 3)
@@ -316,4 +316,57 @@ int lookup(int c_client_fd, char *filename)
         return 0;
     }
      return 0;
+}
+
+void download(char *filename,char *peerid)
+{
+    struct sockaddr_un cdaddr;
+	int cd_fd;                                    //create a client socket to download from another socket
+    char filesize[MAXFILESIZECHARS];
+    int size;
+    char buf[BUFFSIZE];
+
+    cd_fd= socket(AF_UNIX,SOCK_STREAM,0);
+	if(cd_fd < 0)
+		perror("Socket");
+
+	int err;
+	//Set socket structure variables
+	memset(& cdaddr,0,sizeof( cdaddr));
+	 cdaddr.sun_family = AF_UNIX;
+	strcpy( cdaddr.sun_path, peerid);
+	//Connect to the other client
+	err = connect(cd_fd,(const struct sockaddr *)& cdaddr,sizeof( cdaddr));
+	if(err < 0)
+		perror("Connect");
+
+    //Send  filename
+	send(sfd,(void *)filename,MAXLINE,0);
+	//Receive the filesize
+	recv(sfd,(void *)filesize,MAXFILESIZE,0);
+
+    size = atoi(filesize);
+    FILE *file = fopen(filename,"w");
+    int recvf = 0;
+	int totalb = atoi(filesize);
+    while(((recvf = recv(cd_fd,buf,BUFFSIZE,0)) > 0) && (size > 0))
+	{
+		fwrite(buf,sizeof(char),recvf,file);
+		size -= recvf;
+		//write if file less that 1K
+		if(totalb < 1000)
+		{
+			fwrite(buf,sizeof(char),recvf,stdout);
+		}
+	}
+    printf("File received\n");
+	//Display file if less than 1KB
+	fclose(file);
+	file = fopen(filename,"r");
+	if(atoi(filesize) < 1000)
+	{
+	}
+	fclose(file);
+	//unlink(sa.sun_path);
+	close(sfd);
 }
