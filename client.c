@@ -186,7 +186,7 @@ void c_server(void)
     }
 }
 
-//---------------------run this client as a client to lookup file and registry
+//---------------------run this client as a client to download file, lookup file and registry
 void c_client()
 {
     int    c_client_fd;
