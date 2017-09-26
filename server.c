@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     unlink(servaddr.sun_path);
     //------------------------------avoid error: address already in use
     int on=1;  
-    if((setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)))<0)  
+    if((setsockopt(sock_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)))<0)  
     {  
         perror("setsockopt failed");  
         exit(EXIT_FAILURE);  
