@@ -100,7 +100,7 @@ void build_serversock(void)
 	//Set socket structure vars
 	memset(&csaddr,0,sizeof(csaddr));
 	csaddr.sun_family = AF_UNIX;
-	strcpy(csaddr.sun_path,hostname);
+	//strcpy(csaddr.sun_path,HOST);
 	unlink(csaddr.sun_path);
 
 	int err;
@@ -112,7 +112,7 @@ void build_serversock(void)
 	}
 	//Socket over localhost
 	//Listen for connections, maximum of 1 client (1 per thread)
-	err = listen(cs_fd,NUMCLIENTS-1);
+	err = listen(cs_fd,NUM_C-1);
 	if(err < 0)
 	{
 		perror("Listen");
