@@ -148,7 +148,6 @@ void fthread(void)                               //wait for registry client
             }
             
             break;
-
         }
 
     }
@@ -234,6 +233,7 @@ void sendidlist(int c_fd,char* filename)
     //itoa(count,str,10);
     snprintf(str,16,"%d",count);
     printf("------%d\n",c_fd);
-    send(c_fd, "1", 2,0);
+    send(c_fd, str, 2,0);
+    printf("numbers of peers sent/n");
     
 }
