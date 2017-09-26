@@ -225,7 +225,8 @@ void sendidlist(int c_fd, char* filename)
     int i;
     int count = 0;
     char str[2];
-    
+      if(send(c_fd, "8", MAXLINE,0) == -1)                            
+                    perror("send error");
     for(i = 0; i < MAXFILENUM; i++)
 	{
 		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0)
@@ -233,8 +234,7 @@ void sendidlist(int c_fd, char* filename)
 			count++;
 		}
 	}
-     if(send(c_fd, file[0]->filename, MAXLINE,0) == -1)                            
-                    perror("send error");
+   
     printf("Found %d clients with file\n",count);
     //transmit int to string to send
     //itoa(count,str,10);

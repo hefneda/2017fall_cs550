@@ -292,17 +292,18 @@ int lookup(int c_client_fd, char *filename)
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
     recv(c_client_fd, buf, MAXLINE,0);
+     if((rec_len = recv(c_client_fd,str MAXLINE,0)) == -1) {  
+            perror("recv error");  
+            exit(1);  
     if(atoi(buf)==1)
     {
         printf("File found by server\n");  
         //recv(c_client_fd, str,16,0);
         //send(c_client_fd,"tty",16,0);
 
-        if((rec_len = recv(c_client_fd,filename, MAXLINE,0)) == -1) {  
-            perror("recv error");  
-            exit(1);  
+       
         }  
-        printf("------%s\n",filename);
+        printf("------%s\n",str);
         return 1;
     }
     else
