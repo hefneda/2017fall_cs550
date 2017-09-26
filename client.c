@@ -132,6 +132,7 @@ int lookup(int c_client_fd, char *filename)
     int    n,rec_len;  
     char    buf[MAXLINE]; 
     char *end;
+    char str[16];
 
     printf("Input the filename to download: ");  
     fgets(filename, MAXLINE, stdin);  
@@ -145,8 +146,8 @@ int lookup(int c_client_fd, char *filename)
     if(atoi(buf)==1)
     {
         printf("File found by server\n");  
-        recv(c_client_fd, buf, 4,0);
-        printf("------%s\n",buf);
+        recv(c_client_fd, str,16,0);
+        printf("------%s\n",str);
         return 1;
     }
     else
