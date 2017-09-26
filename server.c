@@ -238,6 +238,7 @@ void sendidlist(int c_fd, char* filename)
     //transmit int to string to send
     //itoa(count,str,10);
     snprintf(str,sizeof(str),"%d",count);
+     printf("ASC:%d\n",str);  
     if(send(c_fd, "8", MAXLINE,0) == -1)                            
         perror("send error");
     printf("%s clients\n",str);
