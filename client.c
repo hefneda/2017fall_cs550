@@ -307,7 +307,7 @@ int lookup(int c_client_fd, char *filename)
        printf("you select peer: %s, begin download\n",peerid);
 
        //begin download
-       //download(filename,peerid);
+       download(filename,peerid);
        return 1;
     }
     else
