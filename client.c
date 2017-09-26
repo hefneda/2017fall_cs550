@@ -291,10 +291,14 @@ int lookup(int c_client_fd, char *filename)
     //send filename to download
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
+
+
     recv(c_client_fd, buf, MAXLINE,0);
-     printf("Can or cannot",buf);
-     recv(c_client_fd, buf, MAXLINE,0);//------------------------------------------------------------------
-     printf("ttttttt------%s\n",buf);
+     printf("Can or cannot\n");
+
+
+     //recv(c_client_fd, buf, MAXLINE,0);//------------------------------------------------------------------
+     //printf("ttttttt------%s\n",buf);
     //if(atoi(buf)==1)
     //{
     //    printf("File found by server\n");  

@@ -143,7 +143,7 @@ void fthread(void)                               //wait for registry client
                 send(c_fd, "1", 8,0);             
                 //send back the peerids with this filename
                 printf("------%d\n",c_fd);
-                send(c_fd, "2", 8,0); //-----------------------------------------------------------------------
+                //send(c_fd, "2", 8,0); //-----------------------------------------------------------------------
                 //sendidlist(c_fd,filename);
 
             }
