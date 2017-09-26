@@ -282,9 +282,9 @@ int lookup(int c_client_fd, char *filename)
     char    buf[MAXLINE]; 
     char *end;
     char    str[MAXLINE];
-    char peerlist[NUM_C][HOST];
+    char peerlist[NUM_C][16];
     int count=0;
-    int i=0
+    int i=0;
 
     printf("Input the filename to download: ");  
     fgets(filename, MAXLINE, stdin);  
@@ -307,7 +307,7 @@ int lookup(int c_client_fd, char *filename)
        for(i = 0; i < count; i++)
 		{
             printf("client%d \n",i);
-			recv(sfd,(void *)&peerlist[i][0],16,0);	
+			recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
 			printf("%d: %s\n",i,peerlist[i]);
 		}
 

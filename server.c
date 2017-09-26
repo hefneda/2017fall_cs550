@@ -248,7 +248,7 @@ void sendidlist(int c_fd, char* filename)
 		{
 			//Send clients who has file to request client
 			printf("Sending client for list: %s\n",files[i]->peerid);
-			send(cfd,(files[i]->peerid),16,0);
+			send(c_fd,(files[i]->peerid),16,0);
 		}
 	}
 }
