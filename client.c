@@ -310,9 +310,9 @@ int lookup(int c_client_fd, char *filename)
     //    printf("cfd2------%d\n",c_client_fd);
     //    return 1;
     //}
-    else
+   /* else
     {
         printf("Fail to find file\n");  
         return 0;
-    }
+    }*/
 }
