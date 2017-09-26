@@ -19,8 +19,7 @@
 #include <time.h>
 
 
-void th_func_c(void);
-void th_func_s(void);
+void th_func(void *i);
 void c_client(void);
 void c_server(void);
 int lookup(int c_client_fd, char *filename);
@@ -61,15 +60,24 @@ void create_th(void)
     //Create the n threads
 	pthread_t threads[NUM_C+1];                           //num of clients and indexing server
 	int i;
+    int num[NUM_C] = {0};
+	int *p = num;
 
-	for(i = 0; i < NUM_C; i++)
+	//for(i = 0; i < NUM_C; i++)
+	//{
+	//	//Create threads, and send their index in num using p
+ //       if(i==0)
+	//	    pthread_create(&threads[i],NULL,(void *)th_func_c,NULL);//just 1 thread to receive file or registry
+ //       else
+ //           pthread_create(&threads[i],NULL,(void *)th_func_s,NULL);//default threads as to send file
+
+	//}
+    for(i = 0; i < NUM_C;; i++)
 	{
+		num[i] = i;
 		//Create threads, and send their index in num using p
-        if(i==0)
-		    //pthread_create(&threads[i],NULL,(void *)th_func_c,NULL);//just 1 thread to receive file or registry
-        else
-            pthread_create(&threads[i],NULL,(void *)th_func_s,NULL);//default threads as to send file
-
+		pthread_create(&threads[i],NULL,th_func,p);
+		p++;
 	}
 	/* Terminate all threads */
 	for(i = 0; i < NUM_C+1; i++)
@@ -77,19 +85,25 @@ void create_th(void)
 		pthread_join(threads[i],NULL);
 	}
 }
-void th_func_c(void)
+void th_func(void *i)
 {
-			//run this client as a client to receive and lookup file and registry
-			c_client();
+    //run this client as a client to receive and lookup file and registry
+    int num = *((int *)i);
+    //printf("Thread #: %d\n",num);
+    switch(num)
+    {
+    case 0:
+        //just 1 thread to receive file or registry
+        c_client();
+        break;
+    default:
+        //default threads as to send file
+        c_server();
+        break;
+    }
 
 }
-void th_func_s(void)
-{
 
-			//run this client as a server to send files
-			c_server();
-
-}
 //------run the client as a server to send files to other clients
 void build_serversock(void)
 {
@@ -131,7 +145,7 @@ void c_server(void)
     int file_d;
     char filename[MAXLINE];
     struct stat filestat;
-
+     printf("------------This is a server thread--------\n"); 
     socklen_t len = sizeof(ccaddr);
     //Loop
     while(1)
@@ -199,7 +213,7 @@ void c_client()
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
     int count=0;
-
+    printf("------------This is a client thread--------\n"); 
     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
         exit(0);  
