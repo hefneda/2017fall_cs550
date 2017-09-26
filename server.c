@@ -234,6 +234,8 @@ void sendidlist(int c_fd,char* filename)
     snprintf(str,16,"%d",count);
     printf("------%d\n",c_fd);
     send(c_fd, str, 2,0);
-    printf("numbers of peers sent/n");
+    printf("numbers of peers sent\n");
+    send(c_fd, str, 2,0);
+    printf("numbers of peers sent2222\n");
     
 }
