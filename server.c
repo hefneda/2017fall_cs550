@@ -240,7 +240,7 @@ void sendidlist(int c_fd, char* filename)
     snprintf(str,sizeof(str),"%d",count);
 
     printf("%s clients\n",str);
-     if(send(c_fd, (void *)'9', MAXLINE,0) == -1)                            
+     if(send(c_fd, (void *)"8", MAXLINE,0) == -1)                            
                     perror("send error");
     //recv(c_fd, str, 16,0);
     printf("numbers of peers sent/n");
