@@ -240,8 +240,8 @@ void sendidlist(int c_fd, char* filename)
     snprintf(str,sizeof(str),"%d",count);
      printf("ASC:%d\n",str);  
      printf("sfd1------%d\n",c_fd);
-    if(send(c_fd, "2", MAXLINE,0) == -1)                            
-        perror("send error");
+   /* if(send(c_fd, "2", MAXLINE,0) == -1)                            
+        perror("send error");*/
     printf("%s clients\n",str);
      printf("sfd2------%d\n",c_fd);
     //recv(c_fd, str, 16,0);
