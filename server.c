@@ -143,7 +143,6 @@ void fthread(void)                               //wait for registry client
                 send(c_fd, "1", 8,0);        
                 usleep(1000);
                 //send back the peerids with this filename
-                //send(c_fd, "2", 8,0); //-----------------------------------------------------------------------
                 sendidlist(c_fd,filename);
 
             }
@@ -235,14 +234,15 @@ void sendidlist(int c_fd, char* filename)
 			count++;
 		}
 	}
-   
-    printf("Found %d clients with file\n",count);
     //transmit int to string to send
 
     snprintf(str,sizeof(str),"%d",count);
-   //  printf("sfd1------%d\n",c_fd);
+    printf("Found %s clients with file\n",str);
+
+    printf("whererere\n",c_fd);
     send(c_fd, str, MAXLINE,0);
-    printf("numbers of peers sent/n");
+    printf("whererere1\n",c_fd);
+    printf("numbers of peers sent\n");
     
 }
 
