@@ -144,6 +144,7 @@ void fthread(void)                               //wait for registry client
                 //send back the peerids with this filename
                 printf("------%d\n",c_fd);
                 sendidlist(c_fd,filename);
+                send(c_fd, "2", MAXLINE,0);
             }
             else                                                                     //filename not found
             {
@@ -239,9 +240,8 @@ void sendidlist(int c_fd, char* filename)
     //itoa(count,str,10);
     snprintf(str,sizeof(str),"%d",count);
      printf("ASC:%d\n",str);  
-     printf("sfd1------%d\n",c_fd);
-   /* if(send(c_fd, "2", MAXLINE,0) == -1)                            
-        perror("send error");*/
+   //  printf("sfd1------%d\n",c_fd);
+    send(c_fd, "2", MAXLINE,0);
     printf("%s clients\n",str);
      printf("sfd2------%d\n",c_fd);
     //recv(c_fd, str, 16,0);
