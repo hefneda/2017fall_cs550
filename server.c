@@ -235,6 +235,6 @@ void sendidlist(int c_fd,char* filename)
     printf("------%d\n",c_fd);
     /*send(c_fd, str, 2,0);
     printf("numbers of peers sent\n");*/
-    recv(c_fd,str,MAXLINE,0)
+    recv(c_fd,str,MAXLINE,0);
 
 }
