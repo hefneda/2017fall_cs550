@@ -298,13 +298,17 @@ int lookup(int c_client_fd, char *filename)
         printf("File found by server\n");  
         //recv(c_client_fd, str,16,0);
         //send(c_client_fd,"tty",16,0);
+        printf("cstr1------%s\n",str);
+        printf("cfd1------%d\n",c_client_fd);
 
        if((rec_len = recv(c_client_fd, str, MAXLINE,0)) == -1) {  
             perror("recv error");  
             exit(1);  
             }
         printf("ASC:%d\n",atoi(str));  
-        printf("------%s\n",str);
+
+        printf("cstr2------%s\n",str);
+        printf("cfd2------%d\n",c_client_fd);
         return 1;
     }
     else
