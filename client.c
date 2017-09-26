@@ -292,7 +292,7 @@ int lookup(int c_client_fd, char *filename)
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
     recv(c_client_fd, buf, MAXLINE,0);
-     if((rec_len = recv(c_client_fd,str MAXLINE,0)) == -1) {  
+     if((rec_len = recv(c_client_fd,str, MAXLINE,0)) == -1) {  
             perror("recv error");  
             exit(1);  
             }
