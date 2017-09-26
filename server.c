@@ -239,7 +239,7 @@ void sendidlist(int c_fd, char* filename)
     //itoa(count,str,10);
     snprintf(str,sizeof(str),"%s",(char *)count);
     printf("%s clients\n",str);
-     if(send(c_fd, str, MAXLINE,0) == -1)                            
+     if(send(c_fd, "9", MAXLINE,0) == -1)                            
                     perror("send error");
     //recv(c_fd, str, 16,0);
     printf("numbers of peers sent/n");

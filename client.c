@@ -297,6 +297,7 @@ int lookup(int c_client_fd, char *filename)
         printf("File found by server\n");  
         //recv(c_client_fd, str,16,0);
         //send(c_client_fd,"tty",16,0);
+
         if((rec_len = recv(c_client_fd,str, MAXLINE,0)) == -1) {  
             perror("recv error");  
             exit(1);  
