@@ -139,7 +139,8 @@ void fthread(void)                               //wait for registry client
                 send(c_fd, "1", 8,0);             
                 //send back the peerids with this filename
                 printf("------%d\n",c_fd);
-                sendidlist(c_fd,filename);
+                if(send(c_fd, "868", MAXLINE,0) == -1)                            
+                    perror("send error");
             }
             else                                                                     //filename not found
             {
@@ -239,3 +240,4 @@ void sendidlist(int c_fd, char* filename)
     printf("numbers of peers sent/n");
     
 }
+
