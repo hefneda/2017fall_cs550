@@ -220,7 +220,7 @@ void sendidlist(int c_fd, char* filename)
 {
     int i;
     int count = 0;
-    char str[16];
+    char str[MAXLINE];
     
     for(i = 0; i < MAXFILENUM; i++)
 	{
@@ -229,11 +229,12 @@ void sendidlist(int c_fd, char* filename)
 			count++;
 		}
 	}
+    
+    printf("Found %d clients with file\n",count);
+    //transmit int to string to send
+    //itoa(count,str,10);
     if(send(c_fd, "868", MAXLINE,0) == -1)                            
                     perror("send error");
-    //printf("Found %d clients with file\n",count);
-    ////transmit int to string to send
-    ////itoa(count,str,10);
     //snprintf(str,sizeof(str),"%d",count);
     //printf("------%s\n",str);
     //if(send(c_fd, str, 16,0) == -1)                            
