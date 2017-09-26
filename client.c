@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     }  
 
     strcpy(HOST,argv[1]);
-    //build_serversock();                                                //use 1 thread to build a client as a server
+    build_serversock();                                                //use 1 thread to build a client as a server
     create_th();
     //c_client();                                                               //Handle this client as a client to receive file
 
@@ -338,23 +338,25 @@ void download(char *filename,char *peerid)
     char buf[BUFF_SIZE];
 
     cd_fd= socket(AF_UNIX,SOCK_STREAM,0);
-	if(cd_fd < 0)
-		perror("Socket");
+    if(cd_fd < 0)
+        perror("Socket");
 
-	int err;
-	//Set socket structure variables
-	memset(& cdaddr,0,sizeof( cdaddr));
-	 cdaddr.sun_family = AF_UNIX;
-	strcpy( cdaddr.sun_path, peerid);
-	//Connect to the other client
-	err = connect(cd_fd,(const struct sockaddr *)& cdaddr,sizeof( cdaddr));
-	if(err < 0)
-		perror("Connect");
+    int err;
+    //Set socket structure variables
+    memset(& cdaddr,0,sizeof( cdaddr));
+    cdaddr.sun_family = AF_UNIX;
+    strcpy( cdaddr.sun_path, peerid);
+    printf("peerid:%s\n",cdaddr.sun_path);
+
+    //Connect to the other client
+    err = connect(cd_fd,(const struct sockaddr *)& cdaddr,sizeof( cdaddr));
+    if(err < 0)
+        perror("Connect");
 
     //Send  filename
-	send(cd_fd,(void *)filename,MAXLINE,0);
-	//Receive the filesize
-	recv(cd_fd,(void *)filesize,MAXFILESIZE,0);
+    send(cd_fd,(void *)filename,MAXLINE,0);
+    //Receive the filesize
+    recv(cd_fd,(void *)filesize,MAXFILESIZE,0);
 
     size = atoi(filesize);
     FILE *file = fopen(filename,"w");
