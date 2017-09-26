@@ -49,6 +49,7 @@ void c_client()
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
     int count=0;
+    char str[16];
 
     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
@@ -113,8 +114,8 @@ void c_client()
                 printf("------%s\n",buf);
                 count=atoi(buf);
                 printf("%d files have/has this file\n",count);*/
-                recv(c_client_fd,buf, MAXLINE,0);
-                printf("-1-2-%s\n",buf);
+                recv(c_client_fd,str, MAXLINE,0);
+                printf("-1-2-%s\n",str);
             }
             else
             {
