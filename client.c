@@ -301,7 +301,7 @@ int lookup(int c_client_fd, char *filename)
         printf("cstr1------%s\n",buf);
         printf("cfd1------%d\n",c_client_fd);
 
-        recv(c_client_fd, buf, MAXLINE,0));
+        recv(c_client_fd, buf, MAXLINE,0);
 
         printf("ASC:%d\n",atoi(str));  
 
