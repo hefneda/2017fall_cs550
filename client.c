@@ -304,10 +304,10 @@ int lookup(int c_client_fd, char *filename)
        if(peernum < 0 || peernum > count)
            printf("Invalid input, try again\n");
        strcpy(peerid,peerlist[peernum]);
-       printf("you select peer: %s\n",peerid);
+       printf("you select peer: %s, begin download\n",peerid);
 
        //begin download
-       download(filename,peerid);
+       //download(filename,peerid);
        return 1;
     }
     else
