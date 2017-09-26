@@ -148,7 +148,7 @@ int lookup(int c_client_fd, char *filename)
         printf("File found by server\n");  
         //recv(c_client_fd, str,16,0);
         send(c_client_fd,"tty",16,0);
-        printf("------%s\n",str);
+        printf("-----123123-%s\n",str);
         return 1;
     }
     else
