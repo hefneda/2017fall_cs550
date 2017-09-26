@@ -140,7 +140,8 @@ void fthread(void)                               //wait for registry client
             {
                 printf("We found it\n");
                 //send back confimation
-                send(c_fd, "1", 8,0);             
+                send(c_fd, "1", 8,0);        
+                usleep(1000);
                 //send back the peerids with this filename
                 printf("------%d\n",c_fd);
                 send(c_fd, "2", 8,0); //-----------------------------------------------------------------------
