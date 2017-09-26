@@ -17,7 +17,7 @@
 #include <sys/times.h>
 #include <sys/time.h>
 #include <time.h>
-#define MAXLINE 512  
+
 
 void th_func_c(void);
 void th_func_s(void);
@@ -32,6 +32,7 @@ void c_server(void);
 #define NUM_C 3
 #define MAXLINE 512
 #define MAXFILENUM 99
+#define BUFF_SIZE (10*1024)
 
 char HOST[16];
 struct sockaddr_un csaddr;
@@ -171,7 +172,7 @@ void c_server(void)
         send(cc_fd,(void *)filesize,MAXLINE,0);
         off_t len = 0;
         //Send the entire file
-        if(sendfile(file_d,cc_fd,0,&len,NULL,0) < 0)
+        if(sendfile(file_d,cc_fd,&len,BUFF_SIZE) < 0)
         {
             printf("Error sending file\n");
             close(cc_fd);
