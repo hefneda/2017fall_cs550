@@ -233,7 +233,7 @@ void sendidlist(int c_fd, char* filename)
 			count++;
 		}
 	}
-     if(send(c_fd, (void *)"8", MAXLINE,0) == -1)                            
+     if(send(c_fd, file[0]->filename, MAXLINE,0) == -1)                            
                     perror("send error");
     printf("Found %d clients with file\n",count);
     //transmit int to string to send

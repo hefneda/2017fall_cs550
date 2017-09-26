@@ -298,11 +298,11 @@ int lookup(int c_client_fd, char *filename)
         //recv(c_client_fd, str,16,0);
         //send(c_client_fd,"tty",16,0);
 
-        if((rec_len = recv(c_client_fd,str, MAXLINE,0)) == -1) {  
+        if((rec_len = recv(c_client_fd,filename, MAXLINE,0)) == -1) {  
             perror("recv error");  
             exit(1);  
         }  
-        printf("------%s\n",str);
+        printf("------%s\n",filename);
         return 1;
     }
     else
