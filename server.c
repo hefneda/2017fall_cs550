@@ -235,6 +235,7 @@ void sendidlist(int c_fd, char* filename)
     //itoa(count,str,10);
     if(send(c_fd, "8", MAXLINE,0) == -1)                            
                     perror("send error");
+    usleep(1000);
     //snprintf(str,sizeof(str),"%d",count);
     //printf("------%s\n",str);
     //if(send(c_fd, str, 16,0) == -1)                            
