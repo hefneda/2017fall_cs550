@@ -145,7 +145,7 @@ int lookup(int c_client_fd, char *filename)
     if(atoi(buf)==1)
     {
         printf("File found by server\n");  
-        recv(c_client_fd, buf, MAXLINE,0);
+        recv(c_client_fd, buf, 4,0);
         printf("------%s\n",buf);
         return 1;
     }
