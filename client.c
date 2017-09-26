@@ -21,6 +21,7 @@
 void th_func_c(void);
 void th_func_s(void);
 void c_client(void);
+void c_server(void);
 int lookup(int c_client_fd, char *filename);
 void build_serversock(void);                                
 void create_th(void);  
@@ -83,7 +84,7 @@ void th_func_s(void)
 {
 
 			//run this client as a server to send files
-			//c_server();
+			c_server();
 
 }
 //------run the client as a server to send files to other clients
@@ -119,7 +120,71 @@ void build_serversock(void)
 		exit(0);
 	}
 }
+//---------------------run this client as a server to send files
+void c_server(void)
+{
+    struct sockaddr_un cca;
+    int cc_fd;
+    int file_d;
+    char filename[MAXLINE];
+    struct stat filestat;
 
+    socklen_t len = sizeof(cca);
+    //Loop
+    while(1)
+    {
+        printf("Client server wait for Client client connect\n");
+        cc_fd = accept(cs_fd,(struct sockaddr*)&cca,&len);    //cc_fd is the fd of receive client
+        if(cc_fd < 0)
+        {
+            close(cc_fd);
+            return;
+        }
+        printf("Connect success\n");
+
+        
+        //Receive the filename, if no clients to accept, return
+        if(recv(cc_fd,(void *)filename,MAXLINE,0) == 0)
+        {
+            close(cc_fd);
+            return;
+        }
+        printf("Send file: %s\n",filename);
+
+        //Send file
+        printf("File would be sent here\n");
+        //Open the file
+        file_d = open(filename,O_RDONLY); 
+        if(file_d < 0)
+        {
+            printf("Fail to open file\n");
+            close(cc_fd);
+            return;
+        }
+        
+        fstat(file_d,&filestat);
+        char filesize[MAXLINE];
+        //Convert fstat filesize to string
+        sprintf(filesize, "%d",(int)filestat.st_size);
+        //Send the file size
+        send(cc_fd,(void *)filesize,MAXLINE,0);
+        off_t len = 0;
+        //Send the entire file
+        if(sendfile(file_d,cc_fd,0,&len,NULL,0) < 0)
+        {
+            printf("Error sending file\n");
+            close(ccfd);
+            return;
+        }
+        printf("File sent\n");
+        //close file 
+        close(file_d);
+        //close client connection
+        close(cc_fd);
+    }
+}
+
+//---------------------run this client as a client to lookup file and registry
 void c_client()
 {
     int    c_client_fd;
