@@ -322,7 +322,7 @@ void download(char *filename,char *peerid)
 {
     struct sockaddr_un cdaddr;
 	int cd_fd;                                    //create a client socket to download from another socket
-    char filesize[MAXFILESIZECHARS];
+    char filesize[MAXFILESIZE];
     int size;
     char buf[BUFF_SIZE];
 
