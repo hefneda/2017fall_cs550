@@ -297,7 +297,7 @@ int lookup(int c_client_fd, char *filename)
      printf("Can or cannot\n");
 
 
-     //recv(c_client_fd, buf, MAXLINE,0);//------------------------------------------------------------------
+     recv(c_client_fd, buf, MAXLINE,0);//------------------------------------------------------------------
      //printf("ttttttt------%s\n",buf);
     //if(atoi(buf)==1)
     //{
