@@ -121,6 +121,11 @@ void build_serversock(void)
 	//strcpy(csaddr.sun_path,HOST);
 	unlink(csaddr.sun_path);
 
+    //------------------------------avoid error: address already in use
+    int on=1;  
+    int ret;
+    ret=setsockopt(socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
+
 	int err;
 	err = bind(cs_fd,(struct sockaddr*)&csaddr,sizeof(csaddr));	
 	if(err < 0)
