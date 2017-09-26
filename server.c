@@ -139,8 +139,7 @@ void fthread(void)                               //wait for registry client
                 send(c_fd, "1", 8,0);             
                 //send back the peerids with this filename
                 printf("------%d\n",c_fd);
-                if(send(c_fd, "868", MAXLINE,0) == -1)                            
-                    perror("send error");
+                sendidlist(c_fd,filename);
             }
             else                                                                     //filename not found
             {
@@ -222,6 +221,8 @@ void sendidlist(int c_fd, char* filename)
     int i;
     int count = 0;
     char str[16];
+    if(send(c_fd, "868", MAXLINE,0) == -1)                            
+                    perror("send error");
     for(i = 0; i < MAXFILENUM; i++)
 	{
 		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0)
@@ -229,15 +230,15 @@ void sendidlist(int c_fd, char* filename)
 			count++;
 		}
 	}
-    printf("Found %d clients with file\n",count);
-    //transmit int to string to send
-    //itoa(count,str,10);
-    snprintf(str,sizeof(str),"%d",count);
-    printf("------%s\n",str);
-    if(send(c_fd, str, 16,0) == -1)                            
-                perror("send error");
-    //recv(c_fd, str, 16,0);
-    printf("numbers of peers sent/n");
+    //printf("Found %d clients with file\n",count);
+    ////transmit int to string to send
+    ////itoa(count,str,10);
+    //snprintf(str,sizeof(str),"%d",count);
+    //printf("------%s\n",str);
+    //if(send(c_fd, str, 16,0) == -1)                            
+    //            perror("send error");
+    ////recv(c_fd, str, 16,0);
+    //printf("numbers of peers sent/n");
     
 }
 
