@@ -324,7 +324,7 @@ void download(char *filename,char *peerid)
 	int cd_fd;                                    //create a client socket to download from another socket
     char filesize[MAXFILESIZECHARS];
     int size;
-    char buf[BUFFSIZE];
+    char buf[BUFF_SIZE];
 
     cd_fd= socket(AF_UNIX,SOCK_STREAM,0);
 	if(cd_fd < 0)
@@ -341,15 +341,15 @@ void download(char *filename,char *peerid)
 		perror("Connect");
 
     //Send  filename
-	send(sfd,(void *)filename,MAXLINE,0);
+	send(cd_fd,(void *)filename,MAXLINE,0);
 	//Receive the filesize
-	recv(sfd,(void *)filesize,MAXFILESIZE,0);
+	recv(cd_fd,(void *)filesize,MAXFILESIZE,0);
 
     size = atoi(filesize);
     FILE *file = fopen(filename,"w");
     int recvf = 0;
 	int totalb = atoi(filesize);
-    while(((recvf = recv(cd_fd,buf,BUFFSIZE,0)) > 0) && (size > 0))
+    while(((recvf = recv(cd_fd,buf,BUFF_SIZE,0)) > 0) && (size > 0))
 	{
 		fwrite(buf,sizeof(char),recvf,file);
 		size -= recvf;
@@ -368,5 +368,5 @@ void download(char *filename,char *peerid)
 	}
 	fclose(file);
 	//unlink(sa.sun_path);
-	close(sfd);
+	close(cd_fd);
 }
