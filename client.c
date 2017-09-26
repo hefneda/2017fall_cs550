@@ -293,32 +293,25 @@ int lookup(int c_client_fd, char *filename)
     //wait to see if cental server can find this file
 
 
-    recv(c_client_fd, buf, MAXLINE,0);
+    recv(c_client_fd, buf, 8,0);
      printf("Can or cannot\n");
 
 
-     recv(c_client_fd, buf, MAXLINE,0);//------------------------------------------------------------------
-     printf("ttttttt------%s\n",buf);
-    //if(atoi(buf)==1)
-    //{
-    //    printf("File found by server\n");  
-    //    //recv(c_client_fd, str,16,0);
-    //    //send(c_client_fd,"tty",16,0);
-    //    printf("cstr1------%s\n",buf);
-    //    printf("cfd1------%d\n",c_client_fd);
+     //recv(c_client_fd, buf, MAXLINE,0);//------------------------------------------------------------------
+     //printf("ttttttt------%s\n",buf);
+    if(atoi(buf)==1)
+    {
+        printf("File found by server\n");  
 
-    //    recv(c_client_fd, buf, MAXLINE,0);
+        recv(c_client_fd, str, MAXLINE,0);
 
-    //    printf("ASC:%d\n",atoi(str));  
-
-    //    printf("cstr2------%s\n",buf);
-    //    printf("cfd2------%d\n",c_client_fd);
-    //    return 1;
-    //}
-   /* else
+        printf("%s clients have file\n",str);
+        return 1;
+    }
+    else
     {
         printf("Fail to find file\n");  
         return 0;
-    }*/
+    }
      return 0;
 }
