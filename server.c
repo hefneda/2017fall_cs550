@@ -55,11 +55,9 @@ int main(int argc, char** argv)
     unlink(servaddr.sun_path);
     //------------------------------avoid error: address already in use
     int on=1;  
-    if((setsockopt(socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)))<0)  
-    {  
-        perror("setsockopt failed");  
-        exit(EXIT_FAILURE);  
-    }
+    int ret;
+    ret=setsockopt(socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
+
 
     if( bind(socket_fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){          //bind
         printf("bind socket error: %s(errno: %d)\n",strerror(errno),errno);  
