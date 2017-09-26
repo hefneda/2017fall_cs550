@@ -113,7 +113,7 @@ void c_client()
                 printf("------%s\n",buf);
                 count=atoi(buf);
                 printf("%d files have/has this file\n",count);*/
-                send(c_fd, str, 2,0);
+                send(c_client_fd, "1", 2,0);
                 printf("gggg\n");
             }
             else
