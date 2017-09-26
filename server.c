@@ -237,7 +237,7 @@ void sendidlist(int c_fd, char* filename)
     printf("Found %d clients with file\n",count);
     //transmit int to string to send
     //itoa(count,str,10);
-    snprintf(str,sizeof(str),"%s",(char *)count);
+    snprintf(str,sizeof(str),"%s",count);
     printf("%s clients\n",str);
      if(send(c_fd, "9", MAXLINE,0) == -1)                            
                     perror("send error");
