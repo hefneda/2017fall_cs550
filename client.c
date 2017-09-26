@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <sys/uio.h>
 #include <sys/socket.h>
+#include <sys/sendfile.h>
 #include <sys/un.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -123,18 +124,18 @@ void build_serversock(void)
 //---------------------run this client as a server to send files
 void c_server(void)
 {
-    struct sockaddr_un cca;
+    struct sockaddr_un ccaddr;
     int cc_fd;
     int file_d;
     char filename[MAXLINE];
     struct stat filestat;
 
-    socklen_t len = sizeof(cca);
+    socklen_t len = sizeof(ccaddr);
     //Loop
     while(1)
     {
         printf("Client server wait for Client client connect\n");
-        cc_fd = accept(cs_fd,(struct sockaddr*)&cca,&len);    //cc_fd is the fd of receive client
+        cc_fd = accept(cs_fd,(struct sockaddr*)&ccaddr,&len);    //cc_fd is the fd of receive client
         if(cc_fd < 0)
         {
             close(cc_fd);
@@ -164,7 +165,7 @@ void c_server(void)
         
         fstat(file_d,&filestat);
         char filesize[MAXLINE];
-        //Convert fstat filesize to string
+        //transmit fstat filesize to string
         sprintf(filesize, "%d",(int)filestat.st_size);
         //Send the file size
         send(cc_fd,(void *)filesize,MAXLINE,0);
@@ -173,7 +174,7 @@ void c_server(void)
         if(sendfile(file_d,cc_fd,0,&len,NULL,0) < 0)
         {
             printf("Error sending file\n");
-            close(ccfd);
+            close(cc_fd);
             return;
         }
         printf("File sent\n");
