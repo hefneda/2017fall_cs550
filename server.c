@@ -53,7 +53,13 @@ int main(int argc, char** argv)
     servaddr.sun_family = AF_UNIX;  
     //strcpy(servaddr.sun_path, "SERV");
     unlink(servaddr.sun_path);
-
+    //------------------------------avoid error: address already in use
+    int on=1;  
+    if((setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)))<0)  
+    {  
+        perror("setsockopt failed");  
+        exit(EXIT_FAILURE);  
+    }
 
     if( bind(socket_fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){          //bind
         printf("bind socket error: %s(errno: %d)\n",strerror(errno),errno);  
