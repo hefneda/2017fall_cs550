@@ -76,7 +76,7 @@ void create_th(void)
 	{
 		num[i] = i;
 		//Create threads, and send their index in num using p
-		pthread_create(&threads[i],NULL,th_func,p);
+		pthread_create(&threads[i],NULL,(void *)th_func,p);
 		p++;
 	}
 	/* Terminate all threads */
