@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     }  
 
     strcpy(HOST,argv[1]);
-    build_serversock();                                                //use 1 thread to build a client as a server
+    //build_serversock();                                                //use 1 thread to build a client as a server
     create_th();
     //c_client();                                                               //Handle this client as a client to receive file
 
