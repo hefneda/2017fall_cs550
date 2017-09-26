@@ -232,9 +232,8 @@ void sendidlist(int c_fd,char* filename)
     //transmit int to string to send
     //itoa(count,str,10);
     snprintf(str,16,"%d",count);
-    printf("------%d\n",c_fd);
-    /*send(c_fd, str, 2,0);
-    printf("numbers of peers sent\n");*/
-    send(c_fd,"1",2,0);
-    printf("gggg\n");
+    printf("------%s\n",str);
+    send(c_fd, str, 4,0);
+    printf("numbers of peers sent/n");
+    
 }
