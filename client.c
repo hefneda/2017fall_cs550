@@ -62,11 +62,11 @@ void create_th(void)
 	pthread_t threads[NUM_C+1];                           //num of clients and indexing server
 	int i;
 
-	for(i = 0; i < NUM_C+1; i++)
+	for(i = 0; i < NUM_C; i++)
 	{
 		//Create threads, and send their index in num using p
         if(i==0)
-		    pthread_create(&threads[i],NULL,(void *)th_func_c,NULL);//just 1 thread to receive file or registry
+		    //pthread_create(&threads[i],NULL,(void *)th_func_c,NULL);//just 1 thread to receive file or registry
         else
             pthread_create(&threads[i],NULL,(void *)th_func_s,NULL);//default threads as to send file
 
@@ -221,20 +221,17 @@ void c_client()
         //sendline=NULL;
         printf("Input the function No. : 1.Registry 2. Download File \n");  
         fgets(sendline, 4096, stdin);  
-        printf("Imhere1\n");  
         //send cmd to central server and receive back
         if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
         {  
             printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
             exit(0);  
-        }  
-        printf("Imhere2\n");  
+        }   
         //receive confirm msg from central server
         if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
             perror("recv error");  
             exit(1);  
         }  
-        printf("Imhere3\n");  
         cmdno=atoi(buf);
         printf("Received : %d\n ",cmdno);
 
@@ -307,7 +304,7 @@ int lookup(int c_client_fd, char *filename)
        printf("you select peer: %s, begin download\n",peerid);
 
        //begin download
-       download(filename,peerid);
+       download(filename, peerid);
        return 1;
     }
     else
