@@ -38,12 +38,13 @@ void download(char *filename,char *peerid);
 char HOST[16];
 struct sockaddr_un csaddr;
 int cs_fd;
-int errno=0;
 
 
 int main(int argc, char** argv)  
 {  
-
+    extern int errno;  
+  
+    errno=0;  
     if( argc != 2){  
         printf("usage: ./client <ipaddress>\n");  
         exit(0);  
