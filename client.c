@@ -200,8 +200,7 @@ void c_server(void)
         flag = sendfile(file_d,cc_fd,&len,BUFF_SIZE);
         if( flag < 0)
         {
-            printf("Error sending file:");
-            perror("%zd\n",flag);
+            printf("Error sending file:%zd\n",flag);
             close(cc_fd);
             return;
         }
