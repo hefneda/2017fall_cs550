@@ -51,7 +51,6 @@ int main(int argc, char** argv)
     }  
 
     strcpy(HOST,argv[1]);
-    printf("11111111111111111\n");
     build_serversock();                                                //use 1 thread to build a client as a server
     create_th();
     //c_client();                                                               //Handle this client as a client to receive file
@@ -67,15 +66,6 @@ void create_th(void)
     int num[NUM_C] = {0};
 	int *p = num;
 
-	//for(i = 0; i < NUM_C; i++)
-	//{
-	//	//Create threads, and send their index in num using p
- //       if(i==0)
-	//	    pthread_create(&threads[i],NULL,(void *)th_func_c,NULL);//just 1 thread to receive file or registry
- //       else
- //           pthread_create(&threads[i],NULL,(void *)th_func_s,NULL);//default threads as to send file
-
-	//}
     for(i = 0; i < NUM_C; i++)
 	{
 		num[i] = i;
@@ -98,10 +88,12 @@ void th_func(void *i)
     {
     case 0:
         //just 1 thread to receive file or registry
+        printf("------------This is a client thread%d--------\n"); 
         c_client();
         break;
     default:
         //default threads as to send file
+        printf("------------This is server thread%d--------\n",num); 
         c_server();
         break;
     }
@@ -125,7 +117,6 @@ void build_serversock(void)
 	csaddr.sun_family = AF_UNIX;
 	strcpy(csaddr.sun_path,HOST);
 	unlink(csaddr.sun_path);
-    printf("address:%s\n",HOST);
 
     //------------------------------avoid error: address already in use
     int on=1;  
@@ -139,7 +130,7 @@ void build_serversock(void)
 		perror("Bind");
 		exit(0);
 	}
-    printf("bind socket success, address:%s",csaddr.sun_path);
+    printf("bind socket success, Socket file of this thread:%s\n",csaddr.sun_path);
 	//Socket over localhost
 	//Listen for connections, maximum of 1 client (1 per thread)
 	err = listen(cs_fd,NUM_C-1);
@@ -157,10 +148,10 @@ void c_server(void)
     int file_d;
     char filename[MAXLINE];
     struct stat filestat;
-    printf("------------This is a server thread--------\n"); 
+    
     socklen_t len = sizeof(ccaddr);
    
-    printf("I am waiting for a Client to connec and begin download\n");
+    printf("I am waiting for a client to connect and begin download\n");
     while(1)
     {
         cc_fd = accept(cs_fd,(struct sockaddr*)&ccaddr,&len);    //cc_fd is the fd of receive client
