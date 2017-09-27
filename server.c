@@ -63,7 +63,7 @@ int main(int argc, char** argv)
         printf("bind socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }
-
+    printf("bind socket success, address:%s",servaddr.sun_path);
 
     if( listen(socket_fd, NUM_C * 2) == -1){  
         printf("listen socket error: %s(errno: %d)\n",strerror(errno),errno);                 //listen
