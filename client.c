@@ -17,6 +17,7 @@
 #include <sys/times.h>
 #include <sys/time.h>
 #include <time.h>
+#include <errno.h>
 
 
 void th_func(void *i);
@@ -37,6 +38,7 @@ void download(char *filename,char *peerid);
 char HOST[16];
 struct sockaddr_un csaddr;
 int cs_fd;
+int errno=0;
 
 
 int main(int argc, char** argv)  
@@ -154,9 +156,8 @@ void c_server(void)
     int file_d;
     char filename[MAXLINE];
     struct stat filestat;
-     printf("------------This is a server thread--------\n"); 
+    printf("------------This is a server thread--------\n"); 
     socklen_t len = sizeof(ccaddr);
-    ssize_t flag;
     //Loop
     while(1)
     {
@@ -197,10 +198,9 @@ void c_server(void)
         send(cc_fd,(void *)filesize,MAXLINE,0);
         off_t len = 0;
         //Send the entire file
-        flag = sendfile(file_d,cc_fd,&len,BUFF_SIZE);
-        if( flag < 0)
+        if( sendfile(file_d,cc_fd,&len,BUFF_SIZE)< 0)
         {
-            printf("Error sending file:%zd\n",flag);
+            printf("Error sending file:%d"£¬errno);
             close(cc_fd);
             return;
         }
