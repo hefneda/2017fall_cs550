@@ -136,6 +136,7 @@ void build_serversock(void)
 		perror("Bind");
 		exit(0);
 	}
+    printf("bind socket success, address:%s",csaddr.sun_path);
 	//Socket over localhost
 	//Listen for connections, maximum of 1 client (1 per thread)
 	err = listen(cs_fd,NUM_C-1);
@@ -230,7 +231,7 @@ void c_client()
 
     memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
     c_clientaddr.sun_family = AF_UNIX;  
-    //strcpy(c_clientaddr.sun_path, "c_client");
+    strcpy(c_clientaddr.sun_path, "c_client");
 
     printf("Begin connect \n");  
     if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  

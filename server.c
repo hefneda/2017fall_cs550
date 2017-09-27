@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 
     memset(&servaddr, 0, sizeof(servaddr));  
     servaddr.sun_family = AF_UNIX;  
-    //strcpy(servaddr.sun_path, "SERV");
+    strcpy(servaddr.sun_path, "SERV");
     unlink(servaddr.sun_path);
     //------------------------------avoid error: address already in use
     int on=1;  
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
         printf("bind socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }
-    printf("bind socket success, address:%s",servaddr.sun_path);
+    printf("bind socket success, address:%s\n",servaddr.sun_path);
 
     if( listen(socket_fd, NUM_C * 2) == -1){  
         printf("listen socket error: %s(errno: %d)\n",strerror(errno),errno);                 //listen
