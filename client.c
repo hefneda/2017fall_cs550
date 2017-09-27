@@ -181,12 +181,12 @@ void c_server(void)
         printf("Send file: %s\n",filename);
 
         //Send file
-        printf("File would be sent here\n");
+        printf("Begin open file\n");
         //Open the file
         file_d = open(filename,O_RDONLY); 
         if(file_d < 0)
         {
-            printf("Fail to open file\n");
+            perror("Fail to open file\n");
             close(cc_fd);
             return;
         }
@@ -195,13 +195,15 @@ void c_server(void)
         char filesize[MAXLINE];
         //transmit fstat filesize to string
         sprintf(filesize, "%d",(int)filestat.st_size);
+
+        printf("Filesize:%s",filesize);
         //Send the file size
         send(cc_fd,(void *)filesize,MAXLINE,0);
         off_t len = 0;
         //Send the entire file
         if( sendfile(file_d,cc_fd,&len,BUFF_SIZE)< 0)
         {
-            perror("Error sending file:");
+            perror("Error sending file");
             close(cc_fd);
             return;
         }
@@ -369,7 +371,7 @@ void download(char *filename,char *peerid)
     send(cd_fd,(void *)filename,MAXLINE,0);
     //Receive the filesize
     recv(cd_fd,(void *)filesize,MAXFILESIZE,0);
-
+    printf("Filesize:%s",filesize);
     size = atoi(filesize);
     FILE *file = fopen(filename,"w");
     int recvf = 0;
