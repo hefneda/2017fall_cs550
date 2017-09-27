@@ -122,7 +122,7 @@ void build_serversock(void)
 	csaddr.sun_family = AF_UNIX;
 	strcpy(csaddr.sun_path,HOST);
 	unlink(csaddr.sun_path);
-    printf("address:%s\n",HOST)
+    printf("address:%s\n",HOST);
 
     //------------------------------avoid error: address already in use
     int on=1;  
