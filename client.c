@@ -156,6 +156,7 @@ void c_server(void)
     struct stat filestat;
      printf("------------This is a server thread--------\n"); 
     socklen_t len = sizeof(ccaddr);
+    ssize_t flag;
     //Loop
     while(1)
     {
@@ -196,9 +197,11 @@ void c_server(void)
         send(cc_fd,(void *)filesize,MAXLINE,0);
         off_t len = 0;
         //Send the entire file
-        if(sendfile(file_d,cc_fd,&len,BUFF_SIZE) < 0)
+        flag = sendfile(file_d,cc_fd,&len,BUFF_SIZE);
+        if( flag < 0)
         {
-            printf("Error sending file\n");
+            printf("Error sending file:");
+            perror("%zd\n",flag);
             close(cc_fd);
             return;
         }
