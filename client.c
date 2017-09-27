@@ -159,10 +159,10 @@ void c_server(void)
     struct stat filestat;
     printf("------------This is a server thread--------\n"); 
     socklen_t len = sizeof(ccaddr);
-    //Loop
+   
+    printf("I am waiting for a Client to connec and begin download\n");
     while(1)
     {
-        printf("Client as file server wait for Client as download client connect\n");
         cc_fd = accept(cs_fd,(struct sockaddr*)&ccaddr,&len);    //cc_fd is the fd of receive client
         if(cc_fd < 0)
         {
@@ -184,26 +184,24 @@ void c_server(void)
         printf("Begin open file\n");
         //Open the file
         file_d = open(filename,O_RDONLY); 
-        printf("1111111111\n");
+
         if(file_d < 0)
         {
             perror("Fail to open file\n");
             close(cc_fd);
             return;
         }
-        printf("2222222222221\n");
+
         fstat(file_d,&filestat);
         char filesize[MAXLINE];
         //transmit fstat filesize to string
         sprintf(filesize, "%d",(int)filestat.st_size);
-        printf("33333333333331\n");
+
         printf("Filesize:%s\n",filesize);
         //Send the file size
         send(cc_fd,(void *)filesize,MAXLINE,0);
-        printf("444444444444444\n");
         off_t len = 0;
         //Send the entire file
-        //if( sendfile(file_d,cc_fd,&len,BUFF_SIZE)< 0)
          
         if( sendfile(cc_fd,file_d,&len,BUFF_SIZE)< 0)
         {
@@ -211,12 +209,14 @@ void c_server(void)
             close(cc_fd);
             return;
         }
-        printf("File sent\n");
+        printf("File sent, I will continue waiting for a Client to connect\n");
         //close file 
         close(file_d);
         //close client connection
         close(cc_fd);
+        printf("Choose : 1.Registry 2. Download File \n");  // client thread is still running, user should communicate with that thread, instead of server thread
     }
+
 }
 
 //---------------------run this client as a client to download file, lookup file and registry
@@ -251,7 +251,7 @@ void c_client()
     while(1)
     {
         //sendline=NULL;
-        printf("Input the function No. : 1.Registry 2. Download File \n");  
+        printf("Choose : 1.Registry 2. Download File \n");  
         fgets(sendline, 4096, stdin);  
         //send cmd to central server and receive back
         if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
