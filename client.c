@@ -88,7 +88,7 @@ void th_func(void *i)
     {
     case 0:
         //just 1 thread to receive file or registry
-        printf("------------This is a client thread%d--------\n"); 
+        printf("------------This is a client thread--------\n"); 
         c_client();
         break;
     default:
@@ -222,7 +222,6 @@ void c_client()
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
     int count=0;
-    printf("------------This is a client thread--------\n"); 
     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
         exit(0);  
