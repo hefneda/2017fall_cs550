@@ -29,7 +29,7 @@ void create_th(void);
 void c_server(void);
 void download(char *filename,char *peerid);
 
-#define NUM_C 3
+#define NUM_C 4
 #define MAXLINE 512
 #define MAXFILENUM 99
 #define MAXFILESIZE 512
@@ -241,7 +241,7 @@ void c_client()
     while(1)
     {
         //sendline=NULL;
-        printf("Choose : 1.Registry 2. Download File \n");  
+        printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
         //send cmd to central server and receive back
         if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
@@ -279,7 +279,7 @@ void c_client()
                     *end = '\0';
                 lookup(c_client_fd,filename);   //find file and download
         }
-       
+    //----------------------------------------------------quit     
         if(cmdno == 3)
             break;
     }
@@ -344,7 +344,11 @@ void download(char *filename,char *peerid)
     char filesize[MAXFILESIZE];
     int size;
     char buf[BUFF_SIZE];
-
+    if(strcmp(peerid,hostname) == 0)
+	{
+		printf("Cannot download file from self\n");
+		return;
+	}
     cd_fd= socket(AF_UNIX,SOCK_STREAM,0);
     if(cd_fd < 0)
         perror("Socket");

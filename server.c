@@ -28,7 +28,7 @@ void print_registry(void);
 int search(char *filename );
 void sendidlist(int c_fd,char* filename);
 
-#define NUM_C 3
+#define NUM_C 4
 #define MAXLINE 512
 #define MAXFILENUM 99
 
@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 {  
     //setup server by using sockets
     int i;
-    pthread_t thread[NUM_C *3];
+    pthread_t thread[NUM_C *2];
 
     if( (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
         printf("create socket error: %s(errno: %d)\n",strerror(errno),errno);  
