@@ -48,6 +48,7 @@ int main(int argc, char** argv)
     }  
 
     strcpy(HOST,argv[1]);
+    printf("11111111111111111\n");
     build_serversock();                                                //use 1 thread to build a client as a server
     create_th();
     //c_client();                                                               //Handle this client as a client to receive file
@@ -107,6 +108,7 @@ void th_func(void *i)
 //------run the client as a server to send files to other clients
 void build_serversock(void)
 {
+    printf("222222222222222222\n");
     //Create client server
 	cs_fd = socket(AF_UNIX,SOCK_STREAM,0);
 	if(cs_fd < 0)
@@ -114,7 +116,7 @@ void build_serversock(void)
 		perror("Socket");
 		exit(0);
 	}
-
+    printf("3333333333333333333\n");
 	//Set socket structure vars
 	memset(&csaddr,0,sizeof(csaddr));
 	csaddr.sun_family = AF_UNIX;
