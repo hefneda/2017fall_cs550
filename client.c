@@ -108,7 +108,7 @@ void th_func(void *i)
 //------run the client as a server to send files to other clients
 void build_serversock(void)
 {
-    printf("222222222222222222\n");
+
     //Create client server
 	cs_fd = socket(AF_UNIX,SOCK_STREAM,0);
 	if(cs_fd < 0)
@@ -116,7 +116,7 @@ void build_serversock(void)
 		perror("Socket");
 		exit(0);
 	}
-    printf("3333333333333333333\n");
+
 	//Set socket structure vars
 	memset(&csaddr,0,sizeof(csaddr));
 	csaddr.sun_family = AF_UNIX;
@@ -231,7 +231,7 @@ void c_client()
 
     memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
     c_clientaddr.sun_family = AF_UNIX;  
-    strcpy(c_clientaddr.sun_path, "c_client");
+    strcpy(c_clientaddr.sun_path, "../SERV");
 
     printf("Begin connect \n");  
     if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
