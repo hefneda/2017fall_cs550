@@ -344,7 +344,7 @@ void download(char *filename,char *peerid)
     char filesize[MAXFILESIZE];
     int size;
     char buf[BUFF_SIZE];
-    if(strcmp(peerid,hostname) == 0)
+    if(strcmp(peerid,HOST) == 0)
 	{
 		printf("Cannot download file from self\n");
 		return;
