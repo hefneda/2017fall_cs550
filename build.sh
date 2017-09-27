@@ -1,7 +1,7 @@
-rm -f ./c1/client
-rm -f ./c2/client
-rm -f ./c3/client
+rm -f ./client1/client
+rm -f ./client2/client
+rm -f ./client3/client
 
-cp client c1
-cp client c2
-cp client c3
+cp client client1
+cp client client2
+cp client client3
