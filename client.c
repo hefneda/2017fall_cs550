@@ -184,21 +184,23 @@ void c_server(void)
         printf("Begin open file\n");
         //Open the file
         file_d = open(filename,O_RDONLY); 
+        printf("1111111111\n");
         if(file_d < 0)
         {
             perror("Fail to open file\n");
             close(cc_fd);
             return;
         }
-        
+        printf("2222222222221\n");
         fstat(file_d,&filestat);
         char filesize[MAXLINE];
         //transmit fstat filesize to string
         sprintf(filesize, "%d",(int)filestat.st_size);
-
+        printf("33333333333331\n");
         printf("Filesize:%s",filesize);
         //Send the file size
         send(cc_fd,(void *)filesize,MAXLINE,0);
+        printf("444444444444444\n");
         off_t len = 0;
         //Send the entire file
         if( sendfile(file_d,cc_fd,&len,BUFF_SIZE)< 0)
