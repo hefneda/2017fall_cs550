@@ -201,7 +201,7 @@ void c_server(void)
         //Send the entire file
         if( sendfile(file_d,cc_fd,&len,BUFF_SIZE)< 0)
         {
-            printf("Error sending file:%d"£¬errno);
+            perror("Error sending file:");
             close(cc_fd);
             return;
         }
