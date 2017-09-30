@@ -253,7 +253,7 @@ void c_client()
             etstart2 = times(&cputstart);
             printf("time test begin!\n");
             int i;
-            for(i = 0; i < 10;i++)
+            for(i = 0; i < 1000;i++)
             {
                 //Do a lookup request
                 //Send Server command #
