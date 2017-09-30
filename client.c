@@ -271,8 +271,12 @@ void c_client()
             fgets(filename, MAXLINE, stdin);  
 
             if((end=strchr(filename,'\n')) != NULL)
-			    *end = '\0';
-
+                *end = '\0';
+            //display in output
+            file_out = fopen("../output.txt","w");
+            sprintf(msg,"%s register filename %s:\n",HOST,filename);
+            fwrite(msg,1,strlen(msg),file_out);
+            fclose(file_out);
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
         }
@@ -283,6 +287,11 @@ void c_client()
                 fgets(filename, MAXLINE, stdin);  
                 if((end=strchr(filename,'\n')) != NULL)
                     *end = '\0';
+                 //display in output
+                file_out = fopen("../output.txt","w");
+                sprintf(msg,"%s search filename %s:\n",HOST,filename);
+                fwrite(msg,1,strlen(msg),file_out);
+                 fclose(file_out);
                 //Start clock--------------------------------------------------------------------------------------
                 gettimeofday(&etstart, &tzdummy);
                 etstart2 = times(&cputstart);
@@ -312,11 +321,12 @@ int lookup(int c_client_fd, char *filename)
     char    buf[MAXLINE]; 
     char *end;
     char    str[MAXLINE];
+    char    msg[MAXLINE];
     char peerlist[NUM_C][16];
     char peerid[16];
     int count=0;
     int i=0;
-
+    file_out = fopen("../output.txt","w");
     //send filename to download
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
@@ -329,13 +339,20 @@ int lookup(int c_client_fd, char *filename)
         recv(c_client_fd, str, MAXLINE,0);// receive how many peers have file
         count = atoi(str);
         printf("%d clients have file, ready to receive peerid list\n",count);
+       
         //receive peerid list
+
        for(i = 0; i < count; i++)
 		{
 			recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
 			printf("%d: %s\n",i,peerlist[i]);
+            //display in output
+             sprintf(msg,"      %d: %s\n",i,peerlist[i]);
+            fwrite(msg,1,strlen(msg),file_out);
 		}
-
+        //-----------------------------------------------------------
+        fclose(file_out);
+       //-----------------------------------------------------------
         // get which peer to download
        printf("Choose which peer to download:");
        fgets(str,MAXLINE,stdin);
@@ -352,6 +369,10 @@ int lookup(int c_client_fd, char *filename)
     else
     {
         printf("Fail to find file\n");  
+                //display in output
+        sprintf(msg,"Fail to find file\n");
+        fwrite(msg,1,strlen(msg),file_out);
+        fclose(file_out);
         return 0;
     }
      return 0;
@@ -364,7 +385,8 @@ void download(char *filename,char *peerid)
     char filesize[MAXFILESIZE];
     int size;
     char buf[BUFF_SIZE];
-    char msg[MAXLINE] = "download end,display file\n ";
+    char msg[MAXLINE] ;
+    file_out = fopen("../output.txt","w");
     if(strcmp(peerid,HOST) == 0)
 	{
 		printf("Cannot download file from self\n");
@@ -402,8 +424,8 @@ void download(char *filename,char *peerid)
 	}
     printf("File received\n");
     //-----------------------------------------------------------
-    file_out = fopen("../output.txt","w");
-    sprintf(msg, "download %s from %s to %s" ,filename, peerid, HOST);
+    
+    sprintf(msg, "download %s from %s to %s\n" ,filename, peerid, HOST);
     fwrite(msg,1,strlen(msg),file_out);
     fclose(file_out);
     //-----------------------------------------------------------
