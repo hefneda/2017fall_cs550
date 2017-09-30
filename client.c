@@ -404,7 +404,7 @@ void download(char *filename,char *peerid)
     //-----------------------------------------------------------
     file_out = fopen("output.txt","w");
     fwrite(msg,1,strlen(msg),file_out);
-    fclose(flie_out);
+    fclose(file_out);
 
 	//Display file if less than 1KB
 	fclose(file);
