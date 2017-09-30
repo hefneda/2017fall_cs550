@@ -403,7 +403,7 @@ void download(char *filename,char *peerid)
     printf("File received\n");
     //-----------------------------------------------------------
     file_out = fopen("..\\output.txt","w");
-    sprintf(msg, "download %s from %s to %s" ,filename, peerid, cd_fd.sun_path);
+    sprintf(msg, "download %s from %s to %s" ,filename, peerid, HOST);
     fwrite(msg,1,strlen(msg),file_out);
     fclose(file_out);
     //-----------------------------------------------------------
