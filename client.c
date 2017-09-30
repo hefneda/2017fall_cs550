@@ -341,7 +341,7 @@ int lookup(int c_client_fd, char *filename)
         printf("%d clients have file, ready to receive peerid list\n",count);
        
         //receive peerid list
-        sprintf(msg," file found in index server,list as below:",i,peerlist[i]);
+        sprintf(msg," file found in index server,list as below:\n");
         fwrite(msg,1,strlen(msg),file_out);
 
        for(i = 0; i < count; i++)
