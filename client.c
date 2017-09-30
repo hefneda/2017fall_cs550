@@ -38,6 +38,7 @@ char HOST[16];
 struct sockaddr_un csaddr;
 int cs_fd;
 int f=0;
+FILE *file_out;
 
 int main(int argc, char** argv)  
 {  
@@ -245,38 +246,6 @@ void c_client()
 
     while(1)
     {
-        //---------------------------------------------------------------------------------
-        /*if(f==1)  // if test_time.test is registred
-        {
-            //Start clock
-            gettimeofday(&etstart, &tzdummy);
-            etstart2 = times(&cputstart);
-            printf("time test begin!\n");
-            int i;
-            for(i = 0; i < 1000;i++)
-            {
-                //Do a lookup request
-                //Send Server command #
-                char found[2];
-                int found_int;
-                char *filename_time = "test_time.txt";
-                send(c_client_fd,"2",2,0);
-                recv(c_client_fd, buf, MAXLINE,0);
-                send(c_client_fd,(void *)filename_time,MAXLINE,0);
-                //Read if server found the file
-                recv(c_client_fd,(void *)found,2,0);
-                found_int = atoi(found);
-            }
-            printf("time test over!\n");
-            //stop clock
-            gettimeofday(&etstop, &tzdummy);
-            etstop2 = times(&cputstop);
-            usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
-            usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
-            //display time result
-            printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)(1000*1000));
-        }*/
-        //--------------------------------------------------------------------------------------------------
         //sendline=NULL;
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
@@ -395,6 +364,7 @@ void download(char *filename,char *peerid)
     char filesize[MAXFILESIZE];
     int size;
     char buf[BUFF_SIZE];
+    char msg[MAXLINE] = "download end,display file ";
     if(strcmp(peerid,HOST) == 0)
 	{
 		printf("Cannot download file from self\n");
@@ -429,13 +399,13 @@ void download(char *filename,char *peerid)
 	{
 		fwrite(buf,sizeof(char),recvf,file);
 		size -= recvf;
-		//write if file less that 1K
-		if(totalb < 1000)
-		{
-			fwrite(buf,sizeof(char),recvf,stdout);
-		}
 	}
     printf("File received\n");
+    //-----------------------------------------------------------
+    file_out = fopen("output.txt","w");
+    fwrite(msg,1,strlen(msg),file_out);
+    fclose(flie_out);
+
 	//Display file if less than 1KB
 	fclose(file);
 	file = fopen(filename,"r");
