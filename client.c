@@ -37,7 +37,7 @@ void download(char *filename,char *peerid);
 char HOST[16];
 struct sockaddr_un csaddr;
 int cs_fd;
-
+int f=0;
 
 int main(int argc, char** argv)  
 {  
@@ -241,34 +241,40 @@ void c_client()
         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }  
-    //Start clock
-    gettimeofday(&etstart, &tzdummy);
-    etstart2 = times(&cputstart);
-
-    int i;
-	for(i = 0; i < 1000;i++)
-	{
-		//Do a lookup request
-		//Send Server command #
-		char found[2];
-		int found_int;
-		char *filename_time = "test_time.txt";
-		send(c_client_fd,"2",2,0);
-		send(c_client_fd,(void *)filename_time,MAXLINE,0);
-		//Read if server found the file
-		recv(c_client_fd,(void *)found,2,0);
-		found_int = atoi(found);
-	}
-    //stop clock
-    gettimeofday(&etstop, &tzdummy);
-    etstop2 = times(&cputstop);
-    usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
-    usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
-    //display time result
-    printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)(1000*1000));
+    
 
     while(1)
     {
+        //---------------------------------------------------------------------------------
+        if(f==1)  // if test_time.test is registred
+        {
+            //Start clock
+            gettimeofday(&etstart, &tzdummy);
+            etstart2 = times(&cputstart);
+
+            int i;
+            for(i = 0; i < 1000;i++)
+            {
+                //Do a lookup request
+                //Send Server command #
+                char found[2];
+                int found_int;
+                char *filename_time = "test_time.txt";
+                send(c_client_fd,"2",2,0);
+                send(c_client_fd,(void *)filename_time,MAXLINE,0);
+                //Read if server found the file
+                recv(c_client_fd,(void *)found,2,0);
+                found_int = atoi(found);
+            }
+            //stop clock
+            gettimeofday(&etstop, &tzdummy);
+            etstop2 = times(&cputstop);
+            usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
+            usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
+            //display time result
+            printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)(1000*1000));
+        }
+        //--------------------------------------------------------------------------------------------------
         //sendline=NULL;
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
@@ -298,6 +304,7 @@ void c_client()
 
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
+            f=1;//------------------------------------------------------------------------------------
         }
   //----------------------------------------------------Download
         if(cmdno == 2)
