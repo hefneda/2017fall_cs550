@@ -246,7 +246,7 @@ void c_client()
     while(1)
     {
         //---------------------------------------------------------------------------------
-        if(f==1)  // if test_time.test is registred
+        /*if(f==1)  // if test_time.test is registred
         {
             //Start clock
             gettimeofday(&etstart, &tzdummy);
@@ -275,7 +275,7 @@ void c_client()
             usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
             //display time result
             printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)(1000*1000));
-        }
+        }*/
         //--------------------------------------------------------------------------------------------------
         //sendline=NULL;
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
@@ -306,7 +306,6 @@ void c_client()
 
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
-            f=1;//------------------------------------------------------------------------------------
         }
   //----------------------------------------------------Download
         if(cmdno == 2)
@@ -315,8 +314,21 @@ void c_client()
                 fgets(filename, MAXLINE, stdin);  
                 if((end=strchr(filename,'\n')) != NULL)
                     *end = '\0';
+                //Start clock--------------------------------------------------------------------------------------
+                gettimeofday(&etstart, &tzdummy);
+                etstart2 = times(&cputstart);
+                printf("time test begin!\n");
 
                 lookup(c_client_fd,filename);   //find file and download
+
+                printf("time test over!\n");
+                //stop clock
+                gettimeofday(&etstop, &tzdummy);
+                etstop2 = times(&cputstop);
+                usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
+                usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
+                //display time result
+                printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart));
         }
     //----------------------------------------------------quit     
         if(cmdno == 3)
