@@ -364,7 +364,7 @@ void download(char *filename,char *peerid)
     char filesize[MAXFILESIZE];
     int size;
     char buf[BUFF_SIZE];
-    char msg[MAXLINE] = "download end,display file ";
+    char msg[MAXLINE] = "download end,display file\n ";
     if(strcmp(peerid,HOST) == 0)
 	{
 		printf("Cannot download file from self\n");
@@ -402,17 +402,13 @@ void download(char *filename,char *peerid)
 	}
     printf("File received\n");
     //-----------------------------------------------------------
-    file_out = fopen("output.txt","w");
+    file_out = fopen("..\\output.txt","w");
+    sprintf(msg, "download %s from %s to %s" ,filename, peerid, cd_fd.sun_path);
     fwrite(msg,1,strlen(msg),file_out);
     fclose(file_out);
+    //-----------------------------------------------------------
 
-	//Display file if less than 1KB
 	fclose(file);
-	file = fopen(filename,"r");
-	if(atoi(filesize) < 1000)
-	{
-	}
-	fclose(file);
-	//unlink(sa.sun_path);
+
 	close(cd_fd);
 }
