@@ -38,7 +38,7 @@ char HOST[16];
 struct sockaddr_un csaddr;
 int cs_fd;
 int f=0;
-FILE *file_out= fopen("../output.txt","w");
+FILE *file_out;
 
 int main(int argc, char** argv)  
 {  
@@ -273,7 +273,7 @@ void c_client()
             if((end=strchr(filename,'\n')) != NULL)
                 *end = '\0';
             //display in output
-           // file_out = fopen("../output.txt","w");
+            file_out = fopen("../output.txt","a+");
             sprintf(msg,"%s register filename %s:\n",HOST,filename);
             fwrite(msg,1,strlen(msg),file_out);
             fclose(file_out);
@@ -288,7 +288,7 @@ void c_client()
                 if((end=strchr(filename,'\n')) != NULL)
                     *end = '\0';
                  //display in output
-               // file_out = fopen("../output.txt","w");
+               file_out = fopen("../output.txt","a+");
                 sprintf(msg,"%s search filename %s:\n",HOST,filename);
                 fwrite(msg,1,strlen(msg),file_out);
                  fclose(file_out);
@@ -326,7 +326,7 @@ int lookup(int c_client_fd, char *filename)
     char peerid[16];
     int count=0;
     int i=0;
-   // file_out = fopen("../output.txt","w");
+   file_out = fopen("../output.txt","a+");
     //send filename to download
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
@@ -386,7 +386,7 @@ void download(char *filename,char *peerid)
     int size;
     char buf[BUFF_SIZE];
     char msg[MAXLINE] ;
-   // file_out = fopen("../output.txt","w");
+   file_out = fopen("../output.txt","a+");
     if(strcmp(peerid,HOST) == 0)
 	{
 		printf("Cannot download file from self\n");
