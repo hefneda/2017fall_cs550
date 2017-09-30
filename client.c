@@ -251,9 +251,9 @@ void c_client()
             //Start clock
             gettimeofday(&etstart, &tzdummy);
             etstart2 = times(&cputstart);
-
+            printf("time test begin!\n");
             int i;
-            for(i = 0; i < 1000;i++)
+            for(i = 0; i < 10;i++)
             {
                 //Do a lookup request
                 //Send Server command #
@@ -261,11 +261,13 @@ void c_client()
                 int found_int;
                 char *filename_time = "test_time.txt";
                 send(c_client_fd,"2",2,0);
+                recv(c_client_fd, buf, MAXLINE,0);
                 send(c_client_fd,(void *)filename_time,MAXLINE,0);
                 //Read if server found the file
                 recv(c_client_fd,(void *)found,2,0);
                 found_int = atoi(found);
             }
+            printf("time test over!\n");
             //stop clock
             gettimeofday(&etstop, &tzdummy);
             etstop2 = times(&cputstop);
