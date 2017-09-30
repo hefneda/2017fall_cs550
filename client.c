@@ -203,7 +203,7 @@ void c_server(void)
         close(file_d);
         //close client connection
         close(cc_fd);
-        printf("Choose : 1.Registry 2. Download File \n");  // client thread is still running, user should communicate with that thread, instead of server thread
+        printf("Choose : 1.Registry 2. Download File 3.Quit \n");  // client thread is still running, user should communicate with that thread, instead of server thread
     }
 
 }
