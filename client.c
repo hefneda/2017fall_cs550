@@ -274,7 +274,7 @@ void c_client()
                 *end = '\0';
             //display in output
             file_out = fopen("../output.txt","a+");
-            sprintf(msg,"%s register filename %s:\n",HOST,filename);
+            sprintf(msg,"%s register filename %s\n",HOST,filename);
             fwrite(msg,1,strlen(msg),file_out);
             fclose(file_out);
             send(c_client_fd,(void *)filename,MAXLINE,0);
@@ -289,7 +289,7 @@ void c_client()
                     *end = '\0';
                  //display in output
                file_out = fopen("../output.txt","a+");
-                sprintf(msg,"%s search filename %s:\n",HOST,filename);
+                sprintf(msg,"%s search filename %s to download\n",HOST,filename);
                 fwrite(msg,1,strlen(msg),file_out);
                  fclose(file_out);
                 //Start clock--------------------------------------------------------------------------------------
@@ -341,13 +341,15 @@ int lookup(int c_client_fd, char *filename)
         printf("%d clients have file, ready to receive peerid list\n",count);
        
         //receive peerid list
+        sprintf(msg," file found in index server,list as below:",i,peerlist[i]);
+        fwrite(msg,1,strlen(msg),file_out);
 
        for(i = 0; i < count; i++)
 		{
 			recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
 			printf("%d: %s\n",i,peerlist[i]);
             //display in output
-             sprintf(msg,"      %d: %s\n",i,peerlist[i]);
+             sprintf(msg,"  %d: %s\n",i,peerlist[i]);
             fwrite(msg,1,strlen(msg),file_out);
 		}
         //-----------------------------------------------------------
