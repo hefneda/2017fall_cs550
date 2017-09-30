@@ -1,4 +1,3 @@
-/* File Name: client.c */  
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -45,11 +44,11 @@ int main(int argc, char** argv)
     extern int errno;  
   
     errno=0;  
-    if( argc != 2){  
+    if( argc != 2)
+    {  
         printf("usage: ./client <ipaddress>\n");  
         exit(0);  
     }  
-
     strcpy(HOST,argv[1]);
     build_serversock();                                                //use 1 thread to build a client as a server
     create_th();
@@ -73,7 +72,6 @@ void create_th(void)
 		pthread_create(&threads[i],NULL,(void *)th_func,p);
 		p++;
 	}
-	/* Terminate all threads */
 	for(i = 0; i < NUM_C+1; i++)
 	{
 		pthread_join(threads[i],NULL);
@@ -83,7 +81,6 @@ void th_func(void *i)
 {
     //run this client as a client to receive and lookup file and registry
     int num = *((int *)i);
-    //printf("Thread #: %d\n",num);
     switch(num)
     {
     case 0:
@@ -222,6 +219,13 @@ void c_client()
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
     int count=0;
+
+    struct timeval etstart, etstop;  /* Elapsed times using gettimeofday() */
+	struct timezone tzdummy;
+	clock_t etstart2, etstop2;	/* Elapsed times using times() */
+	unsigned long long usecstart, usecstop;
+	struct tms cputstart, cputstop;  /* CPU times for my processes */
+
     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
         exit(0);  
@@ -237,6 +241,31 @@ void c_client()
         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }  
+    //Start clock
+    gettimeofday(&etstart, &tzdummy);
+    etstart2 = times(&cputstart);
+
+    int i;
+	for(i = 0; i < 1000;i++)
+	{
+		//Do a lookup request
+		//Send Server command #
+		char found[2];
+		int found_int;
+		char *filename_time = "test_time.txt";
+		send(c_client_fd,"2",2,0);
+		send(c_client_fd,(void *)filename_time,MAXLINE,0);
+		//Read if server found the file
+		recv(c_client_fd,(void *)found,2,0);
+		found_int = atoi(found);
+	}
+    //stop clock
+    gettimeofday(&etstop, &tzdummy);
+    etstop2 = times(&cputstop);
+    usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
+    usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
+    //display time result
+    printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)(1000*1000));
 
     while(1)
     {
@@ -277,6 +306,7 @@ void c_client()
                 fgets(filename, MAXLINE, stdin);  
                 if((end=strchr(filename,'\n')) != NULL)
                     *end = '\0';
+
                 lookup(c_client_fd,filename);   //find file and download
         }
     //----------------------------------------------------quit     
