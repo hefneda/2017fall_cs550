@@ -220,7 +220,7 @@ void c_client()
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
     int count=0;
-
+    char    msg[MAXLINE];
     struct timeval etstart, etstop;  /* Elapsed times using gettimeofday() */
 	struct timezone tzdummy;
 	clock_t etstart2, etstop2;	/* Elapsed times using times() */
