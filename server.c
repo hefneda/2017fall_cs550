@@ -241,7 +241,6 @@ void sendidlist(int c_fd, char* filename)
 
     send(c_fd, str, MAXLINE,0);// send how many peers have file
 
-    printf("numbers of peers sent\n");
     //Send clients who has file to request client
     for(i = 0; i < MAXFILENUM; i++)
 	{

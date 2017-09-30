@@ -37,7 +37,8 @@ void download(char *filename,char *peerid);
 char HOST[16];
 struct sockaddr_un csaddr;
 int cs_fd;
-
+int f=0;
+FILE *file_out;
 
 int main(int argc, char** argv)  
 {  
@@ -202,7 +203,7 @@ void c_server(void)
         close(file_d);
         //close client connection
         close(cc_fd);
-        printf("Choose : 1.Registry 2. Download File \n");  // client thread is still running, user should communicate with that thread, instead of server thread
+        printf("Choose : 1.Registry 2. Download File 3.Quit \n");  // client thread is still running, user should communicate with that thread, instead of server thread
     }
 
 }
@@ -219,7 +220,7 @@ void c_client()
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
     int count=0;
-
+    char    msg[MAXLINE];
     struct timeval etstart, etstop;  /* Elapsed times using gettimeofday() */
 	struct timezone tzdummy;
 	clock_t etstart2, etstop2;	/* Elapsed times using times() */
@@ -241,31 +242,7 @@ void c_client()
         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }  
-    //Start clock
-    gettimeofday(&etstart, &tzdummy);
-    etstart2 = times(&cputstart);
-
-    int i;
-	for(i = 0; i < 1000;i++)
-	{
-		//Do a lookup request
-		//Send Server command #
-		char found[2];
-		int found_int;
-		char *filename_time = "test_time.txt";
-		send(c_client_fd,"2",2,0);
-		send(c_client_fd,(void *)filename_time,MAXLINE,0);
-		//Read if server found the file
-		recv(c_client_fd,(void *)found,2,0);
-		found_int = atoi(found);
-	}
-    //stop clock
-    gettimeofday(&etstop, &tzdummy);
-    etstop2 = times(&cputstop);
-    usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
-    usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
-    //display time result
-    printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)(1000*1000));
+    
 
     while(1)
     {
@@ -294,8 +271,12 @@ void c_client()
             fgets(filename, MAXLINE, stdin);  
 
             if((end=strchr(filename,'\n')) != NULL)
-			    *end = '\0';
-
+                *end = '\0';
+            //display in output
+            file_out = fopen("../output.txt","a+");
+            sprintf(msg,"%s register filename %s\n",HOST,filename);
+            fwrite(msg,1,strlen(msg),file_out);
+            fclose(file_out);
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
         }
@@ -306,8 +287,26 @@ void c_client()
                 fgets(filename, MAXLINE, stdin);  
                 if((end=strchr(filename,'\n')) != NULL)
                     *end = '\0';
+                 //display in output
+               file_out = fopen("../output.txt","a+");
+                sprintf(msg,"%s search filename %s to download\n",HOST,filename);
+                fwrite(msg,1,strlen(msg),file_out);
+                 fclose(file_out);
+                //Start clock--------------------------------------------------------------------------------------
+                gettimeofday(&etstart, &tzdummy);
+                etstart2 = times(&cputstart);
+                printf("time test begin!\n");
 
                 lookup(c_client_fd,filename);   //find file and download
+
+                printf("time test over!\n");
+                //stop clock
+                gettimeofday(&etstop, &tzdummy);
+                etstop2 = times(&cputstop);
+                usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
+                usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
+                //display time result
+                printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)1000);
         }
     //----------------------------------------------------quit     
         if(cmdno == 3)
@@ -322,11 +321,12 @@ int lookup(int c_client_fd, char *filename)
     char    buf[MAXLINE]; 
     char *end;
     char    str[MAXLINE];
+    char    msg[MAXLINE];
     char peerlist[NUM_C][16];
     char peerid[16];
     int count=0;
     int i=0;
-
+   file_out = fopen("../output.txt","a+");
     //send filename to download
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
@@ -339,13 +339,22 @@ int lookup(int c_client_fd, char *filename)
         recv(c_client_fd, str, MAXLINE,0);// receive how many peers have file
         count = atoi(str);
         printf("%d clients have file, ready to receive peerid list\n",count);
+       
         //receive peerid list
+        sprintf(msg," file found in index server,list as below:\n");
+        fwrite(msg,1,strlen(msg),file_out);
+
        for(i = 0; i < count; i++)
 		{
 			recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
 			printf("%d: %s\n",i,peerlist[i]);
+            //display in output
+             sprintf(msg,"  %d: %s\n",i,peerlist[i]);
+            fwrite(msg,1,strlen(msg),file_out);
 		}
-
+        //-----------------------------------------------------------
+        fclose(file_out);
+       //-----------------------------------------------------------
         // get which peer to download
        printf("Choose which peer to download:");
        fgets(str,MAXLINE,stdin);
@@ -362,6 +371,10 @@ int lookup(int c_client_fd, char *filename)
     else
     {
         printf("Fail to find file\n");  
+                //display in output
+        sprintf(msg,"Fail to find file\n");
+        fwrite(msg,1,strlen(msg),file_out);
+        fclose(file_out);
         return 0;
     }
      return 0;
@@ -374,6 +387,8 @@ void download(char *filename,char *peerid)
     char filesize[MAXFILESIZE];
     int size;
     char buf[BUFF_SIZE];
+    char msg[MAXLINE] ;
+   file_out = fopen("../output.txt","a+");
     if(strcmp(peerid,HOST) == 0)
 	{
 		printf("Cannot download file from self\n");
@@ -408,20 +423,16 @@ void download(char *filename,char *peerid)
 	{
 		fwrite(buf,sizeof(char),recvf,file);
 		size -= recvf;
-		//write if file less that 1K
-		if(totalb < 1000)
-		{
-			fwrite(buf,sizeof(char),recvf,stdout);
-		}
 	}
     printf("File received\n");
-	//Display file if less than 1KB
+    //-----------------------------------------------------------
+    
+    sprintf(msg, "download %s from %s to %s\n" ,filename, peerid, HOST);
+    fwrite(msg,1,strlen(msg),file_out);
+    fclose(file_out);
+    //-----------------------------------------------------------
+
 	fclose(file);
-	file = fopen(filename,"r");
-	if(atoi(filesize) < 1000)
-	{
-	}
-	fclose(file);
-	//unlink(sa.sun_path);
+
 	close(cd_fd);
 }
