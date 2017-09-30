@@ -229,8 +229,10 @@ void sendidlist(int c_fd, char* filename)
     
     for(i = 0; i < MAXFILENUM; i++)
     {
+        printf("%s---%s\n",files[i]->filename,filename);
 		if(files[i] != NULL && strcmp(files[i]->filename,filename) == 0)
 		{
+             printf("77777Found one\n");
 			count++;
 		}
 	}
