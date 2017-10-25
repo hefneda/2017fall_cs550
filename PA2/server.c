@@ -34,7 +34,7 @@ void build(void);
 #define MAXFILENUM 99
 
 
-
+char HOST[16];
 int socket_fd;
 struct sockaddr_un     servaddr; 
 pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
