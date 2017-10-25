@@ -43,9 +43,9 @@ pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
 int main(int argc, char** argv)  
 {  
     //setup server by using sockets
-    int i;
-    for(i=0;i<4;i++)
-        build(i);
+    //int i;
+    //for(i=0;i<4;i++)
+    //    build(i);
 
     pthread_t threads[ NUM_S];                           //num of clients and indexing server
 	int i;
