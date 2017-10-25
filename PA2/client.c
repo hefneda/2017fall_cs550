@@ -463,7 +463,7 @@ int get_server( FILE *file_c)
 		memset(szTest, 0, sizeof(szTest));
 		fgets(szTest, sizeof(szTest) - 1, file_c);
         printf("%s", szTest); 
-        strcpy(server[i],szTest);
+        strcpy(SERVER[i],szTest);
         i++;
 	}
     return 0;
