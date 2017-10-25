@@ -125,18 +125,16 @@ void fthread(void)                               //wait for registry client
     char peerid[16];
     pfile *found_files[MAXFILENUM] = {NULL}; 
 
- 
+    if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
+    {  
+        printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
+    }  
+
+    printf("Client Connected, Wait client cmd \n");
 
     while(1)
     {  
-        if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
-        {  
-            printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
-        }  
-
-        printf("Client Connected, Wait client cmd \n");
-
- 
+        printf("Wait another client cmd \n");
 
         if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;
@@ -184,7 +182,7 @@ void fthread(void)                               //wait for registry client
                 printf("We can not find it\n");
                 send(c_fd, "2", 8,0);
             }
-            printf("Wait another client cmd \n");
+            
             break;
         }
 
