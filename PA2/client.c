@@ -243,8 +243,7 @@ void c_client()
     }  
     printf("Success Create Socket \n");  
 
-    memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
-    c_clientaddr.sun_family = AF_UNIX;  
+    
 
      /*strcpy(c_clientaddr.sun_path, "../SERV");
 
@@ -279,7 +278,8 @@ void c_client()
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
         cmdno=atoi(sendline);
-
+        memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+        c_clientaddr.sun_family = AF_UNIX;  
 //----------------------------------------------------Register
         if(cmdno == 1)
         {
