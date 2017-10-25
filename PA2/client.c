@@ -26,7 +26,7 @@ void build_serversock(void);
 void create_th(void);  
 void c_server(void);
 void download(char *filename,char *peerid);
-int get_server(char *server, FILE *file_c);
+int get_server(char **server, FILE *file_c);
 
 #define NUM_C 3
 #define NUM_S 4
@@ -447,7 +447,7 @@ void download(char *filename,char *peerid)
 	close(cd_fd);
 }
 
-int get_server(char *server, FILE *file_c)
+int get_server(char **server, FILE *file_c)
 {
     char szTest[1000] = {0};  
     int len = 0;  
