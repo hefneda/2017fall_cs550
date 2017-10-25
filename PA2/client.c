@@ -26,9 +26,9 @@ void build_serversock(void);
 void create_th(void);  
 void c_server(void);
 void download(char *filename,char *peerid);
-int get_server(char &server, FILE *file_c);
+int get_server(FILE *file_c);
 
-#define NUM_C 3
+#define NUM_C 4
 #define NUM_S 4
 #define MAXLINE 512
 #define MAXNAME 64
@@ -41,7 +41,7 @@ struct sockaddr_un csaddr;
 int cs_fd;
 int f=0;
 FILE *file_out;
-char* SERVER[MAXNAME];
+char SERVER[4][MAXNAME];
 
 int main(int argc, char** argv)  
 {  
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     strcpy(HOST,argv[1]);
 
     file_c=fopen("../config.txt","r");
-    if(get_server(SERVER,file_c)<1)                         //read config to get all server addresses
+    if(get_server(file_c)<0)                         //read config to get all server addresses
     {  
         printf("fail to read config\n");  
         exit(0);  
@@ -447,23 +447,23 @@ void download(char *filename,char *peerid)
 	close(cd_fd);
 }
 
-int get_server(char &server, FILE *file_c)
+int get_server( FILE *file_c)
 {
     char szTest[1000] = {0};  
     int len = 0;  
     int i=0;
-    if(NULL == file_c)
+    if(file_c == NULL)
 	{
 		printf("failed to open dos.txt\n");
 		return -1;
 	}
-
+    
 	while(!feof(file_c))
 	{
 		memset(szTest, 0, sizeof(szTest));
 		fgets(szTest, sizeof(szTest) - 1, file_c);
         printf("%s", szTest); 
-        strcpy(server[i],szTest);
+        strcpy(SERVER[i],szTest);
         i++;
 	}
     return 0;
