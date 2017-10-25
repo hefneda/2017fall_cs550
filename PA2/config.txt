@@ -1,4 +1,4 @@
-../SERVER1
-../SERVER2
-../SERVER3
-../SERVER4
+../SERV1
+../SERV2
+../SERV3
+../SERV4
