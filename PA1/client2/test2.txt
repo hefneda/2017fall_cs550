@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+﻿I come from client2
+=======
+﻿I come from client2
+>>>>>>> origin/master
