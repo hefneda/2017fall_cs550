@@ -28,7 +28,7 @@ void c_server(void);
 void download(char *filename,char *peerid);
 int get_server(FILE *file_c);
 
-#define NUM_C 3
+#define NUM_C 4
 #define NUM_S 4
 #define MAXLINE 512
 #define MAXNAME 64
@@ -55,8 +55,8 @@ int main(int argc, char** argv)
     }  
     strcpy(HOST,argv[1]);
 
-    file_c=fopen("config.txt","r");
-    if(get_server(file_c)<1)                         //read config to get all server addresses
+    file_c=fopen("../config.txt","r");
+    if(get_server(file_c)<0)                         //read config to get all server addresses
     {  
         printf("fail to read config\n");  
         exit(0);  
@@ -457,7 +457,7 @@ int get_server( FILE *file_c)
 		printf("failed to open dos.txt\n");
 		return -1;
 	}
-
+    
 	while(!feof(file_c))
 	{
 		memset(szTest, 0, sizeof(szTest));

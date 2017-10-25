@@ -27,6 +27,7 @@ int check_file(const char *peerid, const char *filename);
 void print_registry(void);
 int search(char *filename );
 void sendidlist(int c_fd,char* filename);
+void build(void);
 
 #define NUM_C 4
 #define MAXLINE 512
@@ -41,21 +42,39 @@ pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
 int main(int argc, char** argv)  
 {  
     //setup server by using sockets
+    
+
+    if( argc != 2)
+    {  
+        printf("usage: ./server <ipaddress>\n");  
+        exit(0);  
+    }  
+
+    strcpy(HOST,argv[1]);
+    
+    build();
+
+   
+    return 0;
+}  
+void build(void)
+{
     int i;
     pthread_t thread[NUM_C *2];
+    int on=1;  
+    int ret;
 
-    if( (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
+     if( (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
         printf("create socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }  
 
     memset(&servaddr, 0, sizeof(servaddr));  
     servaddr.sun_family = AF_UNIX;  
-    strcpy(servaddr.sun_path, "SERV");
+    strcpy(servaddr.sun_path, HOST);
     unlink(servaddr.sun_path);
     //------------------------------avoid error: address already in use
-    int on=1;  
-    int ret;
+
     ret=setsockopt(socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
 
 
@@ -79,9 +98,7 @@ int main(int argc, char** argv)
         pthread_join(thread[i],NULL);
 
     close(socket_fd);  
-    return 0;
-}  
-
+}
 void fthread(void)                               //wait for registry client
 {
     struct sockaddr_un c_address;       //registry client address
