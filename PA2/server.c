@@ -119,11 +119,12 @@ void fthread(void)                               //wait for registry client
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
     int cmdno=0;
-    socklen_t len = sizeof(c_address);
+   
     char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAXLINE];
     char peerid[16];
     pfile *found_files[MAXFILENUM] = {NULL}; 
+     socklen_t len = sizeof(c_address);
 
    
 
