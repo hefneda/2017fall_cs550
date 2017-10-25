@@ -26,11 +26,12 @@ void build_serversock(void);
 void create_th(void);  
 void c_server(void);
 void download(char *filename,char *peerid);
-int get_server(string *server, FILE *file_c);
+int get_server(char &server, FILE *file_c);
 
 #define NUM_C 3
 #define NUM_S 4
 #define MAXLINE 512
+#define MAXNAME 64
 #define MAXFILENUM 99
 #define MAXFILESIZE 512
 #define BUFF_SIZE (10*1024)
@@ -40,7 +41,7 @@ struct sockaddr_un csaddr;
 int cs_fd;
 int f=0;
 FILE *file_out;
-string SEVER[4];
+char* SERVER[MAXNAME];
 
 int main(int argc, char** argv)  
 {  
@@ -54,7 +55,7 @@ int main(int argc, char** argv)
     }  
     strcpy(HOST,argv[1]);
 
-    file_c=fopen("../config.txt","r")
+    file_c=fopen("../config.txt","r");
     if(get_server(SERVER,file_c)<1)                         //read config to get all server addresses
     {  
         printf("fail to read config\n");  
@@ -446,7 +447,7 @@ void download(char *filename,char *peerid)
 	close(cd_fd);
 }
 
-int get_server(string *server, FILE *file_c)
+int get_server(char &server, FILE *file_c)
 {
     char szTest[1000] = {0};  
     int len = 0;  
