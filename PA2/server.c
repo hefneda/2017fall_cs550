@@ -28,11 +28,12 @@ void print_registry(void);
 int search(char *filename );
 void sendidlist(int c_fd,char* filename);
 void build(int z);
+void th_func(void *i);
 
 #define NUM_C 4
 #define MAXLINE 512
 #define MAXFILENUM 99
-
+#define NUM_S 4
 
 char HOST[4][16]={"SERV1","SERV2","SERV3","SERV4"};
 int socket_fd;
@@ -46,9 +47,35 @@ int main(int argc, char** argv)
     for(i=0;i<4;i++)
         build(i);
 
+    pthread_t threads[ NUM_S];                           //num of clients and indexing server
+	int i;
+    int num[ NUM_S] = {0};
+	int *p = num;
+
+    for(i = 0; i <  NUM_S; i++)
+	{
+		num[i] = i;
+		//Create threads, and send their index in num using p
+		pthread_create(&threads[i],NULL,(void *)th_func,p);
+		p++;
+	}
+    for(i = 0; i < NUM_S; i++)
+    {
+    	pthread_join(threads[i],NULL);
+    }
    
     return 0;
 }  
+
+void th_func(void *i)
+{
+    //run this client as a client to receive and lookup file and registry
+    int num = *((int *)i);
+    printf("------------This is index server%d--------\n",num); 
+    build(num);
+
+}
+
 void build(int z)
 {
     int i;
