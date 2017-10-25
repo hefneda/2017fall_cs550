@@ -26,8 +26,10 @@ void build_serversock(void);
 void create_th(void);  
 void c_server(void);
 void download(char *filename,char *peerid);
+int get_server(string *server, FILE *file_c);
 
-#define NUM_C 4
+#define NUM_C 3
+#define NUM_S 4
 #define MAXLINE 512
 #define MAXFILENUM 99
 #define MAXFILESIZE 512
@@ -38,11 +40,12 @@ struct sockaddr_un csaddr;
 int cs_fd;
 int f=0;
 FILE *file_out;
+string SEVER[4];
 
 int main(int argc, char** argv)  
 {  
     extern int errno;  
-  
+    FILE *file_c;
     errno=0;  
     if( argc != 2)
     {  
@@ -50,6 +53,14 @@ int main(int argc, char** argv)
         exit(0);  
     }  
     strcpy(HOST,argv[1]);
+
+    file_c=fopen("../config.txt","r")
+    if(get_server(SERVER,file_c)<1)                         //read config to get all server addresses
+    {  
+        printf("fail to read config\n");  
+        exit(0);  
+    } 
+
     build_serversock();                                                //use 1 thread to build a client as a server
     create_th();
     //c_client();                                                               //Handle this client as a client to receive file
@@ -60,39 +71,38 @@ int main(int argc, char** argv)
 void create_th(void)
 {
     //Create the n threads
-	pthread_t threads[NUM_C+1];                           //num of clients and indexing server
+	pthread_t threads[NUM_C+NUM_S];                           //num of clients and indexing server
 	int i;
     int num[NUM_C] = {0};
 	int *p = num;
 
-    for(i = 0; i < NUM_C; i++)
+    for(i = 0; i < NUM_C+NUM_S; i++)
 	{
 		num[i] = i;
 		//Create threads, and send their index in num using p
 		pthread_create(&threads[i],NULL,(void *)th_func,p);
 		p++;
 	}
-	for(i = 0; i < NUM_C+1; i++)
-	{
-		pthread_join(threads[i],NULL);
-	}
+	//for(i = 0; i < NUM_C+1; i++)
+	//{
+	//	pthread_join(threads[i],NULL);
+	//}
 }
 void th_func(void *i)
 {
     //run this client as a client to receive and lookup file and registry
     int num = *((int *)i);
-    switch(num)
+    if(num<4)
     {
-    case 0:
-        //just 1 thread to receive file or registry
+        //4 threads to connect 4 index servers
         printf("------------This is a client thread--------\n"); 
         c_client();
-        break;
-    default:
-        //default threads as to send file
+    }
+    else
+    {
+        //3 threads to wait for download requests
         printf("------------This is server thread%d--------\n",num); 
         c_server();
-        break;
     }
 
 }
@@ -434,4 +444,26 @@ void download(char *filename,char *peerid)
 	fclose(file);
 
 	close(cd_fd);
+}
+
+int get_server(string *server, FILE *file_c)
+{
+    char szTest[1000] = {0};  
+    int len = 0;  
+    int i=0;
+    if(NULL == file_c)
+	{
+		printf("failed to open dos.txt\n");
+		return -1;
+	}
+
+	while(!feof(file_c))
+	{
+		memset(szTest, 0, sizeof(szTest));
+		fgets(szTest, sizeof(szTest) - 1, file_c);
+        printf("%s", szTest); 
+        strcpy(server[i],szTest);
+        i++;
+	}
+    return 0;
 }
