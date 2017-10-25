@@ -27,14 +27,14 @@ int check_file(const char *peerid, const char *filename);
 void print_registry(void);
 int search(char *filename );
 void sendidlist(int c_fd,char* filename);
-void build(void);
+void build(int z);
 
 #define NUM_C 4
 #define MAXLINE 512
 #define MAXFILENUM 99
 
 
-char HOST[16];
+char HOST[4][16]={"SERV1","SERV2","SERV3","SERV4"};
 int socket_fd;
 struct sockaddr_un     servaddr; 
 pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
@@ -42,22 +42,14 @@ pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
 int main(int argc, char** argv)  
 {  
     //setup server by using sockets
-    
-
-    if( argc != 2)
-    {  
-        printf("usage: ./server <ipaddress>\n");  
-        exit(0);  
-    }  
-
-    strcpy(HOST,argv[1]);
-   
-    build();
+    int i;
+    for(i=0;i<4i++)
+        build(i);
 
    
     return 0;
 }  
-void build(void)
+void build(int z)
 {
     int i;
     pthread_t thread[NUM_C *2];
@@ -71,7 +63,7 @@ void build(void)
 
     memset(&servaddr, 0, sizeof(servaddr));  
     servaddr.sun_family = AF_UNIX;  
-    strcpy(servaddr.sun_path, HOST);
+    strcpy(servaddr.sun_path, HOST[z]);
     unlink(servaddr.sun_path);
     //------------------------------avoid error: address already in use
 
