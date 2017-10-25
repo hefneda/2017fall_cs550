@@ -84,16 +84,16 @@ void create_th(void)
 		pthread_create(&threads[i],NULL,(void *)th_func,p);
 		p++;
 	}
-	//for(i = 0; i < NUM_C+1; i++)
-	//{
-	//	pthread_join(threads[i],NULL);
-	//}
+    for(i = 0; i < NUM_C+1; i++)
+    {
+    	pthread_join(threads[i],NULL);
+    }
 }
 void th_func(void *i)
 {
     //run this client as a client to receive and lookup file and registry
     int num = *((int *)i);
-    if(num<4)
+    if(num==1)
     {
         //4 threads to connect 4 index servers
         printf("------------This is a client thread--------\n"); 
