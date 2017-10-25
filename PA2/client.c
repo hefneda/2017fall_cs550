@@ -41,7 +41,7 @@ struct sockaddr_un csaddr;
 int cs_fd;
 int f=0;
 FILE *file_out;
-char* SERVER[MAXNAME];
+char SERVER[4][MAXNAME];
 
 int main(int argc, char** argv)  
 {  
