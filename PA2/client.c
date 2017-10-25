@@ -72,28 +72,28 @@ int main(int argc, char** argv)
 void create_th(void)
 {
     //Create the n threads
-	pthread_t threads[NUM_C+NUM_S];                           //num of clients and indexing server
+	pthread_t threads[NUM_C];                           //num of clients and indexing server
 	int i;
     int num[NUM_C] = {0};
 	int *p = num;
 
-    for(i = 0; i < NUM_C+NUM_S; i++)
+    for(i = 0; i < NUM_C; i++)
 	{
 		num[i] = i;
 		//Create threads, and send their index in num using p
 		pthread_create(&threads[i],NULL,(void *)th_func,p);
 		p++;
 	}
-    for(i = 0; i < NUM_C+1; i++)
-    {
-    	pthread_join(threads[i],NULL);
-    }
+	for(i = 0; i < NUM_C+1; i++)
+	{
+		pthread_join(threads[i],NULL);
+	}
 }
 void th_func(void *i)
 {
     //run this client as a client to receive and lookup file and registry
     int num = *((int *)i);
-    if(num==1)
+    if(num==0)
     {
         //4 threads to connect 4 index servers
         printf("------------This is a client thread--------\n"); 
@@ -229,7 +229,7 @@ void c_client()
     int cmdno=0;
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
-    int count=0;
+    int count=0,ram=0;
     char    msg[MAXLINE];
     struct timeval etstart, etstop;  /* Elapsed times using gettimeofday() */
 	struct timezone tzdummy;
@@ -237,7 +237,7 @@ void c_client()
 	unsigned long long usecstart, usecstop;
 	struct tms cputstart, cputstop;  /* CPU times for my processes */
 
-    if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+   if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
         exit(0);  
     }  
@@ -245,43 +245,67 @@ void c_client()
 
     memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
     c_clientaddr.sun_family = AF_UNIX;  
-    strcpy(c_clientaddr.sun_path, "../SERV");
+
+     /*strcpy(c_clientaddr.sun_path, "../SERV");
 
     printf("Begin connect \n");  
     if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
-    }  
+    }  */
     
 
     while(1)
     {
+        ////sendline=NULL;
+        //printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
+        //fgets(sendline, 4096, stdin);  
+        ////send cmd to central server and receive back
+        //if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+        //{  
+        //    printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+        //    exit(0);  
+        //}   
+        ////receive confirm msg from central server
+        //if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+        //    perror("recv error");  
+        //    exit(1);  
+        //}  
+        //cmdno=atoi(buf);
+        //printf("Received : %d\n ",cmdno);
         //sendline=NULL;
+
+
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
-        //send cmd to central server and receive back
-        if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
-        {  
-            printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
-            exit(0);  
-        }   
-        //receive confirm msg from central server
-        if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
-            perror("recv error");  
-            exit(1);  
-        }  
-        cmdno=atoi(buf);
-        printf("Received : %d\n ",cmdno);
-
+        cmdno=atoi(sendline);
 
 //----------------------------------------------------Register
         if(cmdno == 1)
         {
             printf("Input the filename to register: ");  
             fgets(filename, MAXLINE, stdin);  
-
             if((end=strchr(filename,'\n')) != NULL)
                 *end = '\0';
+            ram=rand()%4;
+            strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
+            printf("Begin connecting  to SERVER%d\n", ram);  
+            if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
+                printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
+                exit(0);  
+            }
+            //send cmd to central server and receive back
+            if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+            {  
+                printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+                exit(0);  
+            }   
+
+            //receive confirm msg from central server
+            if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+                perror("recv error");  
+                exit(1);  
+            }  
             //display in output
             file_out = fopen("../output.txt","a+");
             sprintf(msg,"%s register filename %s\n",HOST,filename);
@@ -289,6 +313,7 @@ void c_client()
             fclose(file_out);
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
+            close(c_client_fd);  
         }
   //----------------------------------------------------Download
         if(cmdno == 2)

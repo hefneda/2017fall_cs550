@@ -42,10 +42,6 @@ pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
 
 int main(int argc, char** argv)  
 {  
-    //setup server by using sockets
-    //int i;
-    //for(i=0;i<4;i++)
-    //    build(i);
 
     pthread_t threads[ NUM_S];                           //num of clients and indexing server
 	int i;
@@ -71,7 +67,7 @@ void th_func(void *i)
 {
     //run this client as a client to receive and lookup file and registry
     int num = *((int *)i);
-    printf("------------This is index server%d--------\n",num); 
+    printf("------------This is index server%d--------\n",num+1); 
     build(num);
 
 }
@@ -129,17 +125,18 @@ void fthread(void)                               //wait for registry client
     char peerid[16];
     pfile *found_files[MAXFILENUM] = {NULL}; 
 
-    printf("Begin Accept! \n");             //accept clients
-    if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
-    {  
-        printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
-    }  
-
-    printf("Client Connected, Wait client cmd \n");
+ 
 
     while(1)
     {  
-        printf("Wait another client cmd \n");
+        if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
+        {  
+            printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
+        }  
+
+        printf("Client Connected, Wait client cmd \n");
+
+ 
 
         if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;
@@ -187,7 +184,7 @@ void fthread(void)                               //wait for registry client
                 printf("We can not find it\n");
                 send(c_fd, "2", 8,0);
             }
-            
+            printf("Wait another client cmd \n");
             break;
         }
 
