@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     }  
     strcpy(HOST,argv[1]);
 
-    file_c=fopen("../config.txt","r");
+    file_c=fopen("config.txt","r");
     if(get_server(SERVER,file_c)<1)                         //read config to get all server addresses
     {  
         printf("fail to read config\n");  
