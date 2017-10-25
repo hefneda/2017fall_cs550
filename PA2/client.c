@@ -26,7 +26,7 @@ void build_serversock(void);
 void create_th(void);  
 void c_server(void);
 void download(char *filename,char *peerid);
-int get_server(char &server, FILE *file_c);
+int get_server(char *server, FILE *file_c);
 
 #define NUM_C 3
 #define NUM_S 4
@@ -447,12 +447,12 @@ void download(char *filename,char *peerid)
 	close(cd_fd);
 }
 
-int get_server(char &server, FILE *file_c)
+int get_server(char *server, FILE *file_c)
 {
     char szTest[1000] = {0};  
     int len = 0;  
     int i=0;
-    if(NULL == file_c)
+    if(file_c == NULL)
 	{
 		printf("failed to open dos.txt\n");
 		return -1;
