@@ -124,7 +124,7 @@ void fthread(void)                               //wait for registry client
     char filename[MAXLINE];
     char peerid[16];
     pfile *found_files[MAXFILENUM] = {NULL}; 
-    printf("Begin accept0:\n");  
+    printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
     {  
         socklen_t len = sizeof(c_address);
