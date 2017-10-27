@@ -33,7 +33,7 @@ void th_func(void *i);
 #define NUM_C 4
 #define MAXLINE 512
 #define MAXFILENUM 99
-#define NUM_S 4
+#define NUM_S 1
 
 char HOST[4][16]={"SERV1","SERV2","SERV3","SERV4"};
 int socket_fd;
@@ -75,7 +75,7 @@ void th_func(void *i)
 void build(int z)
 {
     int i;
-    pthread_t thread[NUM_C *2];
+    pthread_t thread[NUM_C];
     int on=1;  
     int ret;
 
@@ -99,7 +99,7 @@ void build(int z)
     }
     printf("bind socket success, address:%s\n",servaddr.sun_path);
 
-    if( listen(socket_fd, NUM_C * 2) == -1){  
+    if( listen(socket_fd, NUM_C ) == -1){  
         printf("listen socket error: %s(errno: %d)\n",strerror(errno),errno);                 //listen
         exit(0);  
     }  
@@ -135,7 +135,6 @@ void fthread(void)                               //wait for registry client
         }  
 
         printf("Client Connected, Wait client cmd \n");
-        printf("Wait another client cmd \n");
 
         if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;
