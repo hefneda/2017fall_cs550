@@ -124,7 +124,7 @@ void fthread(void)                               //wait for registry client
             //Register the file 
            registry(peerid,filename);
 
-           printf("Register Success!\n");
+           printf("This is %lu, Register Success!\n",pthread_self());
 
            //print filelist
           print_registry();
