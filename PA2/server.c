@@ -153,7 +153,6 @@ void fthread(void *socket)                               //wait for registry cli
         case 1:                                                                    
             if(send(c_fd, "1", 8,0) == -1)                              //send confirm msg to client
                 perror("send error");
-            printf("Request for Registry Rceived, Begin to Receive Filename and peerid\n");
             recv(c_fd,(void *)filename,MAXLINE,0);
             recv(c_fd,(void *)peerid,16,0);
 
@@ -162,10 +161,11 @@ void fthread(void *socket)                               //wait for registry cli
             //Register the file 
            registry(peerid,filename,files);
 
-           printf("Register Success!\n");
+           printf("This is %d, Register Success!\n",socket_fd);
 
            //print filelist
-          print_registry(files);
+           
+           print_registry(files);
            break;
 //-------------------------------------------------------------For searchfile
         case 2:
