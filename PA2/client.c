@@ -237,23 +237,10 @@ void c_client()
 	unsigned long long usecstart, usecstop;
 	struct tms cputstart, cputstop;  /* CPU times for my processes */
 
-   if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
-        printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
-        exit(0);  
-    }  
+    
     printf("Success Create Socket \n");  
 
     
-
-     /*strcpy(c_clientaddr.sun_path, "../SERV");
-
-    printf("Begin connect \n");  
-    if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
-        printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
-        exit(0);  
-    }  */
-    
-
     while(1)
     {
         ////sendline=NULL;
@@ -273,7 +260,10 @@ void c_client()
         //cmdno=atoi(buf);
         //printf("Received : %d\n ",cmdno);
         //sendline=NULL;
-
+        if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+            printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+            exit(0);  
+        } 
 
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
@@ -283,6 +273,7 @@ void c_client()
 //----------------------------------------------------Register
         if(cmdno == 1)
         {
+
             printf("Input the filename to register: ");  
             fgets(filename, MAXLINE, stdin);  
             if((end=strchr(filename,'\n')) != NULL)
@@ -314,7 +305,7 @@ void c_client()
             fclose(file_out);
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
-           // close(c_client_fd);  
+            close(c_client_fd);  
         }
   //----------------------------------------------------Download
         if(cmdno == 2)
