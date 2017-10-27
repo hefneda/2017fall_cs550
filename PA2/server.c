@@ -106,7 +106,7 @@ void build(int z)
         printf("listen socket error: %s(errno: %d)\n",strerror(errno),errno);                 //listen
         exit(0);  
     }  
-    printf("======waiting for client's request%d======\n",socket_fd);  
+    //printf("======waiting for client's request%d======\n",socket_fd);  
 
     //create threads to handle multiple tasks
 
