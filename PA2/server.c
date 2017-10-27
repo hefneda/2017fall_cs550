@@ -106,7 +106,7 @@ void build(int z)
         printf("listen socket error: %s(errno: %d)\n",strerror(errno),errno);                 //listen
         exit(0);  
     }  
-    printf("======waiting for client's request======\n");  
+    printf("======waiting for client's request%d======\n",socket_fd);  
 
     //create threads to handle multiple tasks
 
@@ -129,7 +129,7 @@ void fthread(void *socket)                               //wait for registry cli
     pfile *found_files[MAXFILENUM] = {NULL}; 
 
     int socket_fd= *((int *)socket);//---------------------------------------------------------------------------------------------------------
-
+    printf("Begin%d \n:",socket_fd);  
     //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
     {  
