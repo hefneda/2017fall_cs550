@@ -161,7 +161,7 @@ void fthread(void *socket)                               //wait for registry cli
             //Register the file 
            registry(peerid,filename,files);
 
-           printf("This is %d, Register Success!\n",pthread_self());
+           printf("This is %lu, Register Success!\n",pthread_self());
 
            //print filelist
            
