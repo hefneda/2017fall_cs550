@@ -232,7 +232,7 @@ void c_client()
     int count=0,ram=0;
     char    msg[MAXLINE];
     struct timeval etstart, etstop;  /* Elapsed times using gettimeofday() */
-	struct timezone tzdummy;`
+	struct timezone tzdummy;
 	clock_t etstart2, etstop2;	/* Elapsed times using times() */
 	unsigned long long usecstart, usecstop;
 	struct tms cputstart, cputstop;  /* CPU times for my processes */
