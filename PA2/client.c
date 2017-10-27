@@ -232,7 +232,7 @@ void c_client()
     int count=0,ram=0;
     char    msg[MAXLINE];
     struct timeval etstart, etstop;  /* Elapsed times using gettimeofday() */
-	struct timezone tzdummy;
+	struct timezone tzdummy;`
 	clock_t etstart2, etstop2;	/* Elapsed times using times() */
 	unsigned long long usecstart, usecstop;
 	struct tms cputstart, cputstop;  /* CPU times for my processes */
@@ -288,7 +288,7 @@ void c_client()
             if((end=strchr(filename,'\n')) != NULL)
                 *end = '\0';
             ram=rand()%4;
-            strcpy(c_clientaddr.sun_path,"../SERV4");     //randomly choose index server to register file
+            strcpy(c_clientaddr.sun_path,"../SERV1");     //randomly choose index server to register file
             //strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
             printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
             if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
