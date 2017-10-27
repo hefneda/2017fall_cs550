@@ -107,9 +107,9 @@ void build(int z)
 
     //create threads to handle multiple tasks
 
-    for(i = 0; i < NUM_C * 2; i++)
+    for(i = 0; i < NUM_C ; i++)
         pthread_create(&thread[i],NULL,(void *)fthread,NULL);
-    for(i = 0; i < NUM_C * 2; i++)
+    for(i = 0; i < NUM_C ; i++)
         pthread_join(thread[i],NULL);
 
     close(socket_fd);  
@@ -124,7 +124,7 @@ void fthread(void)                               //wait for registry client
     char filename[MAXLINE];
     char peerid[16];
     pfile *found_files[MAXFILENUM] = {NULL}; 
-    printf("Begin accept0:");  
+    printf("Begin accept0:\n");  
     while(1)
     {  
         socklen_t len = sizeof(c_address);
