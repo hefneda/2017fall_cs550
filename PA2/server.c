@@ -36,8 +36,8 @@ void th_func(void *i);
 #define NUM_S 2
 
 char HOST[4][16]={"SERV1","SERV2","SERV3","SERV4"};
-int socket_fd;
-struct sockaddr_un     servaddr; 
+//int socket_fd;
+//struct sockaddr_un     servaddr; 
 pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
 
 int main(int argc, char** argv)  
@@ -79,6 +79,9 @@ void build(int z)
     int on=1;  
     int ret;
 
+    int socket_fd;
+    struct sockaddr_un     servaddr; 
+
      if( (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
         printf("create socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
@@ -108,23 +111,26 @@ void build(int z)
     //create threads to handle multiple tasks
 
     for(i = 0; i < NUM_C ; i++)
-        pthread_create(&thread[i],NULL,(void *)fthread,NULL);
+        pthread_create(&thread[i],NULL,(void *)fthread,&socket_fd);
     for(i = 0; i < NUM_C ; i++)
         pthread_join(thread[i],NULL);
 
     close(socket_fd);  
 }
-void fthread(void)                               //wait for registry client
+void fthread(void *socket)                               //wait for registry client
 {
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
     int cmdno=0;
-   
+    
     char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAXLINE];
     char peerid[16];
     pfile *found_files[MAXFILENUM] = {NULL}; 
-    printf("%s Begin accept--\n",servaddr.sun_path);  
+
+    int socket_fd= *((int *)socket);//---------------------------------------------------------------------------------------------------------
+
+    //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
     {  
         socklen_t len = sizeof(c_address);
