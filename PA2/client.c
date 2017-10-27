@@ -490,6 +490,7 @@ int get_server( FILE *file_c)
 		fgets(szTest, sizeof(szTest) - 1, file_c);
         printf("%s", szTest); 
         strcpy(SERVER[i],szTest);
+        SERVER[i][strlen(SERVER[i])-1]=0;
         i++;
 	}
     return 0;
