@@ -130,10 +130,11 @@ void fthread(void *socket)                               //wait for registry cli
     pfile *files[MAXFILENUM] = {NULL};   
 
     int socket_fd= *((int *)socket);//---------------------------------------------------------------------------------------------------------
-    printf("Begin%d \n:",socket_fd);  
+    
     //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
     {  
+        printf("Begin%lu \n:",pthread_self());  
         socklen_t len = sizeof(c_address);
 
         if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
