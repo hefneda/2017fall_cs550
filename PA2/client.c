@@ -288,7 +288,7 @@ void c_client()
             if((end=strchr(filename,'\n')) != NULL)
                 *end = '\0';
             ram=rand()%4;
-            strcpy(c_clientaddr.sun_path,"../SERV2");     //randomly choose index server to register file
+            strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
             //strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
             printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
             if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
