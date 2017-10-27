@@ -33,7 +33,7 @@ void th_func(void *i);
 #define NUM_C 4
 #define MAXLINE 512
 #define MAXFILENUM 99
-#define NUM_S 1
+#define NUM_S 2
 
 char HOST[4][16]={"SERV1","SERV2","SERV3","SERV4"};
 int socket_fd;
