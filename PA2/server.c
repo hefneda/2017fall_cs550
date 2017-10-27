@@ -22,23 +22,23 @@ typedef struct
 
 
 void fthread(void* socket);
-int registry(const char *peerid, const char *filename);
-int check_file(const char *peerid, const char *filename);
-void print_registry(void);
-int search(char *filename );
-void sendidlist(int c_fd,char* filename);
+int registry(const char *peerid, const char *filename, pfile **files);
+int check_file(const char *peerid, const char *filename, pfile **files);
+void print_registry(pfile **files);
+int search(char *filename , pfile **files);
+void sendidlist(int c_fd,char* filename, pfile **files);
 void build(int z);
 void th_func(void *i);
 
 #define NUM_C 4
 #define MAXLINE 512
 #define MAXFILENUM 99
-#define NUM_S 2
+#define NUM_S 4
 
 char HOST[4][16]={"SERV1","SERV2","SERV3","SERV4"};
 //int socket_fd;
 //struct sockaddr_un     servaddr; 
-pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
+//pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
 
 int main(int argc, char** argv)  
 {  
@@ -126,7 +126,8 @@ void fthread(void *socket)                               //wait for registry cli
     char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAXLINE];
     char peerid[16];
-    pfile *found_files[MAXFILENUM] = {NULL}; 
+
+    pfile *files[MAXFILENUM] = {NULL};   
 
     int socket_fd= *((int *)socket);//---------------------------------------------------------------------------------------------------------
     printf("Begin%d \n:",socket_fd);  
@@ -134,7 +135,7 @@ void fthread(void *socket)                               //wait for registry cli
     while(1)
     {  
         socklen_t len = sizeof(c_address);
-        printf("Begin accept:");  
+
         if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
         {  
             printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
@@ -159,12 +160,12 @@ void fthread(void *socket)                               //wait for registry cli
             printf("Registry with filename: %s; Peerid:%s \n",filename,peerid);
 
             //Register the file 
-           registry(peerid,filename);
+           registry(peerid,filename,files);
 
            printf("Register Success!\n");
 
            //print filelist
-          print_registry();
+          print_registry(files);
            break;
 //-------------------------------------------------------------For searchfile
         case 2:
@@ -173,14 +174,14 @@ void fthread(void *socket)                               //wait for registry cli
             printf("Request for Download Received\n");
             recv(c_fd,(void *)filename,MAXLINE,0);              //receive filename
             
-            if(search(filename)!=0)                   //filename found
+            if(search(filename,files)!=0)                   //filename found
             {
                 printf("We found it\n");
                 //send back confimation
                 send(c_fd, "1", 8,0);        
                 usleep(1000);
                 //send back the peerids with this filename
-                sendidlist(c_fd,filename);
+                sendidlist(c_fd,filename,files);
 
             }
             else                                                                     //filename not found
@@ -197,10 +198,10 @@ void fthread(void *socket)                               //wait for registry cli
 }
 
 //register file
-int registry(const char *peerid, const char *filename)
+int registry(const char *peerid, const char *filename, pfile **files)
 {
     int i;
-    if(check_file(peerid,filename)==1)    ///check if the filename with the peerid has already been registrated
+    if(check_file(peerid,filename,files)==1)    ///check if the filename with the peerid has already been registrated
     {
         printf("File already registered\n");
         return -1;
@@ -223,7 +224,7 @@ int registry(const char *peerid, const char *filename)
 }
 
 //check if the filename with the peerid has alreadyFF been registrated
-int check_file(const char *peerid, const char *filename)
+int check_file(const char *peerid, const char *filename, pfile **files)
 {
     int i;
 	for(i = 0; i < MAXFILENUM; i++)
@@ -234,7 +235,7 @@ int check_file(const char *peerid, const char *filename)
     return 0;
 }
 
-void print_registry()
+void print_registry( pfile **files)
 {
 	int i;
 	for(i = 0; i < MAXFILENUM; i++)
@@ -246,7 +247,7 @@ void print_registry()
 	}
 }
 
-int search(char *filename )
+int search(char *filename, pfile **files)
 {
    int i;
 	for(i = 0; i < MAXFILENUM; i++)
@@ -258,7 +259,7 @@ int search(char *filename )
 
 }
 
-void sendidlist(int c_fd, char* filename)
+void sendidlist(int c_fd, char* filename, pfile **files)
 {
     int i;
     int count = 0;
