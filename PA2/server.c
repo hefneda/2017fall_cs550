@@ -130,17 +130,17 @@ void fthread(void *socket)                               //wait for registry cli
     pfile *files[MAXFILENUM] = {NULL};   
 
     int socket_fd= *((int *)socket);//---------------------------------------------------------------------------------------------------------
-    
+    socklen_t len = sizeof(c_address);
+
+    if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
+    {  
+        printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
+    }  
     //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
     {  
         printf("Begin%lu \n:",pthread_self());  
-        socklen_t len = sizeof(c_address);
-
-        if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
-        {  
-            printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
-        }  
+        
 
         printf("Client Connected, Wait client cmd \n");
 
