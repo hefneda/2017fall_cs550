@@ -124,13 +124,11 @@ void fthread(void)                               //wait for registry client
     char filename[MAXLINE];
     char peerid[16];
     pfile *found_files[MAXFILENUM] = {NULL}; 
-    
-
-   
-
+    printf("Begin accept0:");  
     while(1)
     {  
         socklen_t len = sizeof(c_address);
+        printf("Begin accept:");  
         if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
         {  
             printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
