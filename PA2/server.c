@@ -30,7 +30,7 @@ void sendidlist(int c_fd,char* filename, pfile **files);
 void build(int z);
 void th_func(void *i);
 
-#define NUM_C 4
+#define NUM_C 2
 #define MAXLINE 512
 #define MAXFILENUM 99
 #define NUM_S 4
