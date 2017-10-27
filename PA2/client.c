@@ -290,7 +290,7 @@ void c_client()
             ram=rand()%4;
             strcpy(c_clientaddr.sun_path,SERVER[0]);     //randomly choose index server to register file
             //strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
-            printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
+            printf("Begin connecting  to %s, num=%d\n", c_clientaddr.sun_path,ram);  
             if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
                 printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
                 exit(0);  
@@ -314,7 +314,7 @@ void c_client()
             fclose(file_out);
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
-            close(c_client_fd);  
+           // close(c_client_fd);  
         }
   //----------------------------------------------------Download
         if(cmdno == 2)
