@@ -21,7 +21,7 @@ typedef struct
 } pfile;
 
 
-void fthread(void);
+void fthread(void* socket);
 int registry(const char *peerid, const char *filename);
 int check_file(const char *peerid, const char *filename);
 void print_registry(void);
