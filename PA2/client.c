@@ -224,7 +224,7 @@ void c_client()
     int    c_client_fd;
     struct sockaddr_un    c_clientaddr;  
     char    recvline[MAXLINE], sendline[MAXLINE];  
-    int    n,rec_len;  
+    int    n,rec_len,i;  
     char    buf[MAXLINE]; 
     int cmdno=0;
     char    filename[MAXLINE], peerid[MAXLINE]; 
@@ -315,7 +315,23 @@ void c_client()
                 etstart2 = times(&cputstart);
                 printf("time test begin!\n");
 
-                lookup(c_client_fd,filename);   //find file and download
+                for(i=0;i<NUM_S,i++)
+                {
+                    if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+                        printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+                        exit(0);  
+                    } 
+                    memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+                    c_clientaddr.sun_family = AF_UNIX;  
+
+                    strcpy(c_clientaddr.sun_path,SERVER[i]);
+                    if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
+                        printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
+                        exit(0);  
+                    }
+                    lookup(c_client_fd,filename);   //find file and download
+                    close(c_client_fd);  
+                }
 
                 printf("time test over!\n");
                 //stop clock
@@ -339,6 +355,7 @@ int lookup(int c_client_fd, char *filename)
     char    buf[MAXLINE]; 
     char *end;
     char    str[MAXLINE];
+    char    addr[MAXLINE];
     char    msg[MAXLINE];
     char peerlist[NUM_C][16];
     char peerid[16];
@@ -350,9 +367,12 @@ int lookup(int c_client_fd, char *filename)
     //wait to see if cental server can find this file
 
     recv(c_client_fd, buf, 8,0);
+
+
     if(atoi(buf)==1)
     {
-        printf("File found by server\n");  
+        recv(c_client_fd, addr, MAXLINE,0);
+        printf("File found by server:%s\n",addr);  
 
         recv(c_client_fd, str, MAXLINE,0);// receive how many peers have file
         count = atoi(str);
@@ -363,13 +383,13 @@ int lookup(int c_client_fd, char *filename)
         fwrite(msg,1,strlen(msg),file_out);
 
        for(i = 0; i < count; i++)
-		{
-			recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
-			printf("%d: %s\n",i,peerlist[i]);
-            //display in output
-             sprintf(msg,"  %d: %s\n",i,peerlist[i]);
-            fwrite(msg,1,strlen(msg),file_out);
-		}
+       {
+           recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
+           printf("%d: %s in %s\n",i,peerlist[i],addr);
+           //display in output
+           sprintf(msg,"  %d: %s\n",i,peerlist[i]);
+           fwrite(msg,1,strlen(msg),file_out);
+       }
         //-----------------------------------------------------------
         fclose(file_out);
        //-----------------------------------------------------------

@@ -151,6 +151,7 @@ void fthread(void *va)                               //wait for registry client
     while(1)
     {  
         printf("Begin accept client \n");  
+        printf("\n");
         socklen_t len = sizeof(c_address);
 
         if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
@@ -173,7 +174,7 @@ void fthread(void *va)                               //wait for registry client
             recv(c_fd,(void *)peerid,16,0);
 
             printf("%s Connect with peer:%s, register with file:%s \n",((vari *)va)->addr,peerid,filename);
-            printf("\n");
+
             //printf("Registry with filename: %s \n",filename);
 
             //Register the file 
@@ -189,14 +190,15 @@ void fthread(void *va)                               //wait for registry client
         case 2:
             if(send(c_fd, "2", 8,0) == -1)                              //send confirm msg to client
                 perror("send error");
-            printf("Request for Download Received\n");
-            recv(c_fd,(void *)filename,MAXLINE,0);              //receive filename
             
+            recv(c_fd,(void *)filename,MAXLINE,0);              //receive filename
+            printf("Request for search file: %s \n",filename);
             if(search(filename,(((vari *)va)->files))!=0)                   //filename found
             {
                 printf("We found it\n");
                 //send back confimation
                 send(c_fd, "1", 8,0);        
+                send(c_fd, ((vari *)va)->addr, MAXLINE,0);        
                 usleep(1000);
                 //send back the peerids with this filename
                 sendidlist(c_fd,filename,(((vari *)va)->files));
