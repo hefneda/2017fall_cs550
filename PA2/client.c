@@ -344,7 +344,7 @@ void c_client()
                         perror("recv error");  
                         exit(1);  
                     } 
-                    flag=lookup(c_client_fd,filename,peerlist);   //find file and download
+                    flag=lookup(c_client_fd,filename,&peerlist);   //find file and download
                     close(c_client_fd);  
                 }
                 if(flag==1)
