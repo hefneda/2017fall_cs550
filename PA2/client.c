@@ -411,6 +411,10 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
     int i=0,j=0;
     file_out = fopen("../output.txt","a+");
     //send filename to download
+    for(j=0;j<4;j++)
+    {
+        printf("11%d: %s\n",j,peerlist[j]);
+    }
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
 
@@ -419,6 +423,7 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
 
     if(atoi(buf)==1)
     {
+
         recv(c_client_fd, addr, MAXLINE,0);
         printf("File found by server:%s\n",addr);  
 
@@ -429,7 +434,10 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
         //receive peerid list
         sprintf(msg," file found in index server,list as below:\n");
         fwrite(msg,1,strlen(msg),file_out);
-    
+        for(j=0;j<4;j++)
+        {
+            printf("22%d: %s\n",j,peerlist[j]);
+        }
        for(i = 0; i < count; i++)
        {
             printf("111111111111111111111111\n");
@@ -440,12 +448,11 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
                    break;
            }
            recv(c_client_fd,str,16,0);	
-            printf("bbbbb%s-%d\n",str,j);
            //strcpy(peerlist[j],str);
             peerlist[j]=str;
             for(j=0;j<4;j++)
             {
-                printf("%d: %s\n",j,peerlist[j]);
+                printf("33%d: %s\n",j,peerlist[j]);
             }
            //display in output
            //sprintf(msg,"  %d: %s\n",i,peerlist[i]);
