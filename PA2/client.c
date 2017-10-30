@@ -344,7 +344,7 @@ void c_client()
                         perror("recv error");  
                         exit(1);  
                     } 
-                    flag=lookup(c_client_fd,filename,&peerlist);   //find file and download
+                    flag=lookup(c_client_fd,filename,peerlist);   //find file and download
                     close(c_client_fd);  
                 }
                 if(flag==1)
@@ -382,7 +382,7 @@ void c_client()
     
     close(c_client_fd);  
 }
-int lookup(int c_client_fd, char *filename,char *peerlist[16])
+int lookup(int c_client_fd, char *filename,char (*peerlist)[16])
 {
     int    n,rec_len;  
     char    buf[MAXLINE]; 
