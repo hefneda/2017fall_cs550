@@ -349,7 +349,7 @@ void c_client()
                 }
                 if(flag==1)
                 {
-                    for(j=0;;j++)
+                    for(j=0;j<NUM_C;j++)
                     {
                         if(peerlist[j]==NULL)
                             break;
