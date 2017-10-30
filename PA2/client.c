@@ -425,7 +425,10 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
         //receive peerid list
         sprintf(msg," file found in index server,list as below:\n");
         fwrite(msg,1,strlen(msg),file_out);
-
+        for(j=0;j<4;j++)
+        {
+            printf("%d: %s\n",j,peerlist[j]);
+        }
        for(i = 0; i < count; i++)
        {
             printf("111111111111111111111111\n");
@@ -438,7 +441,11 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
            recv(c_client_fd,str,16,0);	
             printf("bbbbb%s-%d\n",str,j);
            //strcpy(peerlist[j],str);
-           peerlist[j]=str;
+            peerlist[j]=str;
+            for(j=0;j<4;j++)
+            {
+                printf("%d: %s\n",j,peerlist[j]);
+            }
            //display in output
            //sprintf(msg,"  %d: %s\n",i,peerlist[i]);
            //fwrite(msg,1,strlen(msg),file_out);
