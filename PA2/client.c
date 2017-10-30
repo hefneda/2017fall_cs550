@@ -435,7 +435,8 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
                if(peerlist[j]==NULL)
                    break;
            }
-           recv(c_client_fd,(void *)&peerlist[j][0],16,0);	
+           recv(c_client_fd,str,16,0);	
+           strcpy(peerlist[j],str);
            //display in output
            //sprintf(msg,"  %d: %s\n",i,peerlist[i]);
            //fwrite(msg,1,strlen(msg),file_out);
