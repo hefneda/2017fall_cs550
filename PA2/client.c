@@ -325,6 +325,7 @@ void c_client()
                     c_clientaddr.sun_family = AF_UNIX;  
 
                     strcpy(c_clientaddr.sun_path,SERVER[i]);
+
                     if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
                         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
                         exit(0);  
