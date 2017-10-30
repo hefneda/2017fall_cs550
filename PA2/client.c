@@ -382,7 +382,7 @@ void c_client()
     
     close(c_client_fd);  
 }
-int lookup(int c_client_fd, char *filename,char **peerlist)
+int lookup(int c_client_fd, char *filename,char *peerlist[16])
 {
     int    n,rec_len;  
     char    buf[MAXLINE]; 
