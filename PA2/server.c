@@ -144,9 +144,9 @@ void fthread(void *va)                               //wait for registry client
 
     //pfile *files[MAXFILENUM] = {NULL};   
 
-    int socket_fd= *((int *)(((vari *)va)->socket));//---------------------------------------------------------------------------------------------------------
+    int socket_fd= *((int *)(((vari *)va)->socket_fd));//---------------------------------------------------------------------------------------------------------
     pfile *files[MAXFILENUM];
-    files=(pfile *)(((vari *)va)->files)
+    files=*(pfile *)(((vari *)va)->files)
     //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
     {  
