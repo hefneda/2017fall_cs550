@@ -90,8 +90,8 @@ void build(int z)
 
     vari v=
     {
-        .socket_fd=0;
-        .files=NULL;
+        .socket_fd=0,
+        .files=NULL,
     };
    
     struct sockaddr_un     servaddr; 
