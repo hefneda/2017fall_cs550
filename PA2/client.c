@@ -436,6 +436,7 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
                    break;
            }
            recv(c_client_fd,str,16,0);	
+            printf("bbbbb%s-%d\n",str,j);
            //strcpy(peerlist[j],str);
            peerlist[j]=str;
            //display in output
