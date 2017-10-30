@@ -424,10 +424,16 @@ int lookup(int c_client_fd, char *filename,char (*peerlist)[16])
 
        for(i = 0; i < count; i++)
        {
-           recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
+            printf("111111111111111111111111\n");
+           for(j=0;;j++)
+           {
+               if(peerlist[j]=="\0")
+                   break;
+           }
+           recv(c_client_fd,(void *)&peerlist[j][0],16,0);	
            //display in output
-           sprintf(msg,"  %d: %s\n",i,peerlist[i]);
-           fwrite(msg,1,strlen(msg),file_out);
+           //sprintf(msg,"  %d: %s\n",i,peerlist[i]);
+           //fwrite(msg,1,strlen(msg),file_out);
        }
         //-----------------------------------------------------------
        fclose(file_out);
