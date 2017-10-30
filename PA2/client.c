@@ -264,7 +264,7 @@ void c_client()
                 *end = '\0';
             ram=rand()%4;
             strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
-            //strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
+
             printf("Begin connecting  to %s, num=%d\n", c_clientaddr.sun_path,ram);  
             if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
                 printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  

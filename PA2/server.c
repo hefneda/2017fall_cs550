@@ -18,7 +18,7 @@
 #define MAXFILENUM 99
 #define NUM_S 4
 
-typedef struct
+typedef struct                                //use struct to pass multi-parameter to thread
 {
     char *filename;
 	char peerid[16];
@@ -29,7 +29,7 @@ typedef struct
 {
     int socket_fd;
     pfile *files[MAXFILENUM]; 
-	
+	char *addr;
 }vari;
 
 
@@ -105,6 +105,7 @@ void build(int z)
     memset(&servaddr, 0, sizeof(servaddr));  
     servaddr.sun_family = AF_UNIX;  
     strcpy(servaddr.sun_path, HOST[z]);
+    strcpy(v.addr, HOST[z]);
     unlink(servaddr.sun_path);
     //------------------------------avoid error: address already in use
 
@@ -145,12 +146,10 @@ void fthread(void *va)                               //wait for registry client
     //pfile *files[MAXFILENUM] = {NULL};   
 
     int socket_fd= ((vari *)va)->socket_fd;//---------------------------------------------------------------------------------------------------------
-    //pfile *files[MAXFILENUM]=*(((vari *)va)->files);
-   // files=*(((vari *)va)->files);
-    //printf("%s Begin accept--\n",servaddr.sun_path);  
+
     while(1)
     {  
-        printf("Begin%lu \n:",pthread_self());  
+        printf("Begin accept client \n",pthread_self());  
         socklen_t len = sizeof(c_address);
 
         if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
@@ -158,7 +157,6 @@ void fthread(void *va)                               //wait for registry client
             printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
         }  
 
-        printf("Client Connected, Wait client cmd \n");
 
         if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;
@@ -173,12 +171,14 @@ void fthread(void *va)                               //wait for registry client
             recv(c_fd,(void *)filename,MAXLINE,0);
             recv(c_fd,(void *)peerid,16,0);
 
-            printf("Registry with filename: %s; Peerid:%s \n",filename,peerid);
+            printf("%s Connect with peer:%s, register with file:%s \n",((vari *)va)->addr,peerid,filename);
+            printf("\n");
+            //printf("Registry with filename: %s \n",filename);
 
             //Register the file 
            registry(peerid,filename,(((vari *)va)->files));
 
-           printf("This is %lu, Register Success!\n",pthread_self());
+           printf("This is %s, Register Success!\n",((vari *)va)->addr);
 
            //print filelist
            
