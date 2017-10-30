@@ -345,6 +345,10 @@ void c_client()
                         exit(1);  
                     } 
                     flag=lookup(c_client_fd,filename,peerlist);   //find file and download
+                    for(j=0;j<4;j++)
+                    {
+                        printf("%d: %s\n",j,peerlist[j]);
+                    }
                     close(c_client_fd);  
                 }
                 if(flag==1)
@@ -425,10 +429,7 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
         //receive peerid list
         sprintf(msg," file found in index server,list as below:\n");
         fwrite(msg,1,strlen(msg),file_out);
-        for(j=0;j<4;j++)
-        {
-            printf("%d: %s\n",j,peerlist[j]);
-        }
+    
        for(i = 0; i < count; i++)
        {
             printf("111111111111111111111111\n");
