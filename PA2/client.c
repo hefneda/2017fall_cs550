@@ -21,7 +21,7 @@
 void th_func(void *i);
 void c_client(void);
 void c_server(void);
-int lookup(int c_client_fd, char *filename);
+int lookup(int c_client_fd, char *filename,char **peerlist);
 void build_serversock(void);                                
 void create_th(void);  
 void c_server(void);
@@ -224,19 +224,20 @@ void c_client()
     int    c_client_fd;
     struct sockaddr_un    c_clientaddr;  
     char    recvline[MAXLINE], sendline[MAXLINE];  
-    int    n,rec_len,i;  
+    int    n,rec_len,i,peernum;  
     char    buf[MAXLINE]; 
     int cmdno=0;
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
-    int count=0,ram=0;
+    int count=0,ram=0,flag=0;
     char    msg[MAXLINE];
     struct timeval etstart, etstop;  /* Elapsed times using gettimeofday() */
 	struct timezone tzdummy;
 	clock_t etstart2, etstop2;	/* Elapsed times using times() */
 	unsigned long long usecstart, usecstop;
-	struct tms cputstart, cputstop;  /* CPU times for my processes */
-
+    struct tms cputstart, cputstop;  /* CPU times for my processes */
+    char peerid[16];
+    char peerlist[NUM_C][16];
     
     printf("Success Create Socket \n");  
 
@@ -342,8 +343,26 @@ void c_client()
                         perror("recv error");  
                         exit(1);  
                     } 
-                    lookup(c_client_fd,filename);   //find file and download
+                    flag=lookup(c_client_fd,filename,&peerlist);   //find file and download
                     close(c_client_fd);  
+                }
+                if(flag==1)
+                {
+                    // get which peer to download
+                    printf("Choose which peer to download:");
+                    fgets(str,MAXLINE,stdin);
+                    peernum = atoi(str);
+                    if(peernum < 0 || peernum > count)
+                        printf("Invalid input, try again\n");
+                    strcpy(peerid,peerlist[peernum]);
+                    printf("you select peer: %s, begin download\n",peerid);
+
+                    //begin download
+                    download(filename, peerid);
+                }
+                else
+                {
+                    printf("Fail to find file\n");  
                 }
 
                 printf("time test over!\n");
@@ -362,19 +381,19 @@ void c_client()
     
     close(c_client_fd);  
 }
-int lookup(int c_client_fd, char *filename)
+int lookup(int c_client_fd, char *filename,char **peerlist)
 {
-    int    n,rec_len,peernum;  
+    int    n,rec_len;  
     char    buf[MAXLINE]; 
     char *end;
     char    str[MAXLINE];
     char    addr[MAXLINE];
     char    msg[MAXLINE];
-    char peerlist[NUM_C][16];
-    char peerid[16];
+
+
     int count=0;
     int i=0;
-   file_out = fopen("../output.txt","a+");
+    file_out = fopen("../output.txt","a+");
     //send filename to download
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
@@ -404,31 +423,19 @@ int lookup(int c_client_fd, char *filename)
            fwrite(msg,1,strlen(msg),file_out);
        }
         //-----------------------------------------------------------
-        fclose(file_out);
+       fclose(file_out);
        //-----------------------------------------------------------
-        // get which peer to download
-       printf("Choose which peer to download:");
-       fgets(str,MAXLINE,stdin);
-       peernum = atoi(str);
-       if(peernum < 0 || peernum > count)
-           printf("Invalid input, try again\n");
-       strcpy(peerid,peerlist[peernum]);
-       printf("you select peer: %s, begin download\n",peerid);
-
-       //begin download
-       download(filename, peerid);
        return 1;
     }
     else
     {
-        printf("Fail to find file\n");  
+        
                 //display in output
         sprintf(msg,"Fail to find file\n");
         fwrite(msg,1,strlen(msg),file_out);
         fclose(file_out);
         return 0;
     }
-     return 0;
 }
 
 void download(char *filename,char *peerid)
