@@ -236,8 +236,9 @@ void c_client()
 	clock_t etstart2, etstop2;	/* Elapsed times using times() */
 	unsigned long long usecstart, usecstop;
     struct tms cputstart, cputstop;  /* CPU times for my processes */
-    char peerid[16];
-    char peerlist[NUM_C][16];
+    char dl_peerid[16];
+    char *peerlist[16];
+    char    str[MAXLINE];
     
     printf("Success Create Socket \n");  
 
@@ -354,11 +355,11 @@ void c_client()
                     peernum = atoi(str);
                     if(peernum < 0 || peernum > count)
                         printf("Invalid input, try again\n");
-                    strcpy(peerid,peerlist[peernum]);
-                    printf("you select peer: %s, begin download\n",peerid);
+                    strcpy(dl_peerid,peerlist[peernum]);
+                    printf("you select peer: %s, begin download\n",dl_peerid);
 
                     //begin download
-                    download(filename, peerid);
+                    download(filename, dl_peerid);
                 }
                 else
                 {
