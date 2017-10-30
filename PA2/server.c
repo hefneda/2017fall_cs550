@@ -20,6 +20,13 @@ typedef struct
 	
 } pfile;
 
+typedef struct
+{
+    int socket_fd;
+    pfile *files[MAXFILENUM]={NULL}; 
+	
+}vari;
+
 
 void fthread(void* socket);
 int registry(const char *peerid, const char *filename, pfile **files);
@@ -79,10 +86,11 @@ void build(int z)
     int on=1;  
     int ret;
 
-    int socket_fd;
+    vari v;
+   
     struct sockaddr_un     servaddr; 
 
-     if( (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
+     if( (v->socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
         printf("create socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }  
@@ -93,16 +101,16 @@ void build(int z)
     unlink(servaddr.sun_path);
     //------------------------------avoid error: address already in use
 
-    ret=setsockopt(socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
+    ret=setsockopt(v->socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
 
 
-    if( bind(socket_fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){          //bind
+    if( bind(v->socket_fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){          //bind
         printf("bind socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }
     printf("bind socket success, address:%s\n",servaddr.sun_path);
 
-    if( listen(socket_fd, NUM_C ) == -1){  
+    if( listen(v->socket_fd, NUM_C ) == -1){  
         printf("listen socket error: %s(errno: %d)\n",strerror(errno),errno);                 //listen
         exit(0);  
     }  
@@ -111,13 +119,13 @@ void build(int z)
     //create threads to handle multiple tasks
 
     for(i = 0; i < NUM_C ; i++)
-        pthread_create(&thread[i],NULL,(void *)fthread,&socket_fd);
+        pthread_create(&thread[i],NULL,(void *)fthread,&v);
     for(i = 0; i < NUM_C ; i++)
         pthread_join(thread[i],NULL);
 
-    close(socket_fd);  
+    close(v->socket_fd);  
 }
-void fthread(void *socket)                               //wait for registry client
+void fthread(void *v)                               //wait for registry client
 {
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
@@ -127,20 +135,20 @@ void fthread(void *socket)                               //wait for registry cli
     char filename[MAXLINE];
     char peerid[16];
 
-    pfile *files[MAXFILENUM] = {NULL};   
+    //pfile *files[MAXFILENUM] = {NULL};   
 
-    int socket_fd= *((int *)socket);//---------------------------------------------------------------------------------------------------------
-    socklen_t len = sizeof(c_address);
-
-    if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
-    {  
-        printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
-    }  
+    int socket_fd= *((int *)v->socket);//---------------------------------------------------------------------------------------------------------
+    
     //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
     {  
         printf("Begin%lu \n:",pthread_self());  
-        
+        socklen_t len = sizeof(c_address);
+
+        if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
+        {  
+            printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
+        }  
 
         printf("Client Connected, Wait client cmd \n");
 
@@ -160,13 +168,13 @@ void fthread(void *socket)                               //wait for registry cli
             printf("Registry with filename: %s; Peerid:%s \n",filename,peerid);
 
             //Register the file 
-           registry(peerid,filename,files);
+           registry(peerid,filename,v->files);
 
            printf("This is %lu, Register Success!\n",pthread_self());
 
            //print filelist
            
-           print_registry(files);
+           print_registry(,v->files);
            break;
 //-------------------------------------------------------------For searchfile
         case 2:
