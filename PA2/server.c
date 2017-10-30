@@ -88,11 +88,14 @@ void build(int z)
     int on=1;  
     int ret;
 
-    vari v;
+    vari v=
+    {
+        .socket_fd=0;
+        .files=NULL;
+    };
    
     struct sockaddr_un     servaddr; 
 
-    v.files={NULL};
 
      if( (v.socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
         printf("create socket error: %s(errno: %d)\n",strerror(errno),errno);  
@@ -141,9 +144,9 @@ void fthread(void *va)                               //wait for registry client
 
     //pfile *files[MAXFILENUM] = {NULL};   
 
-    int socket_fd= *((int *)(va->socket));//---------------------------------------------------------------------------------------------------------
+    int socket_fd= *((int *)(((vari *)va)->socket));//---------------------------------------------------------------------------------------------------------
     pfile *files[MAXFILENUM];
-    files=(pfile *)(va->files)
+    files=(pfile *)(((vari *)va)->files)
     //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
     {  
