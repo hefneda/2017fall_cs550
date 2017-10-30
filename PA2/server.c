@@ -144,8 +144,8 @@ void fthread(void *va)                               //wait for registry client
 
     //pfile *files[MAXFILENUM] = {NULL};   
 
-    int socket_fd= *((int *)(((vari *)va)->socket_fd));//---------------------------------------------------------------------------------------------------------
-    pfile *files[MAXFILENUM]=*(((vari *)va)->files);
+    int socket_fd= *(((vari *)va)->socket_fd);//---------------------------------------------------------------------------------------------------------
+    //pfile *files[MAXFILENUM]=*(((vari *)va)->files);
    // files=*(((vari *)va)->files);
     //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
@@ -176,13 +176,13 @@ void fthread(void *va)                               //wait for registry client
             printf("Registry with filename: %s; Peerid:%s \n",filename,peerid);
 
             //Register the file 
-           registry(peerid,filename,files);
+           registry(peerid,filename,*(((vari *)va)->files));
 
            printf("This is %lu, Register Success!\n",pthread_self());
 
            //print filelist
            
-           print_registry(files);
+           print_registry(*(((vari *)va)->files));
            break;
 //-------------------------------------------------------------For searchfile
         case 2:
@@ -191,14 +191,14 @@ void fthread(void *va)                               //wait for registry client
             printf("Request for Download Received\n");
             recv(c_fd,(void *)filename,MAXLINE,0);              //receive filename
             
-            if(search(filename,files)!=0)                   //filename found
+            if(search(filename,*(((vari *)va)->files))!=0)                   //filename found
             {
                 printf("We found it\n");
                 //send back confimation
                 send(c_fd, "1", 8,0);        
                 usleep(1000);
                 //send back the peerids with this filename
-                sendidlist(c_fd,filename,files);
+                sendidlist(c_fd,filename,*(((vari *)va)->files));
 
             }
             else                                                                     //filename not found
