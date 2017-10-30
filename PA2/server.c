@@ -29,7 +29,7 @@ typedef struct
 {
     int socket_fd;
     pfile *files[MAXFILENUM]; 
-	char *addr;
+	char addr[MAXLINE];
 }vari;
 
 
@@ -92,6 +92,7 @@ void build(int z)
     {
         .socket_fd=0,
         .files=NULL,
+        .addr=NULL;
     };
    
     struct sockaddr_un     servaddr; 
