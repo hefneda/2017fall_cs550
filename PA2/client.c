@@ -400,7 +400,7 @@ int lookup(int c_client_fd, char *filename,char (*peerlist)[16])
 
 
     int count=0;
-    int i=0;
+    int i=0,j=0;
     file_out = fopen("../output.txt","a+");
     //send filename to download
     send(c_client_fd,(void *)filename,MAXLINE,0);
