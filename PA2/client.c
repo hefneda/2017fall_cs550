@@ -354,7 +354,7 @@ void c_client()
                         if(peerlist[j]==NULL)
                             break;
                         else
-                            printf("%d: %s in %s\n",j,peerlist[j],addr);
+                            printf("%d: %s\n",j,peerlist[j]);
                     }
                     // get which peer to download
                     printf("Choose which peer to download:");
