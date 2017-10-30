@@ -21,7 +21,7 @@
 void th_func(void *i);
 void c_client(void);
 void c_server(void);
-int lookup(int c_client_fd, char *filename,char (*peerlist)[16]);
+int lookup(int c_client_fd, char *filename,char **peerlist);
 void build_serversock(void);                                
 void create_th(void);  
 void c_server(void);
