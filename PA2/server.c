@@ -13,6 +13,11 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+#define NUM_C 2
+#define MAXLINE 512
+#define MAXFILENUM 99
+#define NUM_S 4
+
 typedef struct
 {
     char *filename;
@@ -37,10 +42,7 @@ void sendidlist(int c_fd,char* filename, pfile **files);
 void build(int z);
 void th_func(void *i);
 
-#define NUM_C 2
-#define MAXLINE 512
-#define MAXFILENUM 99
-#define NUM_S 4
+
 
 char HOST[4][16]={"SERV1","SERV2","SERV3","SERV4"};
 //int socket_fd;
@@ -90,7 +92,7 @@ void build(int z)
    
     struct sockaddr_un     servaddr; 
 
-     if( (v->socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
+     if( (v.socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
         printf("create socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }  
@@ -101,16 +103,16 @@ void build(int z)
     unlink(servaddr.sun_path);
     //------------------------------avoid error: address already in use
 
-    ret=setsockopt(v->socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
+    ret=setsockopt(v.socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
 
 
-    if( bind(v->socket_fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){          //bind
+    if( bind(v.socket_fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){          //bind
         printf("bind socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }
     printf("bind socket success, address:%s\n",servaddr.sun_path);
 
-    if( listen(v->socket_fd, NUM_C ) == -1){  
+    if( listen(v.socket_fd, NUM_C ) == -1){  
         printf("listen socket error: %s(errno: %d)\n",strerror(errno),errno);                 //listen
         exit(0);  
     }  
@@ -123,9 +125,9 @@ void build(int z)
     for(i = 0; i < NUM_C ; i++)
         pthread_join(thread[i],NULL);
 
-    close(v->socket_fd);  
+    close(v.socket_fd);  
 }
-void fthread(void *v)                               //wait for registry client
+void fthread(void *va)                               //wait for registry client
 {
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
@@ -137,8 +139,9 @@ void fthread(void *v)                               //wait for registry client
 
     //pfile *files[MAXFILENUM] = {NULL};   
 
-    int socket_fd= *((int *)v->socket);//---------------------------------------------------------------------------------------------------------
-    
+    int socket_fd= *((int *)(v->socket));//---------------------------------------------------------------------------------------------------------
+    pfile *files[MAXFILENUM];
+    files=(pfile *)(v->files)
     //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
     {  
@@ -174,7 +177,7 @@ void fthread(void *v)                               //wait for registry client
 
            //print filelist
            
-           print_registry(,v->files);
+           print_registry(,files);
            break;
 //-------------------------------------------------------------For searchfile
         case 2:
