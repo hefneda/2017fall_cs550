@@ -315,7 +315,7 @@ void c_client()
                 etstart2 = times(&cputstart);
                 printf("time test begin!\n");
 
-                for(i=0;i<NUM_S,i++)
+                for(i=0;i<NUM_S;i++)
                 {
                     if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
                         printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
