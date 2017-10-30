@@ -21,7 +21,7 @@
 void th_func(void *i);
 void c_client(void);
 void c_server(void);
-int lookup(int c_client_fd, char *filename,char **peerlist);
+int lookup(int c_client_fd, char *filename);
 void build_serversock(void);                                
 void create_th(void);  
 void c_server(void);
@@ -42,6 +42,7 @@ int cs_fd;
 int f=0;
 FILE *file_out;
 char SERVER[4][MAXNAME];
+char *peerlist[16]={NULL};
 
 int main(int argc, char** argv)  
 {  
@@ -237,7 +238,7 @@ void c_client()
 	unsigned long long usecstart, usecstop;
     struct tms cputstart, cputstop;  /* CPU times for my processes */
     char dl_peerid[16];
-    char *peerlist[16]={NULL};
+    
     char    str[MAXLINE];
     
     printf("Success Create Socket \n");  
@@ -344,7 +345,7 @@ void c_client()
                         perror("recv error");  
                         exit(1);  
                     } 
-                    flag=lookup(c_client_fd,filename,peerlist);   //find file and download
+                    flag=lookup(c_client_fd,filename);   //find file and download
                     for(j=0;j<4;j++)
                     {
                         printf("%d: %s\n",j,peerlist[j]);
@@ -397,7 +398,7 @@ void c_client()
     
     close(c_client_fd);  
 }
-int lookup(int c_client_fd, char *filename,char **peerlist)
+int lookup(int c_client_fd, char *filename)
 {
     int    n,rec_len;  
     char    buf[MAXLINE]; 
@@ -434,10 +435,7 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
         //receive peerid list
         sprintf(msg," file found in index server,list as below:\n");
         fwrite(msg,1,strlen(msg),file_out);
-        for(j=0;j<4;j++)
-        {
-            printf("22%d: %s\n",j,peerlist[j]);
-        }
+
        for(i = 0; i < count; i++)
        {
             printf("111111111111111111111111\n");
@@ -450,10 +448,7 @@ int lookup(int c_client_fd, char *filename,char **peerlist)
            recv(c_client_fd,str,16,0);	
            //strcpy(peerlist[j],str);
             peerlist[j]=str;
-            for(j=0;j<4;j++)
-            {
-                printf("33%d: %s\n",j,peerlist[j]);
-            }
+
            //display in output
            //sprintf(msg,"  %d: %s\n",i,peerlist[i]);
            //fwrite(msg,1,strlen(msg),file_out);
