@@ -244,19 +244,26 @@ void c_client()
     while(1)
     {
 
-        if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
-            printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
-            exit(0);  
-        } 
+        //if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+        //    printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+        //    exit(0);  
+        //} 
 
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
         cmdno=atoi(sendline);
-        memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
-        c_clientaddr.sun_family = AF_UNIX;  
+/*        memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+        c_clientaddr.sun_family = AF_UNIX; */ 
 //----------------------------------------------------Register
         if(cmdno == 1)
         {
+
+            if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+                printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+                exit(0);  
+            } 
+            memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+            c_clientaddr.sun_family = AF_UNIX;  
 
             printf("Input the filename to register: ");  
             fgets(filename, MAXLINE, stdin);  
