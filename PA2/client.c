@@ -243,23 +243,7 @@ void c_client()
     
     while(1)
     {
-        ////sendline=NULL;
-        //printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
-        //fgets(sendline, 4096, stdin);  
-        ////send cmd to central server and receive back
-        //if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
-        //{  
-        //    printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
-        //    exit(0);  
-        //}   
-        ////receive confirm msg from central server
-        //if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
-        //    perror("recv error");  
-        //    exit(1);  
-        //}  
-        //cmdno=atoi(buf);
-        //printf("Received : %d\n ",cmdno);
-        //sendline=NULL;
+
         if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
             printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
             exit(0);  
@@ -279,7 +263,7 @@ void c_client()
             if((end=strchr(filename,'\n')) != NULL)
                 *end = '\0';
             ram=rand()%4;
-            strcpy(c_clientaddr.sun_path,SERVER[0]);     //randomly choose index server to register file
+            strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
             //strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
             printf("Begin connecting  to %s, num=%d\n", c_clientaddr.sun_path,ram);  
             if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
