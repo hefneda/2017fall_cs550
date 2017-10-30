@@ -188,15 +188,12 @@ void fthread(void *va)                               //wait for registry client
            break;
 //-------------------------------------------------------------For searchfile
         case 2:
-            printf("111111111111111111111111\n");  
             if(send(c_fd, "2", 8,0) == -1)                              //send confirm msg to client
                 perror("send error");
-            printf("1222222222222222222222222\n");  
             recv(c_fd,(void *)filename,MAXLINE,0);              //receive filename
             printf("Request for search file: %s \n",filename);
             if(search(filename,(((vari *)va)->files))!=0)                   //filename found
             {
-                printf("We found it\n");
                 //send back confimation
                 send(c_fd, "1", 8,0);        
                 send(c_fd, ((vari *)va)->addr, MAXLINE,0);        

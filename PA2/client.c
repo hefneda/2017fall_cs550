@@ -224,7 +224,7 @@ void c_client()
     int    c_client_fd;
     struct sockaddr_un    c_clientaddr;  
     char    recvline[MAXLINE], sendline[MAXLINE];  
-    int    n,rec_len,i,peernum;  
+    int    n,rec_len,i,j,peernum;  
     char    buf[MAXLINE]; 
     int cmdno=0;
     char    filename[MAXLINE], peerid[MAXLINE]; 
@@ -349,6 +349,13 @@ void c_client()
                 }
                 if(flag==1)
                 {
+                    for(j=0;;j++)
+                    {
+                        if(peerlist[j]==NULL)
+                            break;
+                        else
+                            printf("%d: %s in %s\n",j,peerlist[j],addr);
+                    }
                     // get which peer to download
                     printf("Choose which peer to download:");
                     fgets(str,MAXLINE,stdin);
@@ -418,7 +425,6 @@ int lookup(int c_client_fd, char *filename,char (*peerlist)[16])
        for(i = 0; i < count; i++)
        {
            recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
-           printf("%d: %s in %s\n",i,peerlist[i],addr);
            //display in output
            sprintf(msg,"  %d: %s\n",i,peerlist[i]);
            fwrite(msg,1,strlen(msg),file_out);
