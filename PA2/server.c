@@ -145,8 +145,7 @@ void fthread(void *va)                               //wait for registry client
     //pfile *files[MAXFILENUM] = {NULL};   
 
     int socket_fd= *((int *)(((vari *)va)->socket_fd));//---------------------------------------------------------------------------------------------------------
-    pfile *files[MAXFILENUM];
-    files=&(((vari *)va)->files);
+    pfile *files[MAXFILENUM]=*(((vari *)va)->files);
    // files=*(((vari *)va)->files);
     //printf("%s Begin accept--\n",servaddr.sun_path);  
     while(1)
@@ -177,13 +176,13 @@ void fthread(void *va)                               //wait for registry client
             printf("Registry with filename: %s; Peerid:%s \n",filename,peerid);
 
             //Register the file 
-           registry(peerid,filename,v->files);
+           registry(peerid,filename,files);
 
            printf("This is %lu, Register Success!\n",pthread_self());
 
            //print filelist
            
-           print_registry(,files);
+           print_registry(files);
            break;
 //-------------------------------------------------------------For searchfile
         case 2:
