@@ -92,7 +92,7 @@ void build(int z)
     {
         .socket_fd=0,
         .files=NULL,
-        .addr=NULL,
+        .addr="\0",
     };
    
     struct sockaddr_un     servaddr; 
