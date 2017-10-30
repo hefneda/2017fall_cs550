@@ -330,6 +330,18 @@ void c_client()
                         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
                         exit(0);  
                     }
+                    //send cmd to central server and receive back
+                    if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+                    {  
+                        printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+                        exit(0);  
+                    }   
+
+                    //receive confirm msg from central server
+                    if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+                        perror("recv error");  
+                        exit(1);  
+                    } 
                     lookup(c_client_fd,filename);   //find file and download
                     close(c_client_fd);  
                 }
