@@ -237,7 +237,7 @@ void c_client()
 	unsigned long long usecstart, usecstop;
     struct tms cputstart, cputstop;  /* CPU times for my processes */
     char dl_peerid[16];
-    char *peerlist[16];
+    char peerlist[NUM_C][16]="\0";
     char    str[MAXLINE];
     
     printf("Success Create Socket \n");  
