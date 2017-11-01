@@ -272,7 +272,7 @@ void c_client()
             ram=rand()%4;
             strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
 
-            printf("Begin connecting  to %s, num=%d\n", c_clientaddr.sun_path,ram);  
+            printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
             if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
                 printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
                 exit(0);  
@@ -342,7 +342,8 @@ void c_client()
                         perror("recv error");  
                         exit(1);  
                     } 
-                    flag=lookup(c_client_fd,filename);   //find file and download
+                    if(lookup(c_client_fd,filename)>0)  //find file and download
+                        flag=1;
 
                     close(c_client_fd);  
                 }
@@ -431,7 +432,6 @@ int lookup(int c_client_fd, char *filename)
        {
            for(j=0;;j++)
            {
-               printf("h");
                if(peerlist[j][0]=='\0')
                    break;
            }
@@ -452,7 +452,7 @@ int lookup(int c_client_fd, char *filename)
     {
         
                 //display in output
-        sprintf(msg,"Fail to find file\n");
+        sprintf(msg,"Fail to find file in:%s\n",addr);
         fwrite(msg,1,strlen(msg),file_out);
         fclose(file_out);
         return 0;
