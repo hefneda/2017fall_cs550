@@ -346,10 +346,7 @@ void c_client()
                         exit(1);  
                     } 
                     flag=lookup(c_client_fd,filename);   //find file and download
-                    for(j=0;j<4;j++)
-                    {
-                        printf("%d: %s\n",j,peerlist[j]);
-                    }
+
                     close(c_client_fd);  
                 }
                 if(flag==1)
@@ -360,7 +357,7 @@ void c_client()
                             break;
                         else
                         printf("%d: %s\n",j,peerlist[j]);
-                     }*/
+                     }*///-----------------------------------------------------------------------------
                     for(j=0;j<4;j++)
                     {
                         printf("%d: %s\n",j,peerlist[j]);
@@ -412,10 +409,7 @@ int lookup(int c_client_fd, char *filename)
     int i=0,j=0;
     file_out = fopen("../output.txt","a+");
     //send filename to download
-    for(j=0;j<4;j++)
-    {
-        printf("11%d: %s\n",j,peerlist[j]);
-    }
+
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
 
