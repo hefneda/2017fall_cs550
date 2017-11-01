@@ -349,17 +349,17 @@ void c_client()
                 }
                 if(flag==1)
                 {
-                    /*for(j=0;j<NUM_C;j++)
+                    for(j=0;j<MAXLINE;j++)
                     {
-                        if(peerlist[j]==NULL)
+                        if(peerlist[j][0]=='\0')
                             break;
                         else
                         printf("%d: %s\n",j,peerlist[j]);
-                     }*///-----------------------------------------------------------------------------
-                    for(j=0;j<4;j++)
+                     }
+                /*    for(j=0;j<4;j++)
                     {
                         printf("%d: %s\n",j,peerlist[j]);
-                    }
+                    }*/
                     // get which peer to download
                     printf("Choose which peer to download:");
                     fgets(str,MAXLINE,stdin);
