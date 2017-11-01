@@ -246,7 +246,7 @@ void c_client()
     
     while(1)
     {
-        peerlist[MAXLINE][MAXNAME]={0};
+        memset(peerlist,0,MAXLINE*MAXNAME);
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
         cmdno=atoi(sendline);
