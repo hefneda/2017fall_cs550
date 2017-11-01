@@ -42,7 +42,7 @@ int cs_fd;
 int f=0;
 FILE *file_out;
 char SERVER[4][MAXNAME];
-char *peerlist[16]={NULL};
+char peerlist[MAXLINE][MAXNAME]={NULL};
 
 int main(int argc, char** argv)  
 {  
@@ -435,13 +435,12 @@ int lookup(int c_client_fd, char *filename)
             printf("111111111111111111111111\n");
            for(j=0;;j++)
            {
-               //if(strcmp(peerlist[j],"/0")>0)
                if(peerlist[j]==NULL)
                    break;
            }
            recv(c_client_fd,str,16,0);	
-           //strcpy(peerlist[j],str);
-            peerlist[j]=str;
+           strcpy(peerlist[j],str);
+           //peerlist[j]=str;
 
            //display in output
            //sprintf(msg,"  %d: %s\n",i,peerlist[i]);
