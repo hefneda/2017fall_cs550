@@ -436,7 +436,7 @@ int lookup(int c_client_fd, char *filename)
            for(j=0;;j++)
            {
                printf("h");
-               if(peerlist[j]==0)
+               if(peerlist[j][0]=='\0')
                    break;
            }
            recv(c_client_fd,str,16,0);	
