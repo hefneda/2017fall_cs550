@@ -246,12 +246,7 @@ void c_client()
     
     while(1)
     {
-
-        //if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
-        //    printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
-        //    exit(0);  
-        //} 
-
+        peerlist[MAXLINE][MAXNAME]={0};
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
         cmdno=atoi(sendline);
@@ -272,6 +267,8 @@ void c_client()
             fgets(filename, MAXLINE, stdin);  
             if((end=strchr(filename,'\n')) != NULL)
                 *end = '\0';
+
+            srand(time(0));
             ram=rand()%4;
             strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
 
@@ -432,7 +429,6 @@ int lookup(int c_client_fd, char *filename)
 
        for(i = 0; i < count; i++)
        {
-            printf("111111111111111111111111\n");
            for(j=0;;j++)
            {
                printf("h");
@@ -440,9 +436,7 @@ int lookup(int c_client_fd, char *filename)
                    break;
            }
            recv(c_client_fd,str,16,0);	
-           printf(":%s\n",str);  
            strcpy(peerlist[j],str);
-           printf(":%s\n",peerlist[j]); 
            //peerlist[j]=str;
 
            //display in output
