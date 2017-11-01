@@ -435,7 +435,7 @@ int lookup(int c_client_fd, char *filename)
             printf("111111111111111111111111\n");
            for(j=0;;j++)
            {
-               if(peerlist[j]==NULL)
+               if(peerlist[j]==0)
                    break;
            }
            recv(c_client_fd,str,16,0);	
