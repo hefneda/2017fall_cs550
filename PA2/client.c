@@ -257,9 +257,9 @@ void c_client()
         if(cmdno == 1)
         {
             //Start clock--------------------------------------------------------------------------------------
-           gettimeofday(&etstart, &tzdummy);
+           /*gettimeofday(&etstart, &tzdummy);
             etstart2 = times(&cputstart);
-            printf("time test begin!\n");
+            printf("time test begin!\n");*/
 
             if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
                 printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  

@@ -18,14 +18,14 @@
 #define MAXFILENUM 99
 #define NUM_S 8
 
-typedef struct                                //use struct to pass multi-parameter to thread
+typedef struct                                
 {
     char *filename;
 	char peerid[16];
 	
 } pfile;
 
-typedef struct
+typedef struct                       //use struct to pass multi-parameter to thread
 {
     int socket_fd;
     pfile *files[MAXFILENUM]; 
