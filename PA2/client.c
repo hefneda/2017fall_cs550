@@ -292,10 +292,9 @@ void c_client()
             }  
             //display in output
             file_out = fopen("../output.txt","a+");
-            sprintf(msg,"%s register filename %s to server %s\n",HOST,filename,SERVER[ram]);
+            sprintf(msg,"%s register filename %s\n",HOST,filename);
             fwrite(msg,1,strlen(msg),file_out);
             fclose(file_out);
-
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
             close(c_client_fd);  
@@ -327,7 +326,7 @@ void c_client()
                     c_clientaddr.sun_family = AF_UNIX;  
 
                     strcpy(c_clientaddr.sun_path,SERVER[i]);
-                    printf("333333333333333333333333333333333333333333");  
+
                     if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
                         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
                         exit(0);  
@@ -338,7 +337,7 @@ void c_client()
                         printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
                         exit(0);  
                     }   
-                    printf("222222222222222222222222222222222222222222");  
+
                     //receive confirm msg from central server
                     if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
                         perror("recv error");  
@@ -348,24 +347,20 @@ void c_client()
                         flag=1;
 
                     close(c_client_fd);  
-                     printf("1111111111111111111111111111111111111111111");  
                 }
-                file_out = fopen("../output.txt","a+");
                 if(flag==1)
                 {
-                    sprintf(msg," file found by servers,list as below:\n");
-                    fwrite(msg,1,strlen(msg),file_out);
                     for(j=0;j<MAXLINE;j++)
                     {
                         if(peerlist[j][0]=='\0')
                             break;
                         else
-                        {
-                            printf("%d: %s\n",j,peerlist[j]);
-                            sprintf(msg,"%s search filename %s to download\n",HOST,filename);
-                            fwrite(msg,1,strlen(msg),file_out);
-                        }
+                        printf("%d: %s\n",j,peerlist[j]);
                      }
+                /*    for(j=0;j<4;j++)
+                    {
+                        printf("%d: %s\n",j,peerlist[j]);
+                    }*/
                     // get which peer to download
                     printf("Choose which peer to download:");
                     fgets(str,MAXLINE,stdin);
@@ -380,11 +375,9 @@ void c_client()
                 }
                 else
                 {
-                    sprintf(msg," fail to find file: %s\n",filename);
-                    fwrite(msg,1,strlen(msg),file_out);
                     printf("Fail to find file\n");  
                 }
-                fclose(file_out);
+
                 printf("time test over!\n");
                 //stop clock
                 gettimeofday(&etstop, &tzdummy);
@@ -413,7 +406,7 @@ int lookup(int c_client_fd, char *filename)
 
     int count=0;
     int i=0,j=0;
-    //file_out = fopen("../output.txt","a+");
+    file_out = fopen("../output.txt","a+");
     //send filename to download
 
     send(c_client_fd,(void *)filename,MAXLINE,0);
@@ -433,8 +426,8 @@ int lookup(int c_client_fd, char *filename)
         printf("%d clients have file, ready to receive peerid list\n",count);
        
         //receive peerid list
-        //sprintf(msg," file found by server,list as below:\n");
-        //fwrite(msg,1,strlen(msg),file_out);
+        sprintf(msg," file found in index server,list as below:\n");
+        fwrite(msg,1,strlen(msg),file_out);
 
        for(i = 0; i < count; i++)
        {
@@ -452,7 +445,7 @@ int lookup(int c_client_fd, char *filename)
            //fwrite(msg,1,strlen(msg),file_out);
        }
         //-----------------------------------------------------------
-       //fclose(file_out);
+       fclose(file_out);
        //-----------------------------------------------------------
        return 1;
     }
