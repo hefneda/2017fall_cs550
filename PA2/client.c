@@ -302,7 +302,7 @@ void c_client()
             //send(c_client_fd,(void *)filename,MAXLINE,0);
             //send(c_client_fd,HOST,16,0);
             //close(c_client_fd);  
-            for(i=0;i<10;i++)
+            for(i=0;i<50;i++)
             {
                 if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
                     printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
@@ -317,7 +317,7 @@ void c_client()
                 /*if((end=strchr(filename,'\n')) != NULL)
                     *end = '\0';*/
 
-                srand(time(0));
+                srand(i);
                 ram=rand()%NUM_S;
                 strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
 
