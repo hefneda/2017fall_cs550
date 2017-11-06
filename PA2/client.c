@@ -452,7 +452,7 @@ int lookup(int c_client_fd, char *filename)
            //fwrite(msg,1,strlen(msg),file_out);
        }
         //-----------------------------------------------------------
-       fclose(file_out);
+       //fclose(file_out);
        //-----------------------------------------------------------
        return 1;
     }
