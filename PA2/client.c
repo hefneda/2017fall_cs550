@@ -330,7 +330,7 @@ void c_client()
                 gettimeofday(&etstart, &tzdummy);
                 etstart2 = times(&cputstart);
                  printf("time test begin!\n");
-                 for(j=0;i<2000)
+                 for(j=0;j<2000;j++)
                  {
                      for(i=0;i<NUM_S;i++)
                      {
