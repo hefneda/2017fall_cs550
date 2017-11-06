@@ -476,7 +476,7 @@ void download(char *filename,char *peerid)
     int size;
     char buf[BUFF_SIZE];
     char msg[MAXLINE] ;
-   file_out = fopen("../output.txt","a+");
+   //file_out = fopen("../output.txt","a+");
     if(strcmp(peerid,HOST) == 0)
 	{
 		printf("Cannot download file from self\n");
@@ -515,9 +515,9 @@ void download(char *filename,char *peerid)
     printf("File received\n");
     //-----------------------------------------------------------
     
-    sprintf(msg, "download %s from %s to %s\n" ,filename, peerid, HOST);
-    fwrite(msg,1,strlen(msg),file_out);
-    fclose(file_out);
+    //sprintf(msg, "download %s from %s to %s\n" ,filename, peerid, HOST);
+    //fwrite(msg,1,strlen(msg),file_out);
+    //fclose(file_out);
     //-----------------------------------------------------------
 
 	fclose(file);
