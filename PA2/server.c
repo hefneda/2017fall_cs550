@@ -1,4 +1,3 @@
-<<<<<<< HEAD
  
 #include<stdio.h>  
 #include<stdlib.h>  
@@ -620,4 +619,3 @@ void sendidlist(int c_fd, char* filename, pfile **files)
 	}
 }
 
->>>>>>> origin/master
