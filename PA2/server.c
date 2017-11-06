@@ -13,10 +13,10 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-#define NUM_C 2
+#define NUM_C 8
 #define MAXLINE 512
 #define MAXFILENUM 99
-#define NUM_S 4
+#define NUM_S 8
 
 typedef struct                                //use struct to pass multi-parameter to thread
 {
@@ -44,7 +44,7 @@ void th_func(void *i);
 
 
 
-char HOST[4][16]={"SERV1","SERV2","SERV3","SERV4"};
+char HOST[8][16]={"SERV1","SERV2","SERV3","SERV4","SERV5","SERV6","SERV7","SERV8"};
 //int socket_fd;
 //struct sockaddr_un     servaddr; 
 //pfile *files[MAXFILENUM] = {NULL};                //filelist in central server

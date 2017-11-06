@@ -28,8 +28,8 @@ void c_server(void);
 void download(char *filename,char *peerid);
 int get_server(FILE *file_c);
 
-#define NUM_C 4
-#define NUM_S 4
+#define NUM_C 8
+#define NUM_S 8
 #define MAXLINE 512
 #define MAXNAME 64
 #define MAXFILENUM 99
@@ -41,7 +41,7 @@ struct sockaddr_un csaddr;
 int cs_fd;
 int f=0;
 FILE *file_out;
-char SERVER[4][MAXNAME];
+char SERVER[NUM_S][MAXNAME];
 char peerlist[MAXLINE][MAXNAME]={0};
 
 int main(int argc, char** argv)  
@@ -96,7 +96,7 @@ void th_func(void *i)
     int num = *((int *)i);
     if(num==0)
     {
-        //4 threads to connect 4 index servers
+        //8 threads to connect 8 index servers
         printf("------------This is a client thread--------\n"); 
         c_client();
     }
@@ -270,7 +270,7 @@ void c_client()
                 *end = '\0';
 
             srand(time(0));
-            ram=rand()%4;
+            ram=rand()%NUM_S;
             strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
 
             printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
@@ -292,7 +292,7 @@ void c_client()
             }  
             //display in output
             file_out = fopen("../output.txt","a+");
-            sprintf(msg,"%s register filename %s\n",HOST,filename);
+            sprintf(msg,"%s register filename %s\n\n",HOST,filename);
             fwrite(msg,1,strlen(msg),file_out);
             fclose(file_out);
             send(c_client_fd,(void *)filename,MAXLINE,0);
@@ -380,7 +380,7 @@ void c_client()
                     //begin download
                     download(filename, dl_peerid);
                     //file_out = fopen("../output.txt","a+");
-                    sprintf(msg, "download %s from %s to %s\n" ,filename, dl_peerid, HOST);
+                    sprintf(msg, "\ndownload %s from %s to %s\n" ,filename, dl_peerid, HOST);
                     fwrite(msg,1,strlen(msg),file_out);
                     //fclose(file_out);
                 }
