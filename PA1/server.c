@@ -103,7 +103,7 @@ void fthread(void)                               //wait for registry client
 
     while(1)
     {  
-        printf("Wait another client cmd \n");
+        printf("Begin%lu \n:",pthread_self());  
 
         if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;
@@ -124,7 +124,7 @@ void fthread(void)                               //wait for registry client
             //Register the file 
            registry(peerid,filename);
 
-           printf("Register Success!\n");
+           printf("This is %lu, Register Success!\n",pthread_self());
 
            //print filelist
           print_registry();
