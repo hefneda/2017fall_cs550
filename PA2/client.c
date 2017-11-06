@@ -257,61 +257,101 @@ void c_client()
         if(cmdno == 1)
         {
             //Start clock--------------------------------------------------------------------------------------
-           /* gettimeofday(&etstart, &tzdummy);
+           gettimeofday(&etstart, &tzdummy);
             etstart2 = times(&cputstart);
-            printf("time test begin!\n");*/
+            printf("time test begin!\n");
 
-            if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
-                printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
-                exit(0);  
-            } 
-            memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
-            c_clientaddr.sun_family = AF_UNIX;  
+            //if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+            //    printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+            //    exit(0);  
+            //} 
+            //memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+            //c_clientaddr.sun_family = AF_UNIX;  
 
-            printf("Input the filename to register: ");  
-            fgets(filename, MAXLINE, stdin);  
-            if((end=strchr(filename,'\n')) != NULL)
-                *end = '\0';
+            //printf("Input the filename to register: ");  
+            //fgets(filename, MAXLINE, stdin);  
+            //if((end=strchr(filename,'\n')) != NULL)
+            //    *end = '\0';
 
-            srand(time(0));
-            ram=rand()%NUM_S;
-            strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
+            //srand(time(0));
+            //ram=rand()%NUM_S;
+            //strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
 
-            printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
-            if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
-                printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
-                exit(0);  
+            //printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
+            //if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
+            //    printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
+            //    exit(0);  
+            //}
+            ////send cmd to central server and receive back
+            //if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+            //{  
+            //    printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+            //    exit(0);  
+            //}   
+
+            ////receive confirm msg from central server
+            //if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+            //    perror("recv error");  
+            //    exit(1);  
+            //}  
+            ////display in output
+            //file_out = fopen("../output.txt","a+");
+            //sprintf(msg,"%s register filename %s\n\n",HOST,filename);
+            //fwrite(msg,1,strlen(msg),file_out);
+            //fclose(file_out);
+            //send(c_client_fd,(void *)filename,MAXLINE,0);
+            //send(c_client_fd,HOST,16,0);
+            //close(c_client_fd);  
+
+            for(i=0;i<10000;i++)
+            {
+                if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+                    printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+                    exit(0);  
+                } 
+                memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+                c_clientaddr.sun_family = AF_UNIX;  
+
+                printf("Input the filename to register: ");  
+                fgets(filename, MAXLINE, stdin);  
+                if((end=strchr(filename,'\n')) != NULL)
+                    *end = '\0';
+
+                srand(time(0));
+                ram=rand()%NUM_S;
+                strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
+
+                printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
+                if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
+                    printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
+                    exit(0);  
+                }
+                //send cmd to central server and receive back
+                if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+                {  
+                    printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+                    exit(0);  
+                }   
+
+                //receive confirm msg from central server
+                if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+                    perror("recv error");  
+                    exit(1);  
+                }  
+
+                send(c_client_fd,(void *)filename,MAXLINE,0);
+                send(c_client_fd,HOST,16,0);
+                close(c_client_fd);  
             }
-            //send cmd to central server and receive back
-            if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
-            {  
-                printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
-                exit(0);  
-            }   
 
-            //receive confirm msg from central server
-            if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
-                perror("recv error");  
-                exit(1);  
-            }  
-            //display in output
-            file_out = fopen("../output.txt","a+");
-            sprintf(msg,"%s register filename %s\n\n",HOST,filename);
-            fwrite(msg,1,strlen(msg),file_out);
-            fclose(file_out);
-            send(c_client_fd,(void *)filename,MAXLINE,0);
-            send(c_client_fd,HOST,16,0);
-            close(c_client_fd);  
-           
-
-            //printf("time test over!\n");
-            ////stop clock------------------------------------------------------------------------------------
-            //gettimeofday(&etstop, &tzdummy);
-            //etstop2 = times(&cputstop);
-            //usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
-            //usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
-            ////display time result
-            //printf("\nTotal time:%g \nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)10000);
+            printf("time test over!\n");
+            //stop clock------------------------------------------------------------------------------------
+            gettimeofday(&etstop, &tzdummy);
+            etstop2 = times(&cputstop);
+            usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
+            usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
+            //display time result
+            printf("\nTotal time:%g \nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)10000);
         }
   //----------------------------------------------------Download
         if(cmdno == 2)
@@ -326,12 +366,11 @@ void c_client()
                 fwrite(msg,1,strlen(msg),file_out);
                  fclose(file_out);
 
-                //Start clock--------------------------------------------------------------------------------------
-                gettimeofday(&etstart, &tzdummy);
-                etstart2 = times(&cputstart);
-                 printf("time test begin!\n");
-                 for(j=0;j<2000;j++)
-                 {
+                 ////Start clock--------------------------------------------------------------------------------------
+                 //gettimeofday(&etstart, &tzdummy);
+                 //etstart2 = times(&cputstart);
+                 //printf("time test begin!\n");
+
                      for(i=0;i<NUM_S;i++)
                      {
                          if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
@@ -364,16 +403,15 @@ void c_client()
 
                          close(c_client_fd);  
                      }
-                 }
 
            
-                //stop clock--------------------------------------------------------------------------------------
-                gettimeofday(&etstop, &tzdummy);
-                etstop2 = times(&cputstop);
-                usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
-                usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
-                //display time result
-                printf("\nTotal time:%g ms\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)2000);
+                ////stop clock--------------------------------------------------------------------------------------
+                //gettimeofday(&etstop, &tzdummy);
+                //etstop2 = times(&cputstop);
+                //usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
+                //usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
+                ////display time result
+                //printf("\nTotal time:%g ms\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)2000);
 
 
                 file_out = fopen("../output.txt","a+");
