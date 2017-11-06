@@ -327,7 +327,7 @@ void c_client()
                     c_clientaddr.sun_family = AF_UNIX;  
 
                     strcpy(c_clientaddr.sun_path,SERVER[i]);
-
+                    printf("333333333333333333333333333333333333333333");  
                     if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
                         printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
                         exit(0);  
@@ -338,7 +338,7 @@ void c_client()
                         printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
                         exit(0);  
                     }   
-
+                    printf("222222222222222222222222222222222222222222");  
                     //receive confirm msg from central server
                     if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
                         perror("recv error");  
@@ -348,6 +348,7 @@ void c_client()
                         flag=1;
 
                     close(c_client_fd);  
+                     printf("1111111111111111111111111111111111111111111");  
                 }
                 file_out = fopen("../output.txt","a+");
                 if(flag==1)
