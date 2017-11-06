@@ -302,7 +302,7 @@ void c_client()
             //send(c_client_fd,(void *)filename,MAXLINE,0);
             //send(c_client_fd,HOST,16,0);
             //close(c_client_fd);  
-            for(i=0;i<500;i++)
+            for(i=0;i<1500;i++)
             {
                 if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
                     printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
