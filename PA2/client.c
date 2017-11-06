@@ -302,7 +302,7 @@ void c_client()
             //send(c_client_fd,(void *)filename,MAXLINE,0);
             //send(c_client_fd,HOST,16,0);
             //close(c_client_fd);  
-            for(i=0;i<10000;i++)
+            for(i=0;i<100;i++)
             {
                 if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
                     printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
@@ -314,9 +314,6 @@ void c_client()
                 printf("Input the filename to register: ");  
                 //fgets(filename, MAXLINE, stdin);  
                 strcpy(filename,"test1.txt");
-                /*if((end=strchr(filename,'\n')) != NULL)
-                *end = '\0';*/
-
                 srand(i);
                 ram=rand()%NUM_S;
                 strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
@@ -332,21 +329,13 @@ void c_client()
                     printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
                     exit(0);  
                 }   
-
                 //receive confirm msg from central server
                 if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
                     perror("recv error");  
                     exit(1);  
                 }  
-
-                //display in output
-                /* file_out = fopen("../output.txt","a+");
-                sprintf(msg,"%s register filename %s\n\n",HOST,filename);
-                fwrite(msg,1,strlen(msg),file_out);
-                fclose(file_out);*/
                 send(c_client_fd,(void *)filename,MAXLINE,0);
                 send(c_client_fd,HOST,16,0);
-
                 close(c_client_fd);  
             }
 
@@ -359,7 +348,7 @@ void c_client()
             usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
             usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
             //display time result
-            printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)1000);
+            printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)100);
         }
   //----------------------------------------------------Download
         if(cmdno == 2)
