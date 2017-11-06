@@ -332,41 +332,59 @@ void c_client()
                     printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
                     exit(0);  
                 }   
-                for(i=0;i<1000;i++)
-                {
-                    if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
-                        printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
-                        exit(0);  
-                    } 
-                    memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
-                    c_clientaddr.sun_family = AF_UNIX;  
 
-                    printf("Input the filename to register: ");  
-                    //fgets(filename, MAXLINE, stdin);  
-                    strcpy(filename,"test1.txt");
-                    /*if((end=strchr(filename,'\n')) != NULL)
-                    *end = '\0';*/
-
-                    srand(i);
-                    ram=rand()%NUM_S;
-                    strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
-
-                    printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
-                    if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
-                        printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
-                        exit(0);  
-                    }
-                    //send cmd to central server and receive back
-                    if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
-                    {  
-                        printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
-                        exit(0);  
-                    }   
                 //receive confirm msg from central server
                 if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
                     perror("recv error");  
                     exit(1);  
                 }  
+
+                //display in output
+               /* file_out = fopen("../output.txt","a+");
+                sprintf(msg,"%s register filename %s\n\n",HOST,filename);
+                fwrite(msg,1,strlen(msg),file_out);
+                fclose(file_out);*/
+                send(c_client_fd,(void *)filename,MAXLINE,0);
+                send(c_client_fd,HOST,16,0);
+                close(c_client_fd);  
+            }
+            for(i=0;i<1000;i++)
+            {
+                if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+                    printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+                    exit(0);  
+                } 
+                memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+                c_clientaddr.sun_family = AF_UNIX;  
+
+                printf("Input the filename to register: ");  
+                //fgets(filename, MAXLINE, stdin);  
+                strcpy(filename,"test1.txt");
+                /*if((end=strchr(filename,'\n')) != NULL)
+                    *end = '\0';*/
+
+                srand(i);
+                ram=rand()%NUM_S;
+                strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
+
+                printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
+                if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
+                    printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
+                    exit(0);  
+                }
+                //send cmd to central server and receive back
+                if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+                {  
+                    printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+                    exit(0);  
+                }   
+
+                //receive confirm msg from central server
+                if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+                    perror("recv error");  
+                    exit(1);  
+                }  
+
                 //display in output
                /* file_out = fopen("../output.txt","a+");
                 sprintf(msg,"%s register filename %s\n\n",HOST,filename);
