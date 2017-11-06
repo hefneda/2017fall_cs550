@@ -28,8 +28,8 @@ void c_server(void);
 void download(char *filename,char *peerid);
 int get_server(FILE *file_c);
 
-#define NUM_C 4
-#define NUM_S 4
+#define NUM_C 8
+#define NUM_S 8
 #define MAXLINE 512
 #define MAXNAME 64
 #define MAXFILENUM 99
@@ -41,7 +41,8 @@ struct sockaddr_un csaddr;
 int cs_fd;
 int f=0;
 FILE *file_out;
-char SERVER[4][MAXNAME];
+char SERVER[NUM_S][MAXNAME];
+char peerlist[MAXLINE][MAXNAME]={0};
 
 int main(int argc, char** argv)  
 {  
@@ -72,30 +73,30 @@ int main(int argc, char** argv)
 void create_th(void)
 {
     //Create the n threads
-	pthread_t threads[NUM_C+NUM_S];                           //num of clients and indexing server
+	pthread_t threads[NUM_C];                           //num of clients and indexing server
 	int i;
     int num[NUM_C] = {0};
 	int *p = num;
 
-    for(i = 0; i < NUM_C+NUM_S; i++)
+    for(i = 0; i < NUM_C; i++)
 	{
 		num[i] = i;
 		//Create threads, and send their index in num using p
 		pthread_create(&threads[i],NULL,(void *)th_func,p);
 		p++;
 	}
-	//for(i = 0; i < NUM_C+1; i++)
-	//{
-	//	pthread_join(threads[i],NULL);
-	//}
+	for(i = 0; i < NUM_C+1; i++)
+	{
+		pthread_join(threads[i],NULL);
+	}
 }
 void th_func(void *i)
 {
     //run this client as a client to receive and lookup file and registry
     int num = *((int *)i);
-    if(num<4)
+    if(num==0)
     {
-        //4 threads to connect 4 index servers
+        //8 threads to connect 8 index servers
         printf("------------This is a client thread--------\n"); 
         c_client();
     }
@@ -224,71 +225,79 @@ void c_client()
     int    c_client_fd;
     struct sockaddr_un    c_clientaddr;  
     char    recvline[MAXLINE], sendline[MAXLINE];  
-    int    n,rec_len;  
+    int    n,rec_len,i,j,peernum;  
     char    buf[MAXLINE]; 
     int cmdno=0;
     char    filename[MAXLINE], peerid[MAXLINE]; 
     char *end;
-    int count=0;
+    int count=0,ram=0,flag=0;
     char    msg[MAXLINE];
     struct timeval etstart, etstop;  /* Elapsed times using gettimeofday() */
 	struct timezone tzdummy;
 	clock_t etstart2, etstop2;	/* Elapsed times using times() */
 	unsigned long long usecstart, usecstop;
-	struct tms cputstart, cputstop;  /* CPU times for my processes */
-
-    if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
-        printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
-        exit(0);  
-    }  
+    struct tms cputstart, cputstop;  /* CPU times for my processes */
+    char dl_peerid[16];
+    
+    char    str[MAXLINE];
+    
     printf("Success Create Socket \n");  
 
-    memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
-    c_clientaddr.sun_family = AF_UNIX;  
-    strcpy(c_clientaddr.sun_path, "../SERV");
-
-    printf("Begin connect \n");  
-    if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
-        printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
-        exit(0);  
-    }  
     
-
     while(1)
     {
-        //sendline=NULL;
+        memset(peerlist,0,MAXLINE*MAXNAME);
+        flag=0;
         printf("Choose : 1.Registry 2. Download File 3.Quit \n");  
         fgets(sendline, 4096, stdin);  
-        //send cmd to central server and receive back
-        if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
-        {  
-            printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
-            exit(0);  
-        }   
-        //receive confirm msg from central server
-        if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
-            perror("recv error");  
-            exit(1);  
-        }  
-        cmdno=atoi(buf);
-        printf("Received : %d\n ",cmdno);
-
-
+        cmdno=atoi(sendline);
+/*        memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+        c_clientaddr.sun_family = AF_UNIX; */ 
 //----------------------------------------------------Register
         if(cmdno == 1)
         {
+
+            if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+                printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+                exit(0);  
+            } 
+            memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+            c_clientaddr.sun_family = AF_UNIX;  
+
             printf("Input the filename to register: ");  
             fgets(filename, MAXLINE, stdin);  
-
             if((end=strchr(filename,'\n')) != NULL)
                 *end = '\0';
+
+            srand(time(0));
+            ram=rand()%NUM_S;
+            strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
+
+            printf("Begin connecting  to %s\n", c_clientaddr.sun_path);  
+            if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
+                printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
+                exit(0);  
+            }
+            //send cmd to central server and receive back
+            if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+            {  
+                printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+                exit(0);  
+            }   
+
+            //receive confirm msg from central server
+            if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+                perror("recv error");  
+                exit(1);  
+            }  
             //display in output
             file_out = fopen("../output.txt","a+");
-            sprintf(msg,"%s register filename %s\n",HOST,filename);
+            sprintf(msg,"%s register filename %s\n\n",HOST,filename);
             fwrite(msg,1,strlen(msg),file_out);
             fclose(file_out);
             send(c_client_fd,(void *)filename,MAXLINE,0);
             send(c_client_fd,HOST,16,0);
+            close(c_client_fd);  
         }
   //----------------------------------------------------Download
         if(cmdno == 2)
@@ -307,8 +316,81 @@ void c_client()
                 etstart2 = times(&cputstart);
                 printf("time test begin!\n");
 
-                lookup(c_client_fd,filename);   //find file and download
+                for(i=0;i<NUM_S;i++)
+                {
+                    if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+                        printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+                        exit(0);  
+                    } 
+                    memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+                    c_clientaddr.sun_family = AF_UNIX;  
 
+                    strcpy(c_clientaddr.sun_path,SERVER[i]);
+
+                    if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
+                        printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
+                        exit(0);  
+                    }
+                    //send cmd to central server and receive back
+                    if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+                    {  
+                        printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+                        exit(0);  
+                    }   
+
+                    //receive confirm msg from central server
+                    if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+                        perror("recv error");  
+                        exit(1);  
+                    } 
+                    if(lookup(c_client_fd,filename)>0)  //find file and download
+                        flag=1;
+
+                    close(c_client_fd);  
+                }
+                file_out = fopen("../output.txt","a+");
+                
+                if(flag==1)
+                {
+                    sprintf(msg,"file found by servers, list as below:\n");
+                    fwrite(msg,1,strlen(msg),file_out);
+                    
+                    for(j=0;j<MAXLINE;j++)
+                    {
+                        if(peerlist[j][0]=='\0')
+                            break;
+                        else
+                        {
+                            printf("%d: %s\n",j,peerlist[j]);
+                            //display in output
+                            sprintf(msg,"  %d: %s\n",j,peerlist[j]);
+                            fwrite(msg,1,strlen(msg),file_out);
+                        }
+                     }
+
+                    // get which peer to download
+                    printf("Choose which peer to download:");
+                    fgets(str,MAXLINE,stdin);
+                    peernum = atoi(str);
+                    if(peernum < 0 || peernum > count)
+                        printf("Invalid input, try again\n");
+                    strcpy(dl_peerid,peerlist[peernum]);
+                    printf("you select peer: %s, begin download\n",dl_peerid);
+
+                    //begin download
+                    download(filename, dl_peerid);
+                    //file_out = fopen("../output.txt","a+");
+                    sprintf(msg, "\ndownload %s from %s to %s\n" ,filename, dl_peerid, HOST);
+                    fwrite(msg,1,strlen(msg),file_out);
+                    //fclose(file_out);
+                }
+                else
+                {
+                    printf("Fail to find file\n");
+                    sprintf(msg,"Fail to find file\n");
+                    fwrite(msg,1,strlen(msg),file_out);
+                }
+                fclose(file_out);
                 printf("time test over!\n");
                 //stop clock
                 gettimeofday(&etstop, &tzdummy);
@@ -327,67 +409,59 @@ void c_client()
 }
 int lookup(int c_client_fd, char *filename)
 {
-    int    n,rec_len,peernum;  
+    int    n,rec_len;  
     char    buf[MAXLINE]; 
     char *end;
     char    str[MAXLINE];
+    char    addr[MAXLINE];
     char    msg[MAXLINE];
-    char peerlist[NUM_C][16];
-    char peerid[16];
+
+
     int count=0;
-    int i=0;
-   file_out = fopen("../output.txt","a+");
+    int i=0,j=0;
+    //file_out = fopen("../output.txt","a+");
     //send filename to download
+
     send(c_client_fd,(void *)filename,MAXLINE,0);
     //wait to see if cental server can find this file
 
     recv(c_client_fd, buf, 8,0);
+
+
     if(atoi(buf)==1)
     {
-        printf("File found by server\n");  
+
+        recv(c_client_fd, addr, MAXLINE,0);
+        printf("File found by server:%s\n",addr);  
 
         recv(c_client_fd, str, MAXLINE,0);// receive how many peers have file
         count = atoi(str);
         printf("%d clients have file, ready to receive peerid list\n",count);
        
         //receive peerid list
-        sprintf(msg," file found in index server,list as below:\n");
-        fwrite(msg,1,strlen(msg),file_out);
+        //sprintf(msg," file found in index server,list as below:\n");
+        //fwrite(msg,1,strlen(msg),file_out);
 
        for(i = 0; i < count; i++)
-		{
-			recv(c_client_fd,(void *)&peerlist[i][0],16,0);	
-			printf("%d: %s\n",i,peerlist[i]);
-            //display in output
-             sprintf(msg,"  %d: %s\n",i,peerlist[i]);
-            fwrite(msg,1,strlen(msg),file_out);
-		}
-        //-----------------------------------------------------------
-        fclose(file_out);
-       //-----------------------------------------------------------
-        // get which peer to download
-       printf("Choose which peer to download:");
-       fgets(str,MAXLINE,stdin);
-       peernum = atoi(str);
-       if(peernum < 0 || peernum > count)
-           printf("Invalid input, try again\n");
-       strcpy(peerid,peerlist[peernum]);
-       printf("you select peer: %s, begin download\n",peerid);
+       {
+           for(j=0;;j++)
+           {
+               if(peerlist[j][0]=='\0')
+                   break;
+           }
+           recv(c_client_fd,str,16,0);	
+           strcpy(peerlist[j],str);
 
-       //begin download
-       download(filename, peerid);
+       }
+        //-----------------------------------------------------------
+       //fclose(file_out);
+       //-----------------------------------------------------------
        return 1;
     }
     else
     {
-        printf("Fail to find file\n");  
-                //display in output
-        sprintf(msg,"Fail to find file\n");
-        fwrite(msg,1,strlen(msg),file_out);
-        fclose(file_out);
         return 0;
     }
-     return 0;
 }
 
 void download(char *filename,char *peerid)
@@ -398,7 +472,7 @@ void download(char *filename,char *peerid)
     int size;
     char buf[BUFF_SIZE];
     char msg[MAXLINE] ;
-   file_out = fopen("../output.txt","a+");
+   
     if(strcmp(peerid,HOST) == 0)
 	{
 		printf("Cannot download file from self\n");
@@ -437,9 +511,7 @@ void download(char *filename,char *peerid)
     printf("File received\n");
     //-----------------------------------------------------------
     
-    sprintf(msg, "download %s from %s to %s\n" ,filename, peerid, HOST);
-    fwrite(msg,1,strlen(msg),file_out);
-    fclose(file_out);
+    
     //-----------------------------------------------------------
 
 	fclose(file);
@@ -464,6 +536,7 @@ int get_server( FILE *file_c)
 		fgets(szTest, sizeof(szTest) - 1, file_c);
         printf("%s", szTest); 
         strcpy(SERVER[i],szTest);
+        SERVER[i][strlen(SERVER[i])-1]=0;
         i++;
 	}
     return 0;

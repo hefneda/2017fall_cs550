@@ -13,114 +13,152 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-typedef struct
+#define NUM_C 8
+#define MAXLINE 512
+#define MAXFILENUM 99
+#define NUM_S 8
+
+typedef struct                                //use struct to pass multi-parameter to thread
 {
     char *filename;
 	char peerid[16];
 	
 } pfile;
 
-
-void fthread(void);
-int registry(const char *peerid, const char *filename);
-int check_file(const char *peerid, const char *filename);
-void print_registry(void);
-int search(char *filename );
-void sendidlist(int c_fd,char* filename);
-void build(void);
-
-#define NUM_C 4
-#define MAXLINE 512
-#define MAXFILENUM 99
+typedef struct
+{
+    int socket_fd;
+    pfile *files[MAXFILENUM]; 
+	char addr[MAXLINE];
+}vari;
 
 
+void fthread(void* socket);
+int registry(const char *peerid, const char *filename, pfile **files);
+int check_file(const char *peerid, const char *filename, pfile **files);
+void print_registry(pfile **files);
+int search(char *filename , pfile **files);
+void sendidlist(int c_fd,char* filename, pfile **files);
+void build(int z);
+void th_func(void *i);
 
-int socket_fd;
-struct sockaddr_un     servaddr; 
-pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
+
+
+char HOST[8][16]={"SERV1","SERV2","SERV3","SERV4","SERV5","SERV6","SERV7","SERV8"};
+//int socket_fd;
+//struct sockaddr_un     servaddr; 
+//pfile *files[MAXFILENUM] = {NULL};                //filelist in central server
 
 int main(int argc, char** argv)  
 {  
-    //setup server by using sockets
-    
 
-    if( argc != 2)
-    {  
-        printf("usage: ./server <ipaddress>\n");  
-        exit(0);  
-    }  
+    pthread_t threads[ NUM_S];                           //num of clients and indexing server
+	int i;
+    int num[ NUM_S] = {0};
+	int *p = num;
 
-    strcpy(HOST,argv[1]);
-    
-    build();
-
+    for(i = 0; i <  NUM_S; i++)
+	{
+		num[i] = i;
+		//Create threads, and send their index in num using p
+		pthread_create(&threads[i],NULL,(void *)th_func,p);
+		p++;
+	}
+    for(i = 0; i < NUM_S; i++)
+    {
+    	pthread_join(threads[i],NULL);
+    }
    
     return 0;
 }  
-void build(void)
+
+void th_func(void *i)
+{
+    //run this client as a client to receive and lookup file and registry
+    int num = *((int *)i);
+    printf("------------This is index server%d--------\n",num+1); 
+    build(num);
+
+}
+
+void build(int z)
 {
     int i;
-    pthread_t thread[NUM_C *2];
+    pthread_t thread[NUM_C];
     int on=1;  
     int ret;
 
-     if( (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
+    vari v=
+    {
+        .socket_fd=0,
+        .files=NULL,
+        .addr="\0",
+    };
+   
+    struct sockaddr_un     servaddr; 
+
+
+     if( (v.socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1 ){                            //initial Socket  
         printf("create socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }  
 
     memset(&servaddr, 0, sizeof(servaddr));  
     servaddr.sun_family = AF_UNIX;  
-    strcpy(servaddr.sun_path, HOST);
+    strcpy(servaddr.sun_path, HOST[z]);
+    strcpy(v.addr, HOST[z]);
     unlink(servaddr.sun_path);
     //------------------------------avoid error: address already in use
 
-    ret=setsockopt(socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
+    ret=setsockopt(v.socket_fd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on));
 
 
-    if( bind(socket_fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){          //bind
+    if( bind(v.socket_fd, (struct sockaddr*)&servaddr, sizeof(servaddr)) == -1){          //bind
         printf("bind socket error: %s(errno: %d)\n",strerror(errno),errno);  
         exit(0);  
     }
     printf("bind socket success, address:%s\n",servaddr.sun_path);
 
-    if( listen(socket_fd, NUM_C * 2) == -1){  
+    if( listen(v.socket_fd, NUM_C ) == -1){  
         printf("listen socket error: %s(errno: %d)\n",strerror(errno),errno);                 //listen
         exit(0);  
     }  
-    printf("======waiting for client's request======\n");  
+    //printf("======waiting for client's request%d======\n",socket_fd);  
 
     //create threads to handle multiple tasks
 
-    for(i = 0; i < NUM_C * 2; i++)
-        pthread_create(&thread[i],NULL,(void *)fthread,NULL);
-    for(i = 0; i < NUM_C * 2; i++)
+    for(i = 0; i < NUM_C ; i++)
+        pthread_create(&thread[i],NULL,(void *)fthread,&v);
+    for(i = 0; i < NUM_C ; i++)
         pthread_join(thread[i],NULL);
 
-    close(socket_fd);  
+    close(v.socket_fd);  
 }
-void fthread(void)                               //wait for registry client
+void fthread(void *va)                               //wait for registry client
 {
     struct sockaddr_un c_address;       //registry client address
     int c_fd;                                           //registry client fd
     int cmdno=0;
-    socklen_t len = sizeof(c_address);
+    
     char cmdstr[2];                               //1:registry 2:Search File
     char filename[MAXLINE];
     char peerid[16];
-    pfile *found_files[MAXFILENUM] = {NULL}; 
 
-    printf("Begin Accept! \n");             //accept clients
-    if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
-    {  
-        printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
-    }  
+    //pfile *files[MAXFILENUM] = {NULL};   
 
-    printf("Client Connected, Wait client cmd \n");
+    int socket_fd= ((vari *)va)->socket_fd;//---------------------------------------------------------------------------------------------------------
 
     while(1)
     {  
-        printf("Wait another client cmd \n");
+        printf("Begin accept client \n");  
+        printf("\n");
+        socklen_t len = sizeof(c_address);
+
+        if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
+        {  
+            printf("accept socket error: %s(errno: %d)",strerror(errno),errno);  
+        }  
+        printf("accept client success\n");  
 
         if(recv(c_fd,(void *)cmdstr,2,0) == 0)
             break;
@@ -132,35 +170,36 @@ void fthread(void)                               //wait for registry client
         case 1:                                                                    
             if(send(c_fd, "1", 8,0) == -1)                              //send confirm msg to client
                 perror("send error");
-            printf("Request for Registry Rceived, Begin to Receive Filename and peerid\n");
             recv(c_fd,(void *)filename,MAXLINE,0);
             recv(c_fd,(void *)peerid,16,0);
 
-            printf("Registry with filename: %s; Peerid:%s \n",filename,peerid);
+            printf("%s Connect with peer:%s, register with file:%s \n",((vari *)va)->addr,peerid,filename);
+
+            //printf("Registry with filename: %s \n",filename);
 
             //Register the file 
-           registry(peerid,filename);
+           registry(peerid,filename,(((vari *)va)->files));
 
-           printf("Register Success!\n");
+           printf("This is %s, Register Success!\n",((vari *)va)->addr);
 
            //print filelist
-          print_registry();
+           
+           print_registry((((vari *)va)->files));
            break;
 //-------------------------------------------------------------For searchfile
         case 2:
             if(send(c_fd, "2", 8,0) == -1)                              //send confirm msg to client
                 perror("send error");
-            printf("Request for Download Received\n");
             recv(c_fd,(void *)filename,MAXLINE,0);              //receive filename
-            
-            if(search(filename)!=0)                   //filename found
+            printf("Request for search file: %s \n",filename);
+            if(search(filename,(((vari *)va)->files))!=0)                   //filename found
             {
-                printf("We found it\n");
                 //send back confimation
                 send(c_fd, "1", 8,0);        
+                send(c_fd, ((vari *)va)->addr, MAXLINE,0);        
                 usleep(1000);
                 //send back the peerids with this filename
-                sendidlist(c_fd,filename);
+                sendidlist(c_fd,filename,(((vari *)va)->files));
 
             }
             else                                                                     //filename not found
@@ -177,10 +216,10 @@ void fthread(void)                               //wait for registry client
 }
 
 //register file
-int registry(const char *peerid, const char *filename)
+int registry(const char *peerid, const char *filename, pfile **files)
 {
     int i;
-    if(check_file(peerid,filename)==1)    ///check if the filename with the peerid has already been registrated
+    if(check_file(peerid,filename,files)==1)    ///check if the filename with the peerid has already been registrated
     {
         printf("File already registered\n");
         return -1;
@@ -203,7 +242,7 @@ int registry(const char *peerid, const char *filename)
 }
 
 //check if the filename with the peerid has alreadyFF been registrated
-int check_file(const char *peerid, const char *filename)
+int check_file(const char *peerid, const char *filename, pfile **files)
 {
     int i;
 	for(i = 0; i < MAXFILENUM; i++)
@@ -214,7 +253,7 @@ int check_file(const char *peerid, const char *filename)
     return 0;
 }
 
-void print_registry()
+void print_registry( pfile **files)
 {
 	int i;
 	for(i = 0; i < MAXFILENUM; i++)
@@ -226,7 +265,7 @@ void print_registry()
 	}
 }
 
-int search(char *filename )
+int search(char *filename, pfile **files)
 {
    int i;
 	for(i = 0; i < MAXFILENUM; i++)
@@ -238,7 +277,7 @@ int search(char *filename )
 
 }
 
-void sendidlist(int c_fd, char* filename)
+void sendidlist(int c_fd, char* filename, pfile **files)
 {
     int i;
     int count = 0;
