@@ -150,8 +150,6 @@ void fthread(void *va)                               //wait for registry client
 
     while(1)
     {  
-        printf("Begin accept client \n");  
-        printf("\n");
         socklen_t len = sizeof(c_address);
 
         if( (c_fd = accept(socket_fd, (struct sockaddr*)&c_address, &len)) == -1)
