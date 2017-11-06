@@ -312,11 +312,11 @@ void c_client()
                 memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
                 c_clientaddr.sun_family = AF_UNIX;  
 
-                printf("Input the filename to register: ");  
+               /* printf("Input the filename to register: ");  
                 fgets(filename, MAXLINE, stdin);  
                 if((end=strchr(filename,'\n')) != NULL)
-                    *end = '\0';
-
+                    *end = '\0';*/
+                strcpy(filename,"test.txt");  
                 srand(time(0));
                 ram=rand()%NUM_S;
                 strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
