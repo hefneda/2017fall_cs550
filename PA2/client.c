@@ -313,7 +313,7 @@ void c_client()
 
                 printf("Input the filename to register: ");  
                 //fgets(filename, MAXLINE, stdin);  
-                filename="test1.txt";
+                strcpy(filename,"test1.txt");
                 /*if((end=strchr(filename,'\n')) != NULL)
                     *end = '\0';*/
 
