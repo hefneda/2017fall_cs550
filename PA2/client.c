@@ -302,21 +302,21 @@ void c_client()
             //send(c_client_fd,(void *)filename,MAXLINE,0);
             //send(c_client_fd,HOST,16,0);
             //close(c_client_fd);  
-
-            if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
-                printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
-                exit(0);  
-            } 
-            memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
-            c_clientaddr.sun_family = AF_UNIX;  
-
-            printf("Input the filename to register: ");  
-            //fgets(filename, MAXLINE, stdin);  
-            strcpy(filename,"test1.txt");
-            /*if((end=strchr(filename,'\n')) != NULL)
-            *end = '\0';*/
             for(i=0;i<1500;i++)
             {
+                if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+                    printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+                    exit(0);  
+                } 
+                memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+                c_clientaddr.sun_family = AF_UNIX;  
+
+                printf("Input the filename to register: ");  
+                //fgets(filename, MAXLINE, stdin);  
+                strcpy(filename,"test1.txt");
+                /*if((end=strchr(filename,'\n')) != NULL)
+                *end = '\0';*/
+
                 srand(i);
                 ram=rand()%NUM_S;
                 strcpy(c_clientaddr.sun_path,SERVER[ram]);     //randomly choose index server to register file
@@ -346,8 +346,9 @@ void c_client()
                 fclose(file_out);*/
                 send(c_client_fd,(void *)filename,MAXLINE,0);
                 send(c_client_fd,HOST,16,0);
+
+                close(c_client_fd);  
             }
-            close(c_client_fd);  
 
 
 
