@@ -348,7 +348,7 @@ void c_client()
             usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
             usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
             //display time result
-            printf("\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart)/(float)10000);
+            printf("\nTotal time:%g \nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)10000);
         }
   //----------------------------------------------------Download
         if(cmdno == 2)
