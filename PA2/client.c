@@ -42,7 +42,7 @@ int cs_fd;
 int f=0;
 FILE *file_out;
 char SERVER[NUM_S][MAXNAME];
-char peerlist[MAXLINE][MAXNAME]={0};
+char peerlist[1024*1024][MAXNAME]={0};
 
 int main(int argc, char** argv)  
 {  
