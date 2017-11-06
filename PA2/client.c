@@ -339,10 +339,10 @@ void c_client()
                     exit(1);  
                 }  
                 //display in output
-                file_out = fopen("../output.txt","a+");
+               /* file_out = fopen("../output.txt","a+");
                 sprintf(msg,"%s register filename %s\n\n",HOST,filename);
                 fwrite(msg,1,strlen(msg),file_out);
-                fclose(file_out);
+                fclose(file_out);*/
                 send(c_client_fd,(void *)filename,MAXLINE,0);
                 send(c_client_fd,HOST,16,0);
                 close(c_client_fd);  
