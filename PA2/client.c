@@ -302,7 +302,7 @@ void c_client()
             //send(c_client_fd,(void *)filename,MAXLINE,0);
             //send(c_client_fd,HOST,16,0);
             //close(c_client_fd);  
-            for(i=0;i<100;i++)
+            for(i=0;i<10000;i++)
             {
                 if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
                     printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
@@ -348,7 +348,7 @@ void c_client()
             usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
             usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
             //display time result
-            printf("\nTotal time:%g \nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)100);
+            printf("\nTotal time:%g \nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)10000);
         }
   //----------------------------------------------------Download
         if(cmdno == 2)
