@@ -363,7 +363,7 @@ void c_client()
                         {
                             printf("%d: %s\n",j,peerlist[j]);
                             //display in output
-                            sprintf(msg,"  %d: %s\n",i,peerlist[i]);
+                            sprintf(msg,"  %d: %s\n",j,peerlist[j]);
                             fwrite(msg,1,strlen(msg),file_out);
                         }
                      }
@@ -379,6 +379,10 @@ void c_client()
 
                     //begin download
                     download(filename, dl_peerid);
+                    //file_out = fopen("../output.txt","a+");
+                    sprintf(msg, "download %s from %s to %s\n" ,filename, dl_peerid, HOST);
+                    fwrite(msg,1,strlen(msg),file_out);
+                    //fclose(file_out);
                 }
                 else
                 {
@@ -447,11 +451,7 @@ int lookup(int c_client_fd, char *filename)
            }
            recv(c_client_fd,str,16,0);	
            strcpy(peerlist[j],str);
-           //peerlist[j]=str;
 
-           //display in output
-           //sprintf(msg,"  %d: %s\n",i,peerlist[i]);
-           //fwrite(msg,1,strlen(msg),file_out);
        }
         //-----------------------------------------------------------
        //fclose(file_out);
@@ -460,10 +460,6 @@ int lookup(int c_client_fd, char *filename)
     }
     else
     {
-                //display in output
-        //sprintf(msg,"Fail to find file\n");
-       // fwrite(msg,1,strlen(msg),file_out);
-        //fclose(file_out);
         return 0;
     }
 }
@@ -476,7 +472,7 @@ void download(char *filename,char *peerid)
     int size;
     char buf[BUFF_SIZE];
     char msg[MAXLINE] ;
-   //file_out = fopen("../output.txt","a+");
+   
     if(strcmp(peerid,HOST) == 0)
 	{
 		printf("Cannot download file from self\n");
@@ -515,9 +511,7 @@ void download(char *filename,char *peerid)
     printf("File received\n");
     //-----------------------------------------------------------
     
-    //sprintf(msg, "download %s from %s to %s\n" ,filename, peerid, HOST);
-    //fwrite(msg,1,strlen(msg),file_out);
-    //fclose(file_out);
+    
     //-----------------------------------------------------------
 
 	fclose(file);
