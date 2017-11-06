@@ -352,7 +352,7 @@ void c_client()
                 
                 if(flag==1)
                 {
-                    sprintf(msg,"file found by servers\n");
+                    sprintf(msg,"file found by servers, list as below:\n");
                     fwrite(msg,1,strlen(msg),file_out);
                     
                     for(j=0;j<MAXLINE;j++)
@@ -360,7 +360,12 @@ void c_client()
                         if(peerlist[j][0]=='\0')
                             break;
                         else
-                        printf("%d: %s\n",j,peerlist[j]);
+                        {
+                            printf("%d: %s\n",j,peerlist[j]);
+                            //display in output
+                            sprintf(msg,"  %d: %s\n",i,peerlist[i]);
+                            fwrite(msg,1,strlen(msg),file_out);
+                        }
                      }
 
                     // get which peer to download
@@ -377,7 +382,9 @@ void c_client()
                 }
                 else
                 {
-                    printf("Fail to find file\n");  
+                    printf("Fail to find file\n");
+                    sprintf(msg,"Fail to find file\n");
+                    fwrite(msg,1,strlen(msg),file_out);
                 }
                 fclose(file_out);
                 printf("time test over!\n");
