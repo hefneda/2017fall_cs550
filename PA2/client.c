@@ -1084,5 +1084,5 @@ int get_server( FILE *file_c)
         i++;
 	}
     return 0;
->>>>>>> origin/master
+
 }
