@@ -326,52 +326,54 @@ void c_client()
                 fwrite(msg,1,strlen(msg),file_out);
                  fclose(file_out);
 
-                ////Start clock--------------------------------------------------------------------------------------
-                //gettimeofday(&etstart, &tzdummy);
-                //etstart2 = times(&cputstart);
-                //printf("time test begin!\n");
+                //Start clock--------------------------------------------------------------------------------------
+                gettimeofday(&etstart, &tzdummy);
+                etstart2 = times(&cputstart);
+                 printf("time test begin!\n");
+                 for(j=0;i<2000)
+                 {
+                     for(i=0;i<NUM_S;i++)
+                     {
+                         if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
+                             printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
+                             exit(0);  
+                         } 
+                         memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
+                         c_clientaddr.sun_family = AF_UNIX;  
 
-                for(i=0;i<NUM_S;i++)
-                {
-                    if( (c_client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){  
-                        printf("create socket error: %s(errno: %d)\n", strerror(errno),errno);  
-                        exit(0);  
-                    } 
-                    memset(&c_clientaddr, 0, sizeof(c_clientaddr));  
-                    c_clientaddr.sun_family = AF_UNIX;  
+                         strcpy(c_clientaddr.sun_path,SERVER[i]);
 
-                    strcpy(c_clientaddr.sun_path,SERVER[i]);
+                         if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
+                             printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
+                             exit(0);  
+                         }
+                         //send cmd to central server and receive back
+                         if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
+                         {  
+                             printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
+                             exit(0);  
+                         }   
 
-                    if( connect(c_client_fd, (struct sockaddr*)&c_clientaddr, sizeof(c_clientaddr)) < 0){  
-                        printf("connect error: %s(errno: %d)\n",strerror(errno),errno);  
-                        exit(0);  
-                    }
-                    //send cmd to central server and receive back
-                    if( send(c_client_fd, sendline, strlen(sendline), 0) < 0)  
-                    {  
-                        printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);  
-                        exit(0);  
-                    }   
+                         //receive confirm msg from central server
+                         if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
+                             perror("recv error");  
+                             exit(1);  
+                         } 
+                         if(lookup(c_client_fd,filename)>0)  //find file
+                             flag=1;
 
-                    //receive confirm msg from central server
-                    if((rec_len = recv(c_client_fd, buf, MAXLINE,0)) == -1) {  
-                        perror("recv error");  
-                        exit(1);  
-                    } 
-                    if(lookup(c_client_fd,filename)>0)  //find file
-                        flag=1;
-
-                    close(c_client_fd);  
-                }
+                         close(c_client_fd);  
+                     }
+                 }
 
            
-                ////stop clock--------------------------------------------------------------------------------------
-                //gettimeofday(&etstop, &tzdummy);
-                //etstop2 = times(&cputstop);
-                //usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
-                //usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
-                ////display time result
-                //printf("\nTotal time:%g ms\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)7000);
+                //stop clock--------------------------------------------------------------------------------------
+                gettimeofday(&etstop, &tzdummy);
+                etstop2 = times(&cputstop);
+                usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
+                usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
+                //display time result
+                printf("\nTotal time:%g ms\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)7000);
 
 
                 file_out = fopen("../output.txt","a+");
@@ -403,25 +405,26 @@ void c_client()
                     strcpy(dl_peerid,peerlist[peernum]);
                     printf("you select peer: %s, begin download\n",dl_peerid);
 
-                    //Start clock--------------------------------------------------------------------------------------
-                    gettimeofday(&etstart, &tzdummy);
-                    etstart2 = times(&cputstart);
-                    printf("time test begin!\n");
+                    ////Start clock--------------------------------------------------------------------------------------
+                    //gettimeofday(&etstart, &tzdummy);
+                    //etstart2 = times(&cputstart);
+                    //printf("time test begin!\n");
 
-                    ////begin download
-                    //download(filename, dl_peerid);
-                    for(i=0;i<10000;i++)
-                    {
-                        //begin download
-                        download(filename, dl_peerid);
-                    }
-                    //stop clock--------------------------------------------------------------------------------------
-                    gettimeofday(&etstop, &tzdummy);
-                    etstop2 = times(&cputstop);
-                    usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
-                    usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
-                    //display time result
-                    printf("\nTotal time:%g ms\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)10000);
+                    //begin download
+                    download(filename, dl_peerid);
+
+                    //for(i=0;i<10000;i++)
+                    //{
+                    //    //begin download
+                    //    download(filename, dl_peerid);
+                    //}
+                    ////stop clock--------------------------------------------------------------------------------------
+                    //gettimeofday(&etstop, &tzdummy);
+                    //etstop2 = times(&cputstop);
+                    //usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
+                    //usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
+                    ////display time result
+                    //printf("\nTotal time:%g ms\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)10000);
 
 
 
