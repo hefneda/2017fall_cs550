@@ -410,7 +410,7 @@ void c_client()
 
                     ////begin download
                     //download(filename, dl_peerid);
-                    for(i=0;i<100;i++)
+                    for(i=0;i<10000;i++)
                     {
                         //begin download
                         download(filename, dl_peerid);
@@ -421,7 +421,7 @@ void c_client()
                     usecstart = (unsigned long long)etstart.tv_sec * 1000000 + etstart.tv_usec;
                     usecstop = (unsigned long long)etstop.tv_sec * 1000000 + etstop.tv_usec;
                     //display time result
-                    printf("\nTotal time:%g ms\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)100);
+                    printf("\nTotal time:%g ms\nAvg Response time = %g ms.\n",(float)(usecstop - usecstart),(float)(usecstop - usecstart)/(float)10000);
 
 
 
